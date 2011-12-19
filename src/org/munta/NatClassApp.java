@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import org.munta.model.Attribute;
 import org.munta.model.Entity;
 import org.munta.model.Regularity;
+import org.munta.projectengine.ProjectManager;
 
 public class NatClassApp {
 
@@ -39,5 +40,8 @@ public class NatClassApp {
         
         System.out.println(e);
         System.out.println(r);
+        
+        ProjectManager manager = new ProjectManager();
+        manager.saveAsProject("/tmp/test.ncp");
     }
 }
