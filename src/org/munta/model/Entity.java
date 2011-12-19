@@ -1,15 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.munta.model;
 
 import java.util.HashMap;
 
-/**
- *
- * @author pavel_pro
- */
 public class Entity {
 
     private String name;

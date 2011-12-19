@@ -1,15 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.munta.model;
 
 import java.util.HashSet;
 
-/**
- *
- * @author pavel_pro
- */
 public class AttributeCollection extends HashSet<Attribute> {
 
     @Override

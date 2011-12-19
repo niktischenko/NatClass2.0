@@ -1,13 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.munta.model;
 
-/**
- *
- * @author pavel_pro
- */
 public class Attribute {
     private String name;
     private String value;
