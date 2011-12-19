@@ -5,6 +5,9 @@ import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import org.munta.model.Attribute;
+import org.munta.model.Entity;
+import org.munta.model.Regularity;
 
 public class NatClassApp {
 
@@ -25,5 +28,16 @@ public class NatClassApp {
         frame.setSize(400, 400);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        Entity e = new Entity("Object1");
+        e.getAttributes().add(new Attribute("Color", "Green"));
+        
+        Regularity r = new Regularity();
+        r.setTarget(new Attribute("Height", "10"));
+        r.getContitions().add(new Attribute("Weight", "5"));
+        r.getContext().add(new Attribute());
+        
+        System.out.println(e);
+        System.out.println(r);
     }
 }
