@@ -1,7 +1,9 @@
 package org.munta.model;
 
 import java.util.HashSet;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class AttributeCollection extends HashSet<Attribute> {
 
     @Override

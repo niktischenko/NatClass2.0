@@ -1,9 +1,12 @@
 package org.munta.model;
 
-import java.util.HashMap;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class Entity {
-
     private String name;
     private AttributeCollection attributes;
     
@@ -16,10 +19,18 @@ public class Entity {
         attributes = new AttributeCollection();
     }
     
+    @XmlElement(name="Attribute")
+    @XmlElementWrapper(name="Attributes")
     public AttributeCollection getAttributes() {
         return attributes;
     }
+    
+    public void setAttributes(AttributeCollection attributes) {
+        this.attributes.clear();
+        this.attributes.addAll(attributes);
+    }
 
+    @XmlAttribute
     public String getName() {
         return name;
     }

@@ -1,5 +1,9 @@
 package org.munta.model;
 
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Attribute {
     private String name;
     private String value;
@@ -13,6 +17,7 @@ public class Attribute {
         this.value = value;
     }
     
+    @XmlAttribute
     public String getName() {
         return name;
     }
@@ -21,6 +26,7 @@ public class Attribute {
         this.name = name;
     }
 
+    @XmlAttribute
     public String getValue() {
         return value;
     }

@@ -23,6 +23,7 @@ class ProjectFile {
             serializer = cachedSerializers.get(objectClass);
         } else {
             serializer = new JABXSerializer(objectClass);
+            //serializer = new PrivateSerializer(objectClass);
             cachedSerializers.put(objectClass, serializer);
         }
         return serializer;
@@ -46,7 +47,7 @@ class ProjectFile {
     }
 
     public Boolean putProjectObjects(ProjectObjectWithIdentifier... identifiers) throws IOException {
-        if (!isOnFileSystem() || (new File(filename)).canWrite()) {
+        if (!isOnFileSystem()) {
             return false;
         }
 

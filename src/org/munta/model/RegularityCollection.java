@@ -1,7 +1,9 @@
 package org.munta.model;
 
 import java.util.HashMap;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class RegularityCollection extends HashMap<String, Regularity> {
 
     @Override

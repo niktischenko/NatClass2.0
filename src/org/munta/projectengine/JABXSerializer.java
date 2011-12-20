@@ -1,5 +1,6 @@
 package org.munta.projectengine;
 
+import org.munta.projectengine.SerializerException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
@@ -9,7 +10,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-final class JABXSerializer implements IProjectSerializer {
+public final class JABXSerializer implements IProjectSerializer {
     
     private JAXBContext context;
     

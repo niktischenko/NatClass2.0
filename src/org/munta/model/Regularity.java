@@ -1,5 +1,8 @@
 package org.munta.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Regularity {
 
     private AttributeCollection conditions;
@@ -16,7 +19,7 @@ public class Regularity {
         return context;
     }
 
-    public AttributeCollection getContitions() {
+    public AttributeCollection getConditions() {
         return conditions;
     }
 
