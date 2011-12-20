@@ -24,4 +24,8 @@ public class RegularityCollection
         sb.append("\n]");
         return sb.toString();
     }
+    
+    public void add(Regularity r) {
+        this.put(String.format("R%d", this.size() + 1), r);
+    }
 }
