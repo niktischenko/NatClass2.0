@@ -1,11 +1,18 @@
 package org.munta.model;
 
 import java.io.Serializable;
+import org.munta.projectengine.serializer.xml.XMLObject;
+import org.munta.projectengine.serializer.xml.XMLProperty;
 
+@XMLObject(name="Regularity")
 public class Regularity implements Serializable {
-
+    @XMLProperty(name="Conditions", collection=true)
+    
     private AttributeCollection conditions;
+    @XMLProperty(name="Context", collection=true)
     private AttributeCollection context;
+    
+    @XMLProperty(name="Target")
     private Attribute target;
 
     public Regularity() {

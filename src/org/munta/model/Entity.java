@@ -1,10 +1,15 @@
 package org.munta.model;
 
 import java.io.Serializable;
+import org.munta.projectengine.serializer.xml.XMLObject;
+import org.munta.projectengine.serializer.xml.XMLProperty;
 
+@XMLObject(name="Entity")
 public class Entity implements Serializable {
-
+    @XMLProperty(name="name", attribute=true)
     private String name;
+    
+    @XMLProperty(name="Attributes", collection=true)
     private AttributeCollection attributes;
 
     public Entity() {
