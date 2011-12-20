@@ -1,10 +1,10 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import org.munta.utils.NotificationHashSet;
 
 public class EntityCollection
-        extends HashSet<Entity>
+        extends NotificationHashSet<Entity>
         implements Serializable {
 
     public EntityCollection(EntityCollection entities) {

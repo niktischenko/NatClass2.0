@@ -1,10 +1,10 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import org.munta.utils.NotificationHashMap;
 
 public class RegularityCollection
-        extends HashMap<String, Regularity>
+        extends NotificationHashMap<String, Regularity>
         implements Serializable {
 
     public RegularityCollection() {

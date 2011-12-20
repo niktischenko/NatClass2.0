@@ -1,10 +1,10 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
+import org.munta.utils.NotificationHashSet;
 
 public class AttributeCollection
-        extends HashSet<Attribute>
+        extends NotificationHashSet<Attribute>
         implements Serializable {
 
     AttributeCollection(AttributeCollection attributes) {

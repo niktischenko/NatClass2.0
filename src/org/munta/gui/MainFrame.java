@@ -1,5 +1,8 @@
 package org.munta.gui;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
@@ -10,10 +13,13 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import org.munta.NatClassApp;
+import org.munta.projectengine.ProjectManager;
 
 public class MainFrame extends JFrame {
 
     private NatClassApp app;
+    private EntityViewModel entityViewModel = null;
+    private EntityAttributesViewModel entityAttributeViewModel = null;
     
     private ActionListener exitActionListener = new ActionListener() {
         @Override
@@ -47,17 +53,38 @@ public class MainFrame extends JFrame {
     }
     
     private void initPanels() {
+        entityViewModel = new EntityViewModel(ProjectManager.getInstance().getCollectionOfEntities());
+        entityAttributeViewModel = new EntityAttributesViewModel(entityViewModel);
+        
+        ProjectManager.getInstance().getCollectionOfEntities().addCollectionChangedListener(entityViewModel);
+        
         JList entityList = new JList();
-        entityList.setModel(new EntityViewModel());
-        add(entityList);
+        entityList.setModel(entityViewModel);
+        JList entityAttributeList = new JList();
+        entityAttributeList.setModel(entityAttributeViewModel);
+        
+        entityList.addListSelectionListener(entityAttributeViewModel);
+        
+        Container contentPane = getContentPane();
+        contentPane.setLayout(new BorderLayout());
+        
+        contentPane.add(entityList, BorderLayout.LINE_START);
+        contentPane.add(entityAttributeList, BorderLayout.LINE_END);
+    }
+
+    @Override
+    public void dispose() {
+        entityViewModel.dispose();
+        super.dispose();
     }
     
     public MainFrame(NatClassApp app) throws HeadlessException {
+        super("NatClass 2.0");
+        
         this.app = app;
         InitMenuBar();
         initPanels();
-        
-        setSize(400, 400);
+
         setExtendedState(Frame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setVisible(true);

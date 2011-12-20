@@ -1,44 +1,52 @@
 package org.munta.gui;
 
-import java.util.Iterator;
-import java.util.LinkedList;
+import javax.swing.AbstractListModel;
 import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
 import org.munta.model.Entity;
 import org.munta.model.EntityCollection;
-import org.munta.projectengine.ProjectManager;
+import org.munta.utils.CollectionChangedListener;
 
-public class EntityViewModel implements ListModel {
+public class EntityViewModel
+        extends AbstractListModel
+        implements ListModel, CollectionChangedListener {
 
-    private EntityCollection entities = ProjectManager.getInstance().getCollectionOfEntities();
-    private LinkedList<Entity> list = new LinkedList<Entity>();
-    private Iterator<Entity> iterator = entities.iterator();
+    private EntityCollection entities;
+    private CollectionView<EntityCollection> entitiesView;
     
-    private LinkedList<ListDataListener> listeners = new LinkedList<ListDataListener>();
+    public EntityViewModel(EntityCollection entities) {
+        this.entities = entities;
+        entitiesView = new CollectionView<EntityCollection>(entities);
+    }
+    
+    public void dispose() {
+        entities.removeCollectionChangedListener(this);
+    }
     
     @Override
     public int getSize() {
-        return entities.size();
+        return entitiesView.size();
     }
 
-    
     @Override
     public Object getElementAt(int i) {
-        while(i >= list.size()) {
-            if(!iterator.hasNext()) throw new IndexOutOfBoundsException();
-            list.add(iterator.next());
-        }
-        return list.get(i);
-    }
-
-    @Override
-    public void addListDataListener(ListDataListener ll) {
-        listeners.add(ll);
-    }
-
-    @Override
-    public void removeListDataListener(ListDataListener ll) {
-        listeners.remove(ll);
+        return entitiesView.getAt(i);
     }
     
+    public Entity getEntityAt(int i) {
+        return (Entity)entitiesView.getAt(i);
+    }
+
+    @Override
+    public void elementAdded(Object o) {
+        int size = getSize();
+        entitiesView.updateView();
+        fireIntervalAdded(this, 1, 1);
+    }
+
+    @Override
+    public void elementRemoved(Object o) {
+        int size = getSize();
+        entitiesView.updateView();
+        fireIntervalAdded(this, size-1, size-1);
+    }
 }
