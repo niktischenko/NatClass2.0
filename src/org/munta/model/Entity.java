@@ -21,6 +21,15 @@ public class Entity implements Serializable {
         attributes = new AttributeCollection();
     }
 
+    public boolean checkAttribute(Attribute attribute) {
+        for (Attribute attr : attributes) {
+            if (attr.equals(attribute)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public AttributeCollection getAttributes() {
         return attributes;
     }

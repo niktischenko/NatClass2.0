@@ -50,7 +50,7 @@ public class NatClassApp {
         System.out.println(e);
         System.out.println(r);
 
-        ProjectManager manager = new ProjectManager();
+        ProjectManager manager = ProjectManager.getInstance();
         manager.getCollectionOfEntities().add(e);
         manager.getCollectionOfRegularities().put("Hello", r);
         manager.saveAsProject("/tmp/tmp/test7.zip");
