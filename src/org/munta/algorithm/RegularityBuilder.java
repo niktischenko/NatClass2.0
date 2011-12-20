@@ -7,6 +7,7 @@ import org.munta.model.Entity;
 import org.munta.model.EntityCollection;
 import org.munta.model.Regularity;
 import org.munta.model.RegularityCollection;
+import org.munta.projectengine.ProjectManager;
 
 public class RegularityBuilder {
     
@@ -41,12 +42,15 @@ public class RegularityBuilder {
                 set.put(attr.getName(), attr);
             }
             
-            if(false /*Check criteria*/) {
+            Regularity r = new Regularity();
+            r.setTarget(target);
+            r.getConditions().addAll(set.values());
+            
+            ProbabilityMatrix matrix = ProbabilityMatrix.build(r, storedEntities);
+            
+            if(matrix.probability() >= ProjectManager.getInstance().getGlobalProperties().getProbabilityThreshold()) {
                 fillRegularitiesImpl(target, set, regularities);
             } else {
-                Regularity r = new Regularity();
-                r.setTarget(target);
-                r.getConditions().addAll(set.values());
                 regularities.add(r);
             }
         }

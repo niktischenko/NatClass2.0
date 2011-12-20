@@ -10,9 +10,17 @@ public class GlobalProperties implements Serializable {
     /// Block 1 end
     
     /// Block 2 start
-    public int mytest = 9999;
+    private double probabilityThreshold;
+    public double getProbabilityThreshold() {
+        return probabilityThreshold;
+    }
     /// Block 2 end
 
+    public GlobalProperties() {
+        clear();
+    }
+    
     public void clear() {
+        probabilityThreshold = 0.8;
     }
 }
