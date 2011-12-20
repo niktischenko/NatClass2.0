@@ -37,7 +37,15 @@ public final class ProjectManager {
     private ProjectFile projectFile;
     private Boolean isDirty = false;
 
-    public ProjectManager() {
+    private static ProjectManager projectManager = null;
+    public static ProjectManager getInstance() {
+        if(projectManager == null) {
+            projectManager = new ProjectManager();
+        }
+        return projectManager;
+    }
+    
+    private ProjectManager() {
         collectionOfEntities = new EntityCollection();
         collectionOfRegularities = new RegularityCollection();
         collectionOfIdealClasses = new EntityCollection();
