@@ -3,7 +3,7 @@ package org.munta.model;
 import java.io.Serializable;
 import java.util.HashSet;
 
-public class EntitiesCollection
+public class EntityCollection
         extends HashSet<Entity>
         implements Serializable {
 

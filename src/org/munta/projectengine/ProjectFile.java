@@ -1,5 +1,8 @@
 package org.munta.projectengine;
 
+import org.munta.projectengine.serializer.SerializerException;
+import org.munta.projectengine.serializer.ObjectSerializer;
+import org.munta.projectengine.serializer.IProjectSerializer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,6 +13,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import org.munta.projectengine.serializer.ProjectSerializerFactory;
 
 class ProjectFile {
 
@@ -22,7 +26,7 @@ class ProjectFile {
         if (cachedSerializers.containsKey(objectClass)) {
             serializer = cachedSerializers.get(objectClass);
         } else {
-            serializer = new ObjectSerializer();
+            serializer = ProjectSerializerFactory.createSerializer(objectClass);
             //serializer = new JABXSerializer(objectClass);
             //serializer = new XStreamSerializer(objectClass);
             cachedSerializers.put(objectClass, serializer);

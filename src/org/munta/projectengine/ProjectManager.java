@@ -3,7 +3,7 @@ package org.munta.projectengine;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.munta.model.EntitiesCollection;
+import org.munta.model.EntityCollection;
 import org.munta.model.GlobalProperties;
 import org.munta.model.RegularityCollection;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -15,16 +15,16 @@ public final class ProjectManager {
     public static final String FILENAME_CLASSES = "classes.xml";
     public static final String FILENAME_PROPERTIES = "properties.xml";
     
-    private EntitiesCollection collectionOfEntities;
+    private EntityCollection collectionOfEntities;
     private RegularityCollection collectionOfRegularities;
-    private EntitiesCollection collectionOfIdealClasses;
+    private EntityCollection collectionOfIdealClasses;
     private GlobalProperties globalProperties;
 
-    public EntitiesCollection getCollectionOfEntities() {
+    public EntityCollection getCollectionOfEntities() {
         return collectionOfEntities;
     }
 
-    public EntitiesCollection getCollectionOfIdealClasses() {
+    public EntityCollection getCollectionOfIdealClasses() {
         return collectionOfIdealClasses;
     }
 
@@ -40,9 +40,9 @@ public final class ProjectManager {
     private Boolean isDirty = false;
 
     public ProjectManager() {
-        collectionOfEntities = new EntitiesCollection();
+        collectionOfEntities = new EntityCollection();
         collectionOfRegularities = new RegularityCollection();
-        collectionOfIdealClasses = new EntitiesCollection();
+        collectionOfIdealClasses = new EntityCollection();
         globalProperties = new GlobalProperties();
 
         newProject();
@@ -88,9 +88,9 @@ public final class ProjectManager {
     public Boolean loadProject(String filename) {
         if (projectFile.isOnFileSystem()) {
             try {
-                collectionOfEntities = (EntitiesCollection) projectFile.getProjectObject(FILENAME_ENTITIES);
+                collectionOfEntities = (EntityCollection) projectFile.getProjectObject(FILENAME_ENTITIES);
                 collectionOfRegularities = (RegularityCollection) projectFile.getProjectObject(FILENAME_REGULARITIES);
-                collectionOfIdealClasses = (EntitiesCollection) projectFile.getProjectObject(FILENAME_CLASSES);
+                collectionOfIdealClasses = (EntityCollection) projectFile.getProjectObject(FILENAME_CLASSES);
                 globalProperties = (GlobalProperties) projectFile.getProjectObject(FILENAME_PROPERTIES);
             } catch (IOException ex) {
                 Logger.getLogger(ProjectManager.class.getName()).log(Level.SEVERE, null, ex);
