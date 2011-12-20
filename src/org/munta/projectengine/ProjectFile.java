@@ -59,6 +59,9 @@ class ProjectFile {
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
 
         for (ProjectObjectWithIdentifier identifier : identifiers) {
+            if (null == identifier) {
+                continue;
+            }
             Class objectClass = identifier.getProjectObject().getClass();
             IProjectSerializer serializer;
             try {
@@ -87,14 +90,15 @@ class ProjectFile {
         ZipInputStream zif = new ZipInputStream(new FileInputStream(filename));
         ZipEntry zipEntry;
         while ((zipEntry = zif.getNextEntry()) != null) {
-            if(!zipEntry.getName().equals(identifier))
+            if (!zipEntry.getName().equals(identifier)) {
                 continue;
-            
+            }
+
             Class objectClass = null;
             try {
                 objectClass = Class.forName(new String(zipEntry.getExtra(), utf8));
                 IProjectSerializer serializer = getCachedSerializer(objectClass);
-                
+
                 return serializer.deserializeProjectObject(zif);
             } catch (ClassNotFoundException ex) {
                 continue;
