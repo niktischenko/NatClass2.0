@@ -22,8 +22,9 @@ class ProjectFile {
         if (cachedSerializers.containsKey(objectClass)) {
             serializer = cachedSerializers.get(objectClass);
         } else {
-            serializer = new JABXSerializer(objectClass);
-            //serializer = new PrivateSerializer(objectClass);
+            serializer = new ObjectSerializer();
+            //serializer = new JABXSerializer(objectClass);
+            //serializer = new XStreamSerializer(objectClass);
             cachedSerializers.put(objectClass, serializer);
         }
         return serializer;

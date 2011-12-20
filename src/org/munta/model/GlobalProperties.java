@@ -1,11 +1,11 @@
 package org.munta.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
-@XmlRootElement
-public class GlobalProperties {
+public class GlobalProperties implements Serializable {
+
     public int test = 1123;
+
     public void clear() {
-        
     }
 }

@@ -49,13 +49,13 @@ public class NatClassApp {
         ProjectManager manager = new ProjectManager();
         manager.getCollectionOfEntities().add(e);
         manager.getCollectionOfRegularities().put("Hello", r);
-        manager.saveAsProject("/tmp/test5.zip");
+        manager.saveAsProject("/tmp/test7.zip");
         
         org.munta.projectengine.IProjectSerializer s;
         try {
-            s = new JABXSerializer(manager.getCollectionOfEntities().getClass());
+            s = new JABXSerializer(r.getConditions().getClass());
             java.io.FileOutputStream fos = new FileOutputStream("/tmp/fos.xml");
-            s.serializeProjectObject(manager.getCollectionOfEntities(), fos);
+            s.serializeProjectObject(r.getConditions(), fos);
         } catch (Exception ex) {
             Logger.getLogger(NatClassApp.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -1,6 +1,5 @@
 package org.munta.projectengine;
 
-import org.munta.projectengine.SerializerException;
 import java.io.InputStream;
 import java.io.OutputStream;
 

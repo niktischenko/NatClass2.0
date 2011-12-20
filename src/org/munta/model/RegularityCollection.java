@@ -1,20 +1,20 @@
 package org.munta.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
-import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement
-public class RegularityCollection extends HashMap<String, Regularity> {
+public class RegularityCollection
+        extends HashMap<String, Regularity>
+        implements Serializable {
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("[\n");
-        for(String regularityName : this.keySet()) {
+        for (String regularityName : this.keySet()) {
             sb.append(this.get(regularityName).toString());
         }
         sb.append("\n]");
         return sb.toString();
     }
-    
 }

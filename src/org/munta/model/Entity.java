@@ -1,12 +1,9 @@
 package org.munta.model;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
-@XmlRootElement
-public class Entity {
+public class Entity implements Serializable {
+    
     private String name;
     private AttributeCollection attributes;
     
@@ -19,8 +16,6 @@ public class Entity {
         attributes = new AttributeCollection();
     }
     
-    @XmlElement(name="Attribute")
-    @XmlElementWrapper(name="Attributes")
     public AttributeCollection getAttributes() {
         return attributes;
     }
@@ -30,7 +25,6 @@ public class Entity {
         this.attributes.addAll(attributes);
     }
 
-    @XmlAttribute
     public String getName() {
         return name;
     }

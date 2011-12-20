@@ -1,9 +1,8 @@
 package org.munta.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import java.io.Serializable;
 
-@XmlRootElement
-public class Regularity {
+public class Regularity implements Serializable {
 
     private AttributeCollection conditions;
     private AttributeCollection context;

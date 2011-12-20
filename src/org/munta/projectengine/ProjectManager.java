@@ -55,9 +55,9 @@ public final class ProjectManager {
     public void newProject() {
         projectFile = new ProjectFile();
 
-        collectionOfEntities.clear();
-        collectionOfRegularities.clear();
-        collectionOfIdealClasses.clear();
+        getCollectionOfEntities().clear();
+        getCollectionOfRegularities().clear();
+        getCollectionOfIdealClasses().clear();
         globalProperties.clear();
         isDirty = true;
     }
@@ -70,7 +70,7 @@ public final class ProjectManager {
                         new ProjectObjectWithIdentifier(collectionOfRegularities, FILENAME_REGULARITIES),
                         new ProjectObjectWithIdentifier(collectionOfIdealClasses, FILENAME_CLASSES),
                         new ProjectObjectWithIdentifier(globalProperties, FILENAME_PROPERTIES));
-                
+
                 isDirty = true;
                 return true;
             } catch (IOException ex) {
@@ -95,7 +95,7 @@ public final class ProjectManager {
             } catch (IOException ex) {
                 Logger.getLogger(ProjectManager.class.getName()).log(Level.SEVERE, null, ex);
             }
-                    
+
             isDirty = true;
             return true;
         }
