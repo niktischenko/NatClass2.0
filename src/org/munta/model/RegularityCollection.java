@@ -7,6 +7,13 @@ public class RegularityCollection
         extends HashMap<String, Regularity>
         implements Serializable {
 
+    public RegularityCollection() {
+    }
+
+    public RegularityCollection(RegularityCollection collection) {
+        super(collection);
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

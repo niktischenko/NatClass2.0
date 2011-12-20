@@ -7,6 +7,14 @@ public class AttributeCollection
         extends HashSet<Attribute>
         implements Serializable {
 
+    AttributeCollection(AttributeCollection attributes) {
+        super(attributes);
+    }
+
+    public AttributeCollection() {
+        super();
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

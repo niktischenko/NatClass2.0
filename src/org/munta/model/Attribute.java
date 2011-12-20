@@ -10,6 +10,10 @@ public class Attribute implements Serializable {
         this("", "");
     }
     
+    public Attribute(Attribute attribute) {
+        this(attribute.name, attribute.value);
+    }
+    
     public Attribute(String name, String value) {
         this.name = name;
         this.value = value;

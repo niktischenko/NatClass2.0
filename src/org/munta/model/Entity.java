@@ -3,23 +3,28 @@ package org.munta.model;
 import java.io.Serializable;
 
 public class Entity implements Serializable {
-    
+
     private String name;
     private AttributeCollection attributes;
-    
+
     public Entity() {
         this("");
     }
-    
+
+    public Entity(Entity entity) {
+        this.name = entity.name;
+        this.attributes = new AttributeCollection(entity.attributes);
+    }
+
     public Entity(String name) {
         this.name = name;
         attributes = new AttributeCollection();
     }
-    
+
     public AttributeCollection getAttributes() {
         return attributes;
     }
-    
+
     public void setAttributes(AttributeCollection attributes) {
         this.attributes.clear();
         this.attributes.addAll(attributes);
@@ -37,5 +42,5 @@ public class Entity implements Serializable {
     public String toString() {
         return String.format("%s: %s", name, attributes.toString());
     }
-    
+
 }

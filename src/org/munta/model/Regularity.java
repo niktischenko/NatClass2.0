@@ -14,6 +14,12 @@ public class Regularity implements Serializable {
         target = new Attribute();
     }
 
+    public Regularity(Regularity regularity) {
+        this.conditions = new AttributeCollection(regularity.conditions);
+        this.context = new AttributeCollection(regularity.context);
+        this.target = new Attribute(target);
+    }
+
     public AttributeCollection getContext() {
         return context;
     }

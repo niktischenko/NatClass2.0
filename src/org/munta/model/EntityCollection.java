@@ -7,6 +7,14 @@ public class EntityCollection
         extends HashSet<Entity>
         implements Serializable {
 
+    public EntityCollection(EntityCollection entities) {
+        super(entities);
+    }
+
+    public EntityCollection() {
+        super();
+    }
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
