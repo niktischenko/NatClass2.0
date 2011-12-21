@@ -41,6 +41,18 @@ public final class NatClassApp {
 
         frame = new MainFrame(this);
     }
+    
+    public Boolean openProject(String filePath) {
+        return ProjectManager.getInstance().loadProject(filePath);
+    }
+    
+    public Boolean saveAsProject(String filePath) {
+        return ProjectManager.getInstance().saveAsProject(filePath);
+    }
+    
+    public Boolean saveProject() {
+        return ProjectManager.getInstance().saveProject();
+    }
 
     public void exitApplication() {
 
@@ -64,14 +76,47 @@ public final class NatClassApp {
 
                         Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
                         synchronized (s) {
-                            Thread.sleep(10);
+                            Thread.sleep(1000);
+                            int count;
+                            int mode = (int) ((0.5 + Math.random() * 6) + 1);
 
-                            Entity e2 = new Entity("Object: " + (int) (Math.random() * Integer.MAX_VALUE));
-                            int count = (int) (Math.random() * 10);
-                            for (int i = 0; i < count; i++) {
-                                e2.getAttributes().add(new Attribute("Weight", "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                            if ((mode & 1) == 0 && (mode & 2) == 0 && (mode & 4) == 0) {
+                                break;
                             }
-                            ProjectManager.getInstance().getCollectionOfEntities().add(e2);
+                            
+                            if ((mode & 1) != 0) {
+                                Entity e1 = new Entity("Object: " + (int) (Math.random() * Integer.MAX_VALUE));
+                                count = (int) (Math.random() * 10);
+                                for (int i = 0; i < count; i++) {
+                                    e1.getAttributes().add(new Attribute("Height", "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                }
+                                ProjectManager.getInstance().getCollectionOfIdealClasses().add(e1);
+                            }
+
+                            if ((mode & 2) != 0) {
+                                Entity e2 = new Entity("Object: " + (int) (Math.random() * Integer.MAX_VALUE));
+                                count = (int) (Math.random() * 10);
+                                for (int i = 0; i < count; i++) {
+                                    e2.getAttributes().add(new Attribute("Weight", "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                }
+                                ProjectManager.getInstance().getCollectionOfEntities().add(e2);
+                            }
+
+                            if ((mode & 4) != 0) {
+                                Regularity r = new Regularity();
+                                r.setTarget(new Attribute("a" + (int) (Math.random() * Integer.MAX_VALUE), "" + (int) (Math.random() * Integer.MAX_VALUE)));
+
+                                count = (int) (Math.random() * 10);
+                                for (int i = 0; i < count; i++) {
+                                    r.getConditions().add(new Attribute("a" + (int) (Math.random() * Integer.MAX_VALUE), "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                }
+
+                                count = (int) (Math.random() * 10);
+                                for (int i = 0; i < count; i++) {
+                                    r.getContext().add(new Attribute("a" + (int) (Math.random() * Integer.MAX_VALUE), "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                }
+                                ProjectManager.getInstance().getCollectionOfRegularities().add(r);
+                            }
                         }
                     } catch (InterruptedException ex) {
                         break;

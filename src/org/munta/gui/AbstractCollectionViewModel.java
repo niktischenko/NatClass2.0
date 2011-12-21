@@ -14,7 +14,6 @@ public abstract class AbstractCollectionViewModel<E>
         extends AbstractListModel
         implements ListModel, CollectionChangedListener {
 
-    private final Object _this = this;
     private final List<E> list;
     private Timer updateTimer;
     private TimerTask listUpdateTask;
@@ -35,11 +34,11 @@ public abstract class AbstractCollectionViewModel<E>
                     switch (action) {
                         case 1:
                             visible_size = list.size();
-                            fireIntervalAdded(_this, i0, i1);
+                            fireIntervalAdded(AbstractCollectionViewModel.this, i0, i1);
                             break;
                         case 2:
                             visible_size = list.size();
-                            fireIntervalRemoved(_this, i0, i1);
+                            fireIntervalRemoved(AbstractCollectionViewModel.this, i0, i1);
                             break;
                         default:
                             return;

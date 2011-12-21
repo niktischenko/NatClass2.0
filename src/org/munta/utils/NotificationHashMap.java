@@ -1,15 +1,43 @@
 package org.munta.utils;
 
+import java.util.Map.Entry;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class NotificationHashMap<K, V> extends HashMap<K, V> {
-    private Set<MapChangedListener> listeners;
+    
+    private class EntryImpl<K, V> implements Entry<K, V> {
+
+        private K key;
+        private V value;
+        
+        public EntryImpl(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public K getKey() {
+            return key;
+        }
+
+        @Override
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public V setValue(V v) {
+            return this.value = v;
+        }
+    }
+    
+    private Set<CollectionChangedListener> listeners;
     
     public NotificationHashMap() {
-        listeners = new HashSet<MapChangedListener>();
+        listeners = new HashSet<CollectionChangedListener>();
     }
     
     public NotificationHashMap(Map<K, V> map) {
@@ -18,13 +46,13 @@ public class NotificationHashMap<K, V> extends HashMap<K, V> {
     }
     
     private void fireElementAdded(Object key, Object value) {
-        for(MapChangedListener listener : listeners) {
-            listener.elementAdded(key, value);
+        for(CollectionChangedListener listener : listeners) {
+            listener.elementAdded(new EntryImpl<Object, Object>(key, value));
         }
     }
     
     private void fireElementRemoved(Object e) {
-        for(MapChangedListener listener : listeners) {
+        for(CollectionChangedListener listener : listeners) {
             listener.elementRemoved(e);
         }
     }
@@ -47,11 +75,11 @@ public class NotificationHashMap<K, V> extends HashMap<K, V> {
         return super.remove(o);
     }
     
-    public void addMapChangedListener(MapChangedListener mcl) {
+    public void addCollectionChangedListener(CollectionChangedListener mcl) {
         listeners.add(mcl);
     }
     
-    public void remoteMapChangedListener(MapChangedListener mcl) {
+    public void removeCollectionChangedListener(CollectionChangedListener mcl) {
         listeners.remove(mcl);
     }
     

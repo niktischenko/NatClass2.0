@@ -11,6 +11,6 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
 
     @Override
     public Object getElementAt(int i) {
-        return getModelObjectAt(i);
+        return getModelObjectAt(i).getName();
     }
 }
