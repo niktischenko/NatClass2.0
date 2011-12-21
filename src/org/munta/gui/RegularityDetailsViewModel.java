@@ -35,6 +35,9 @@ public class RegularityDetailsViewModel
         this.elementRemoved(null);
         runUpdate();
 
+        if(index == -1)
+            return;
+            
         Regularity r = regularityViewModel.getModelObjectAt(index).getValue();
         
         this.elementAdded("Target attribute:");

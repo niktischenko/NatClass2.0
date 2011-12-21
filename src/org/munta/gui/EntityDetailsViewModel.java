@@ -35,6 +35,9 @@ public class EntityDetailsViewModel
 
         this.elementRemoved(null);
         runUpdate();
+        
+        if(index == -1)
+            return;
 
         Entity e = entityViewModel.getModelObjectAt(index);
         

@@ -176,7 +176,7 @@ public class MainFrame extends JFrame {
         initMenuBar();
         initPanels();
 
-        setExtendedState(Frame.MAXIMIZED_BOTH);
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
         setLocationRelativeTo(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
