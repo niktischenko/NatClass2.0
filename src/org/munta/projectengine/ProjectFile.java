@@ -82,24 +82,24 @@ class ProjectFile {
         return true;
     }
 
-    public Object getProjectObject(String identifier) throws IOException {
-        if (!isOnFileSystem() || (new File(filename)).canRead()) {
+    public Map<String, Object> getProjectObjects() throws IOException {
+        if (!isOnFileSystem() || !(new File(filename)).canRead()) {
             return null;
         }
+
+        Map<String, Object> map = new HashMap<String, Object>();
 
         ZipInputStream zif = new ZipInputStream(new FileInputStream(filename));
         ZipEntry zipEntry;
         while ((zipEntry = zif.getNextEntry()) != null) {
-            if (!zipEntry.getName().equals(identifier)) {
-                continue;
-            }
 
             Class objectClass = null;
             try {
                 objectClass = Class.forName(new String(zipEntry.getExtra(), utf8));
                 IProjectSerializer serializer = getCachedSerializer(objectClass);
 
-                return serializer.deserializeProjectObject(zif);
+                Object o = serializer.deserializeProjectObject(zif);
+                map.put(zipEntry.getName(), o);
             } catch (ClassNotFoundException ex) {
                 continue;
             } catch (SerializerException ex) {
