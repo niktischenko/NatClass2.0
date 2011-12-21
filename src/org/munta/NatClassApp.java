@@ -13,6 +13,7 @@ import org.munta.projectengine.ProjectManager;
 public final class NatClassApp {
 
     private MainFrame frame = null;
+    private Thread t;
 
     private NatClassApp() throws Exception {
 
@@ -42,6 +43,9 @@ public final class NatClassApp {
     }
 
     public void exitApplication() {
+
+        t.interrupt();
+
         if (frame != null) {
             frame.dispose();
             frame = null;
@@ -51,19 +55,22 @@ public final class NatClassApp {
     private void run(String[] args) {
         frame.setVisible(true);
 
-        new Thread(new Runnable() {
+        t = new Thread(new Runnable() {
 
             @Override
             public void run() {
                 while (true) {
                     try {
-                        
-                        Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
-                        synchronized(s) {
-                            Thread.sleep(1000);
 
-                            Entity e2 = new Entity("Object: " + Math.random() * Integer.MAX_VALUE);
-                            e2.getAttributes().add(new Attribute("Weight", "15"));
+                        Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
+                        synchronized (s) {
+                            Thread.sleep(10);
+
+                            Entity e2 = new Entity("Object: " + (int) (Math.random() * Integer.MAX_VALUE));
+                            int count = (int) (Math.random() * 10);
+                            for (int i = 0; i < count; i++) {
+                                e2.getAttributes().add(new Attribute("Weight", "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                            }
                             ProjectManager.getInstance().getCollectionOfEntities().add(e2);
                         }
                     } catch (InterruptedException ex) {
@@ -71,7 +78,9 @@ public final class NatClassApp {
                     }
                 }
             }
-        }).start();
+        });
+
+        t.start();
     }
 
     /**

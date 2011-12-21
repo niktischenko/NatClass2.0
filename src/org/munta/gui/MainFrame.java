@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,9 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import org.munta.NatClassApp;
 import org.munta.projectengine.ProjectManager;
 
@@ -19,7 +23,9 @@ public class MainFrame extends JFrame {
 
     private NatClassApp app;
     private EntityViewModel entityViewModel = null;
-    private EntityAttributesViewModel entityAttributeViewModel = null;
+    private EntityDetailsViewModel entityDetailsViewModel = null;
+    private AbstractCollectionViewModel regularityViewModel = null;
+    private EntityAttributesViewModel regularityDetailsViewModel = null;
     
     private ActionListener exitActionListener = new ActionListener() {
         @Override
@@ -54,27 +60,48 @@ public class MainFrame extends JFrame {
     
     private void initPanels() {
         entityViewModel = new EntityViewModel(ProjectManager.getInstance().getCollectionOfEntities());
-        entityAttributeViewModel = new EntityAttributesViewModel(entityViewModel);
+        entityDetailsViewModel = new EntityDetailsViewModel(entityViewModel);
+        
+        regularityViewModel = new RegularityViewModel(ProjectManager.getInstance().getCollectionOfRegularities());
+        //regularityDetailsViewModel = new EntityAttributesViewModel(regularityViewModel);
         
         ProjectManager.getInstance().getCollectionOfEntities().addCollectionChangedListener(entityViewModel);
         
         JList entityList = new JList();
         entityList.setModel(entityViewModel);
-        JList entityAttributeList = new JList();
-        entityAttributeList.setModel(entityAttributeViewModel);
+        JList entityDetailsList = new JList();
+        entityDetailsList.setModel(entityDetailsViewModel);
+        entityList.addListSelectionListener(entityDetailsViewModel);
         
-        entityList.addListSelectionListener(entityAttributeViewModel);
+        JPanel entitiesPanel = new JPanel();
+        entitiesPanel.setLayout(new GridLayout(1, 2));
+        entitiesPanel.add(new JScrollPane(entityList));
+        entitiesPanel.add(new JScrollPane(entityDetailsList));
         
-        Container contentPane = getContentPane();
-        contentPane.setLayout(new BorderLayout());
+        JList regularitiesList = new JList();
+        regularitiesList.setModel(regularityViewModel);
+        JList regularitiesDetailsList = new JList();
         
-        contentPane.add(entityList, BorderLayout.LINE_START);
-        contentPane.add(entityAttributeList, BorderLayout.LINE_END);
+        JPanel regularitiesPanel = new JPanel();
+        regularitiesPanel.setLayout(new GridLayout(1, 2));
+        regularitiesPanel.add(new JScrollPane(regularitiesList));
+        regularitiesPanel.add(new JScrollPane(regularitiesDetailsList));
+        
+        JPanel classesPanel = new JPanel();
+        
+        JSplitPane innerSplitPane =
+                new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, regularitiesPanel, classesPanel);
+        
+        JSplitPane outerSplitPane =
+                new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, entitiesPanel, innerSplitPane);
+        
+        add(outerSplitPane);
     }
 
     @Override
     public void dispose() {
         entityViewModel.dispose();
+        ProjectManager.getInstance().getCollectionOfEntities().removeCollectionChangedListener(entityViewModel);
         super.dispose();
     }
     

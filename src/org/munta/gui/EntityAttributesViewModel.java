@@ -1,44 +1,33 @@
 package org.munta.gui;
 
+import java.util.LinkedList;
+import java.util.List;
 import javax.swing.AbstractListModel;
 import javax.swing.JList;
-import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.munta.model.AttributeCollection;
 import org.munta.model.Entity;
-import org.munta.model.EntityCollection;
-import org.munta.projectengine.ProjectManager;
 
 public class EntityAttributesViewModel
         extends AbstractListModel
         implements ListSelectionListener {
 
-    private EntityViewModel entityViewModel;
+    private AbstractCollectionViewModel entityViewModel;
+    private List<Object> list;
     
-    private AttributeCollection attributes;
-    private CollectionView<AttributeCollection> attributesView;
-    
-    public EntityAttributesViewModel(EntityViewModel entityViewModel) {
+    public EntityAttributesViewModel(AbstractCollectionViewModel entityViewModel) {
         this.entityViewModel = entityViewModel;
-        attributes = new AttributeCollection();
-        updateView(attributes);
-    }
-    
-    private void updateView(AttributeCollection attributes) {
-        this.attributesView = new CollectionView<AttributeCollection>(attributes);
+        list = new LinkedList<Object>();
     }
     
     @Override
     public int getSize() {
-        return attributesView.size();
+        return list.size();
     }
 
     @Override
     public Object getElementAt(int i) {
-        return attributesView.getAt(i);
+        return list.get(i);
     }
 
     @Override
@@ -53,8 +42,8 @@ public class EntityAttributesViewModel
         int index = jList.getSelectedIndex();
         
         int oldSize = getSize();
-        attributes = entityViewModel.getEntityAt(index).getAttributes();
-        updateView(attributes);
+        list.clear();
+        list.addAll(((Entity)entityViewModel.getModelObjectAt(index)).getAttributes());
         fireContentsChanged(this, 0, oldSize);
     }
 }
