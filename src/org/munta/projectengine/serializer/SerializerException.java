@@ -5,7 +5,7 @@ public class SerializerException extends Exception {
         super("Serialization exception", innerException);
     }
 
-    SerializerException(String message) {
+    public SerializerException(String message) {
         super(message);
     }
 }

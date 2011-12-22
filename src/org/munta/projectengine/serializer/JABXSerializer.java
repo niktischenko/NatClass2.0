@@ -1,6 +1,5 @@
 package org.munta.projectengine.serializer;
 
-import org.munta.projectengine.serializer.IProjectSerializer;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
@@ -44,5 +43,10 @@ public final class JABXSerializer implements IProjectSerializer {
             Logger.getLogger(JABXSerializer.class.getName()).log(Level.SEVERE, null, ex);
             throw new SerializerException(ex);
         }
+    }
+
+    @Override
+    public IMapper getMapper() {
+        return new MapperStub();
     }
 }

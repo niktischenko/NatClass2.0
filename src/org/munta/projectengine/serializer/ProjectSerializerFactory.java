@@ -1,11 +1,13 @@
 package org.munta.projectengine.serializer;
 
+import org.munta.projectengine.serializer.xml.XMLSerializer;
+
 public class ProjectSerializerFactory {
     public static final int TYPE_XML = 0;
     public static final int TYPE_BINARY = 1;
     
     public static IProjectSerializer createSerializer(Class objectType) throws SerializerException {
-        return new ObjectSerializer();
+        return createSerializer(objectType, TYPE_XML);
     }
     
     public static IProjectSerializer createSerializer(Class objectType, int type) throws SerializerException {
@@ -13,7 +15,7 @@ public class ProjectSerializerFactory {
             case ProjectSerializerFactory.TYPE_BINARY:
                 return new ObjectSerializer();
             case ProjectSerializerFactory.TYPE_XML:
-                return new JABXSerializer(objectType);
+                return new XMLSerializer();
             default:
                 throw new SerializerException("Unknown serializer type");
         }
