@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import org.munta.gui.MainFrame;
 import org.munta.model.Attribute;
 import org.munta.model.Entity;
@@ -30,28 +29,6 @@ public final class NatClassApp {
     }
 
     private NatClassApp() throws Exception {
-
-        Entity e = new Entity("Object1");
-        e.getAttributes().add(new Attribute("Color", "Green"));
-        e.getAttributes().add(new Attribute("Color", "Red"));
-        e.getAttributes().add(new Attribute("Color", "Test"));
-        e.getAttributes().add(new Attribute("Color", "Black"));
-
-        Entity e2 = new Entity("Object2");
-        e2.getAttributes().add(new Attribute("Weight", "15"));
-        e2.getAttributes().add(new Attribute("Color", "Black"));
-
-        Regularity r = new Regularity();
-        r.setTarget(new Attribute("Height", "10"));
-        r.getConditions().add(new Attribute("Weight", "5"));
-        r.getConditions().add(new Attribute("Weight2", "5"));
-        r.getContext().add(new Attribute());
-
-        ProjectManager.getInstance().getCollectionOfEntities().add(e);
-        ProjectManager.getInstance().getCollectionOfEntities().add(e2);
-        ProjectManager.getInstance().getCollectionOfRegularities().add(r);
-
-        String os = System.getProperty("os.name");
         if (isMac()) {
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("com.apple.macos.useScreenMenuBar", "true");
@@ -102,9 +79,9 @@ public final class NatClassApp {
 
             @Override
             public void run() {
-                while (true) {
+                int c = 20000;
+                while (c > 0) {
                     try {
-
                         Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
                         synchronized (s) {
                             Thread.sleep(100);
@@ -116,37 +93,38 @@ public final class NatClassApp {
                             }
 
                             if ((mode & 1) != 0) {
-                                Entity e1 = new Entity("Object: " + (int) (Math.random() * Integer.MAX_VALUE));
-                                count = (int) (Math.random() * 10);
+                                Entity e1 = new Entity("Object: " + (int) (Math.random() * 10));
+                                count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count; i++) {
-                                    e1.getAttributes().add(new Attribute("Height", "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                    e1.getAttributes().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
                                 }
                                 ProjectManager.getInstance().getCollectionOfIdealClasses().add(e1);
                             }
 
                             if ((mode & 2) != 0) {
-                                Entity e2 = new Entity("Object: " + (int) (Math.random() * Integer.MAX_VALUE));
-                                count = (int) (Math.random() * 10);
+                                Entity e2 = new Entity("Object: " + (int) (Math.random() * 10));
+                                count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count; i++) {
-                                    e2.getAttributes().add(new Attribute("Weight", "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                    e2.getAttributes().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
                                 }
                                 ProjectManager.getInstance().getCollectionOfEntities().add(e2);
                             }
 
                             if ((mode & 4) != 0) {
                                 Regularity r = new Regularity();
-                                r.setTarget(new Attribute("a" + (int) (Math.random() * Integer.MAX_VALUE), "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                r.setTarget(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
 
-                                count = (int) (Math.random() * 10);
+                                count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count; i++) {
-                                    r.getConditions().add(new Attribute("a" + (int) (Math.random() * Integer.MAX_VALUE), "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                    r.getConditions().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
                                 }
 
-                                count = (int) (Math.random() * 10);
+                                count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count; i++) {
-                                    r.getContext().add(new Attribute("a" + (int) (Math.random() * Integer.MAX_VALUE), "" + (int) (Math.random() * Integer.MAX_VALUE)));
+                                    r.getContext().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
                                 }
                                 ProjectManager.getInstance().getCollectionOfRegularities().add(r);
+                                c--;
                             }
                         }
                     } catch (InterruptedException ex) {

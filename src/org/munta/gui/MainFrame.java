@@ -7,8 +7,10 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.Map.Entry;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,22 +20,36 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
 import org.munta.NatClassApp;
+import org.munta.model.Entity;
+import org.munta.model.Regularity;
 import org.munta.projectengine.ProjectManager;
 
 public class MainFrame extends JFrame {
 
     private NatClassApp app;
+    //List models
     private EntityViewModel entityViewModel = null;
     private EntityDetailsViewModel entityDetailsViewModel = null;
     private RegularityViewModel regularityViewModel = null;
     private RegularityDetailsViewModel regularityDetailsViewModel = null;
     private EntityViewModel classViewModel = null;
     private EntityDetailsViewModel classDetailsViewModel = null;
+    private AnalysisColorer colorer;
+    // Lists
+    private JList entityList;
+    private JList entityDetailsList;
+    private JList regularityList;
+    private JList regularityDetailsList;
+    private JList classList;
+    private JList classDetailsList;
+    // FileDialog
     private FileDialog fileDialog;
+    // Actions
     private Action exitAction = new AbstractAction("Exit") {
 
         @Override
@@ -56,13 +72,14 @@ public class MainFrame extends JFrame {
             //if (rVal == JFileChooser.APPROVE_OPTION) {
             //    app.openProject(fileChooser.getSelectedFile().getAbsolutePath());
             //}
-            
+
             fileDialog.setMode(FileDialog.LOAD);
             fileDialog.setVisible(true);
-            
-            if(fileDialog.getFile() == null || fileDialog.getFile().isEmpty())
+
+            if (fileDialog.getFile() == null || fileDialog.getFile().isEmpty()) {
                 return;
-            
+            }
+
             app.openProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
         }
     };
@@ -76,11 +93,45 @@ public class MainFrame extends JFrame {
             //}
             fileDialog.setMode(FileDialog.SAVE);
             fileDialog.setVisible(true);
+
+            if (fileDialog.getFile() == null || fileDialog.getFile().isEmpty()) {
+                return;
+            }
+
+            app.saveAsProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
+        }
+    };
+    private Action setOverviewModelAction = new AbstractAction("Overview") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            colorer.setOverviewMode();
+        }
+    };
+    private Action setEntityAnalysisModelAction = new AbstractAction("Object Analysis") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
             
-            if(fileDialog.getFile() == null || fileDialog.getFile().isEmpty())
+            int index = entityList.getSelectedIndex();
+            if(index == -1)
                 return;
             
-            app.saveAsProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
+            colorer.setEntityAnalysisMode((Entity)entityViewModel.getModelObjectAt(index));
+        }
+    };
+    
+    private Action setRegularityAnalysisModelAction = new AbstractAction("Regularity Analysis") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            
+            int index = regularityList.getSelectedIndex();
+            if(index == -1)
+                return;
+            
+            colorer.setRegularityAnalysisMode(
+                    ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
         }
     };
 
@@ -110,6 +161,7 @@ public class MainFrame extends JFrame {
 
     private void initMenuBar() {
         JMenuBar menuBar = new JMenuBar();
+
         JMenu fileMenu = new JMenu("File");
         JMenuItem newProjMenuItem = new JMenuItem();
         newProjMenuItem.setAction(newProjectAction);
@@ -127,15 +179,35 @@ public class MainFrame extends JFrame {
         fileMenu.add(importMenuItem);
         JMenuItem exportMenuItem = new JMenuItem("Export...");
         fileMenu.add(exportMenuItem);
-        
+
         if (!NatClassApp.isMac()) {
             fileMenu.addSeparator();
             JMenuItem exitMenuItem = new JMenuItem();
             exitMenuItem.setAction(exitAction);
             fileMenu.add(exitMenuItem);
         }
-        
         menuBar.add(fileMenu);
+
+        JMenu modeMenu = new JMenu("View");
+        JMenuItem overviewMenuItem = new JRadioButtonMenuItem();
+        overviewMenuItem.setAction(setOverviewModelAction);
+        modeMenu.add(overviewMenuItem);
+        JMenuItem a1MenuItem = new JRadioButtonMenuItem("Object analysis");
+        a1MenuItem.setAction(setEntityAnalysisModelAction);
+        modeMenu.add(a1MenuItem);
+        JMenuItem a2MenuItem = new JRadioButtonMenuItem("Regularity analysis");
+        a2MenuItem.setAction(setRegularityAnalysisModelAction);
+        modeMenu.add(a2MenuItem);
+        JMenuItem a3MenuItem = new JRadioButtonMenuItem("Analysys 3");
+        modeMenu.add(a3MenuItem);
+        menuBar.add(modeMenu);
+
+        ButtonGroup modeGroup = new ButtonGroup();
+        modeGroup.add(overviewMenuItem);
+        modeGroup.add(a1MenuItem);
+        modeGroup.add(a2MenuItem);
+        modeGroup.add(a3MenuItem);
+
         setJMenuBar(menuBar);
     }
 
@@ -174,22 +246,27 @@ public class MainFrame extends JFrame {
     }
 
     private void initPanels() {
-        entityViewModel = new EntityViewModel(ProjectManager.getInstance().getCollectionOfEntities());
-        entityDetailsViewModel = new EntityDetailsViewModel(entityViewModel);
+        colorer = new AnalysisColorer();
+        entityViewModel = new EntityViewModel(colorer, ProjectManager.getInstance().getCollectionOfEntities());
+        entityDetailsViewModel = new EntityDetailsViewModel(colorer, entityViewModel);
         ProjectManager.getInstance().getCollectionOfEntities().addCollectionChangedListener(entityViewModel);
 
-        regularityViewModel = new RegularityViewModel(ProjectManager.getInstance().getCollectionOfRegularities());
-        regularityDetailsViewModel = new RegularityDetailsViewModel(regularityViewModel);
+        regularityViewModel = new RegularityViewModel(colorer, ProjectManager.getInstance().getCollectionOfRegularities());
+        regularityDetailsViewModel = new RegularityDetailsViewModel(colorer, regularityViewModel);
         ProjectManager.getInstance().getCollectionOfRegularities().addCollectionChangedListener(regularityViewModel);
 
-        classViewModel = new EntityViewModel(ProjectManager.getInstance().getCollectionOfIdealClasses());
-        classDetailsViewModel = new EntityDetailsViewModel(classViewModel);
+        classViewModel = new EntityViewModel(colorer, ProjectManager.getInstance().getCollectionOfIdealClasses());
+        classDetailsViewModel = new EntityDetailsViewModel(colorer, classViewModel);
         ProjectManager.getInstance().getCollectionOfIdealClasses().addCollectionChangedListener(classViewModel);
 
+        CellRenderer cr = new CellRenderer();
+
         // Entity list and details
-        JList entityList = new JList();
+        entityList = new JList();
+        entityList.setCellRenderer(cr);
         entityList.setModel(entityViewModel);
-        JList entityDetailsList = new JList();
+        entityDetailsList = new JList();
+        entityDetailsList.setCellRenderer(cr);
         entityDetailsList.setModel(entityDetailsViewModel);
         entityList.addListSelectionListener(entityDetailsViewModel);
 
@@ -199,9 +276,11 @@ public class MainFrame extends JFrame {
         entityPanel.add(new JScrollPane(entityDetailsList));
 
         // Regularity list and details
-        JList regularityList = new JList();
+        regularityList = new JList();
+        regularityList.setCellRenderer(cr);
         regularityList.setModel(regularityViewModel);
-        JList regularityDetailsList = new JList();
+        regularityDetailsList = new JList();
+        regularityDetailsList.setCellRenderer(cr);
         regularityDetailsList.setModel(regularityDetailsViewModel);
         regularityList.addListSelectionListener(regularityDetailsViewModel);
 
@@ -211,9 +290,11 @@ public class MainFrame extends JFrame {
         regularityPanel.add(new JScrollPane(regularityDetailsList));
 
         // Classes list and details
-        JList classList = new JList();
+        classList = new JList();
+        classList.setCellRenderer(cr);
         classList.setModel(classViewModel);
-        JList classDetailsList = new JList();
+        classDetailsList = new JList();
+        classDetailsList.setCellRenderer(cr);
         classDetailsList.setModel(classDetailsViewModel);
         classList.addListSelectionListener(classDetailsViewModel);
 
@@ -264,12 +345,12 @@ public class MainFrame extends JFrame {
         initToolBar();
         initPanels();
 
-        setSize(800, 480);
         pack();
-        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        setSize(800, 480);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setVisible(true);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
     }
 }

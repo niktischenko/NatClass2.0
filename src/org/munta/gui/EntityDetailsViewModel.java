@@ -1,5 +1,6 @@
 package org.munta.gui;
 
+import java.awt.Color;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -10,15 +11,26 @@ public class EntityDetailsViewModel
         extends AbstractCollectionViewModel<Attribute>
         implements ListSelectionListener {
 
+    private AnalysisColorer colorer;
     private EntityViewModel entityViewModel;
 
-    public EntityDetailsViewModel(EntityViewModel entityViewModel) {
+    public EntityDetailsViewModel(AnalysisColorer colorer, EntityViewModel entityViewModel) {
+        super();
         this.entityViewModel = entityViewModel;
+        this.colorer = colorer;
     }
 
     @Override
     public Object getElementAt(int i) {
-        return getModelObjectAt(i);
+        
+        if(colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS) {
+            Attribute attr = getModelObjectAt(i);
+            if(colorer.getEntity().getAttributes().contains(attr) ) {
+                return new ListItem(colorer.getHighlightedColor(), getModelObjectAt(i).toString());
+            }
+        }
+        
+        return new ListItem(getModelObjectAt(i).toString());
     }
 
     @Override

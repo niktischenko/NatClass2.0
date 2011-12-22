@@ -9,10 +9,12 @@ public class RegularityDetailsViewModel
         extends AbstractCollectionViewModel<Regularity>
         implements ListSelectionListener {
 
+    private AnalysisColorer colorer;
     private RegularityViewModel regularityViewModel;
 
-    public RegularityDetailsViewModel(RegularityViewModel regularityViewModel) {
+    public RegularityDetailsViewModel(AnalysisColorer colorer, RegularityViewModel regularityViewModel) {
         this.regularityViewModel = regularityViewModel;
+        this.colorer = colorer;
     }
 
     @Override

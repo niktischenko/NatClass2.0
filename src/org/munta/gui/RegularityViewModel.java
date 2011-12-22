@@ -7,8 +7,11 @@ import org.munta.model.RegularityCollection;
 public class RegularityViewModel
         extends AbstractCollectionViewModel<Entry<String, Regularity>> {
 
-    public RegularityViewModel(RegularityCollection collection) {
+    private AnalysisColorer colorer;
+    
+    public RegularityViewModel(AnalysisColorer colorer, RegularityCollection collection) {
         super(collection);
+        this.colorer = colorer;
     }
 
     @Override
