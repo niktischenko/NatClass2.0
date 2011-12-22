@@ -1,44 +1,46 @@
 package org.munta.gui;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import javax.swing.ListModel;
-import javax.swing.event.ListDataListener;
+import java.awt.Color;
+import org.munta.model.Attribute;
 import org.munta.model.Entity;
 import org.munta.model.EntityCollection;
-import org.munta.projectengine.ProjectManager;
+import org.munta.model.Regularity;
 
-public class EntityViewModel implements ListModel {
+public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
 
-    private EntityCollection entities = ProjectManager.getInstance().getCollectionOfEntities();
-    private LinkedList<Entity> list = new LinkedList<Entity>();
-    private Iterator<Entity> iterator = entities.iterator();
+    private AnalysisColorer colorer;
     
-    private LinkedList<ListDataListener> listeners = new LinkedList<ListDataListener>();
-    
-    @Override
-    public int getSize() {
-        return entities.size();
+    public EntityViewModel(AnalysisColorer colorer, EntityCollection collection) {
+        super(collection);
+        this.colorer = colorer;
     }
 
-    
     @Override
     public Object getElementAt(int i) {
-        while(i >= list.size()) {
-            if(!iterator.hasNext()) throw new IndexOutOfBoundsException();
-            list.add(iterator.next());
+        
+        Entity e = getModelObjectAt(i);
+        if(colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS) {
+            if(e.getAttributes().equals(colorer.getEntity().getAttributes())) {
+                return new ListItem(colorer.getHighlightedColor(), getModelObjectAt(i).getName());
+            }
+        } else if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+            Regularity r = colorer.getRegularity();
+            for(Attribute attr : r.getConditions()) {
+                if(!e.getAttributes().contains(attr)) return null;
+            }
+            Color color = null;
+            for(Attribute attr : e.getAttributes()) {
+                if(attr.getName().equals(r.getTarget().getName()))
+                {
+                   if(attr.getValue().equals(r.getTarget().getValue())) {
+                       return new ListItem(colorer.getPositiveColor(), e.getName());
+                   } else {
+                       return new ListItem(colorer.getNegativeColor(), e.getName());
+                   }
+                }
+            }
         }
-        return list.get(i);
+        
+        return new ListItem(e.getName());
     }
-
-    @Override
-    public void addListDataListener(ListDataListener ll) {
-        listeners.add(ll);
-    }
-
-    @Override
-    public void removeListDataListener(ListDataListener ll) {
-        listeners.remove(ll);
-    }
-    
 }

@@ -1,12 +1,13 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import org.munta.projectengine.serializer.xml.XMLObject;
+import org.munta.utils.NotificationHashSet;
+
 
 @XMLObject(name="Entities", collection=true)
 public class EntityCollection
-        extends HashSet<Entity>
+        extends NotificationHashSet<Entity>
         implements Serializable {
 
     public EntityCollection(EntityCollection entities) {

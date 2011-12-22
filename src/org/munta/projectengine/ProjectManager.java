@@ -1,6 +1,7 @@
 package org.munta.projectengine;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.munta.model.EntityCollection;
@@ -36,15 +37,15 @@ public final class ProjectManager {
     }
     private ProjectFile projectFile;
     private Boolean isDirty = false;
-
     private static ProjectManager projectManager = null;
+
     public static ProjectManager getInstance() {
-        if(projectManager == null) {
+        if (projectManager == null) {
             projectManager = new ProjectManager();
         }
         return projectManager;
     }
-    
+
     private ProjectManager() {
         collectionOfEntities = new EntityCollection();
         collectionOfRegularities = new RegularityCollection();
@@ -79,7 +80,7 @@ public final class ProjectManager {
                     new ProjectObjectWithIdentifier(collectionOfIdealClasses, FILENAME_CLASSES),
                     new ProjectObjectWithIdentifier(globalProperties, FILENAME_PROPERTIES));
 
-            isDirty = true;
+            isDirty = false;
             return true;
         } catch (IOException ex) {
             Logger.getLogger(ProjectManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -93,21 +94,41 @@ public final class ProjectManager {
     }
 
     public Boolean loadProject(String filename) {
+        projectFile.setFilename(filename);
+
         if (!projectFile.isOnFileSystem()) {
             return false;
         }
         try {
-            collectionOfEntities = (EntityCollection) projectFile.getProjectObject(FILENAME_ENTITIES);
-            collectionOfRegularities = (RegularityCollection) projectFile.getProjectObject(FILENAME_REGULARITIES);
-            collectionOfIdealClasses = (EntityCollection) projectFile.getProjectObject(FILENAME_CLASSES);
-            globalProperties = (GlobalProperties) projectFile.getProjectObject(FILENAME_PROPERTIES);
 
+            Map<String, Object> map = projectFile.getProjectObjects();
+            if(map == null)
+                return false;
+
+            newProject();
+
+            EntityCollection entities = (EntityCollection) map.get(FILENAME_ENTITIES);
+            if (entities != null) {
+                collectionOfEntities.addAll(entities);
+            }
+            RegularityCollection regularities = (RegularityCollection) map.get(FILENAME_REGULARITIES);
+            if (regularities != null) {
+                collectionOfRegularities.putAll(regularities);
+            }
+            EntityCollection classes = (EntityCollection) map.get(FILENAME_CLASSES);
+            if (classes != null) {
+                collectionOfIdealClasses.addAll(classes);
+            }
+            GlobalProperties properties = (GlobalProperties) map.get(FILENAME_PROPERTIES);
+            if (classes != null) {
+                globalProperties = properties;
+            }
 
         } catch (IOException ex) {
             Logger.getLogger(ProjectManager.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        isDirty = true;
+        isDirty = false;
         return true;
     }
 
