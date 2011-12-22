@@ -1,5 +1,7 @@
 package org.munta;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -8,6 +10,8 @@ import org.munta.gui.MainFrame;
 import org.munta.model.Attribute;
 import org.munta.model.AttributeCollection;
 import org.munta.model.Entity;
+import org.munta.model.EntityCollection;
+import org.munta.model.GlobalProperties;
 import org.munta.model.Regularity;
 import org.munta.model.RegularityCollection;
 import org.munta.projectengine.ProjectManager;
@@ -40,37 +44,76 @@ public final class NatClassApp {
     public static void main(String[] args) {
         try {
             IProjectSerializer s = ProjectSerializerFactory.createSerializer(null, ProjectSerializerFactory.TYPE_XML);
-            AttributeCollection aa = new AttributeCollection();
-            aa.add(new Attribute("in_collection1", "true"));
-            aa.add(new Attribute("in_collection2", "true"));
-            s.serializeProjectObject(aa, System.err);
-            Entity e = new Entity("entity");
-            e.getAttributes().add(new Attribute("entityAttribute", "entityValue"));
-            Regularity r = new Regularity();
-            r.setTarget(new Attribute("regularityTarget1", "value1"));
-            r.getConditions().add(new Attribute("conditionAttr11", "value11"));
-            r.getConditions().add(new Attribute("conditionAttr12", "value12"));
-            r.getContext().add(new Attribute("contextAttr11", "value11"));
-            r.getContext().add(new Attribute("contextAttr12", "value12"));
-            RegularityCollection rr = new RegularityCollection();
-            rr.add(r);
-            r = new Regularity();
-            r.setTarget(new Attribute("regularityTarget2", "value2"));
-            r.getConditions().add(new Attribute("conditionAttr21", "value21"));
-            r.getConditions().add(new Attribute("conditionAttr22", "value22"));
-            r.getContext().add(new Attribute("contextAttr21", "value21"));
-            r.getContext().add(new Attribute("contextAttr22", "value22"));
-            rr.add(r);
-            s.serializeProjectObject(rr, System.err);
-            s.serializeProjectObject(r, System.err);
-            s.serializeProjectObject(e, System.err);
-            
+            s.getMapper().registerClass(Attribute.class);
+            s.getMapper().registerClass(AttributeCollection.class);
+            s.getMapper().registerClass(Entity.class);
+            s.getMapper().registerClass(EntityCollection.class);
+            s.getMapper().registerClass(Regularity.class);
+            s.getMapper().registerClass(RegularityCollection.class);
+            s.getMapper().registerClass(GlobalProperties.class);
+
+            AttributeCollection attributes = new AttributeCollection();
+            EntityCollection entities = new EntityCollection();
+            RegularityCollection regularities = new RegularityCollection();
+            GlobalProperties properties = new GlobalProperties();
+
+            attributes.add(new Attribute("attribute1", "1"));
+            attributes.add(new Attribute("attribute2", "2"));
+
+            Entity entity = new Entity("entity1");
+            entity.getAttributes().addAll(attributes);
+            entities.add(entity);
+            entity = new Entity("entity2");
+            entity.getAttributes().addAll(attributes);
+
+            Regularity regularity = new Regularity();
+            regularity.setTarget(attributes.iterator().next());
+            regularity.getConditions().addAll(attributes);
+            regularity.getContext().addAll(attributes);
+            regularities.add(regularity);
+
+            ByteArrayOutputStream out = null;
+            ByteArrayInputStream in = null;
+            Object object = null;
+
+            System.err.println("re-serialized AttributesCollection");
+            out = new ByteArrayOutputStream();
+            s.serializeProjectObject(attributes, out);
+            in = new ByteArrayInputStream(out.toByteArray());
+            object = s.deserializeProjectObject(in);
+            s.serializeProjectObject(object, System.err);
+            System.err.println("-----------------\n");
+
+            System.err.println("re-serialized EntityCollection");
+            out = new ByteArrayOutputStream();
+            s.serializeProjectObject(entities, out);
+            in = new ByteArrayInputStream(out.toByteArray());
+            object = s.deserializeProjectObject(in);
+            s.serializeProjectObject(object, System.err);
+            System.err.println("-----------------\n");
+
+            System.err.println("re-serialized RegularityCollection");
+            out = new ByteArrayOutputStream();
+            s.serializeProjectObject(regularities, out);
+            in = new ByteArrayInputStream(out.toByteArray());
+            object = s.deserializeProjectObject(in);
+            s.serializeProjectObject(object, System.err);
+            System.err.println("-----------------\n");
+
+            System.err.println("re-serialized GlobalProperties");
+            out = new ByteArrayOutputStream();
+            s.serializeProjectObject(properties, out);
+            in = new ByteArrayInputStream(out.toByteArray());
+            object = s.deserializeProjectObject(in);
+            s.serializeProjectObject(object, System.err);
+            System.err.println("-----------------\n");
+
             ProjectManager pm = ProjectManager.getInstance();
-            pm.getCollectionOfEntities().add(e);
-            pm.getCollectionOfIdealClasses().add(e);
-            pm.getCollectionOfRegularities().add(r);
+            pm.getCollectionOfEntities().addAll(entities);
+            pm.getCollectionOfIdealClasses().addAll(entities);
+            pm.getCollectionOfRegularities().putAll(regularities);
             pm.saveAsProject("/tmp/tmp/test.zip");
-            
+
             new NatClassApp().run(args);
         } catch (Exception ex) {
             Logger.getLogger(NatClassApp.class.getName()).log(Level.SEVERE, null, ex);

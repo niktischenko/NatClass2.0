@@ -10,5 +10,5 @@ public @interface XMLProperty {
     boolean collection() default false;
     boolean map() default false;
     String mapKeyAttribute() default "name";
-    boolean implicit() default false;
+    Class propertyClass() default Object.class;
 }

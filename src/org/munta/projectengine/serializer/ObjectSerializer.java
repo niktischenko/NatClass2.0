@@ -1,6 +1,5 @@
 package org.munta.projectengine.serializer;
 
-import org.munta.projectengine.serializer.IProjectSerializer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -34,5 +33,10 @@ public class ObjectSerializer implements IProjectSerializer {
             Logger.getLogger(ObjectSerializer.class.getName()).log(Level.SEVERE, null, ex);
             throw new SerializerException(ex);
         }
+    }
+
+    @Override
+    public IMapper getMapper() {
+        return new MapperStub();
     }
 }

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface IProjectSerializer {
+    IMapper getMapper();
     public void serializeProjectObject(Object o, OutputStream w) throws SerializerException;
     public Object deserializeProjectObject(InputStream r) throws SerializerException;
 }

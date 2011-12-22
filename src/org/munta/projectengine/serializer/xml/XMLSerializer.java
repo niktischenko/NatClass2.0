@@ -14,15 +14,18 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import org.munta.projectengine.serializer.IMapper;
 import org.munta.projectengine.serializer.IProjectSerializer;
 import org.munta.projectengine.serializer.SerializerException;
 import org.w3c.dom.Document;
 
 public class XMLSerializer implements IProjectSerializer {
+
     private InnerXMLObjectSerializer serializer;
+    private static IMapper mapper = new Mapper();
 
     public XMLSerializer() {
-        serializer = new InnerXMLObjectSerializer();
+        serializer = new InnerXMLObjectSerializer(mapper);
     }
 
     @Override
@@ -39,7 +42,7 @@ public class XMLSerializer implements IProjectSerializer {
         } catch (TransformerException ex) {
             Logger.getLogger(XMLSerializer.class.getName()).log(Level.SEVERE, null, ex);
             throw new SerializerException(ex);
-        }  catch (ParserConfigurationException ex) {
+        } catch (ParserConfigurationException ex) {
             Logger.getLogger(XMLSerializer.class.getName()).log(Level.SEVERE, null, ex);
             throw new SerializerException(ex);
         }
@@ -47,6 +50,17 @@ public class XMLSerializer implements IProjectSerializer {
 
     @Override
     public Object deserializeProjectObject(InputStream r) throws SerializerException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(r);
+            return serializer.deserialize(doc.getDocumentElement());
+        } catch (Exception ex) {
+            Logger.getLogger(XMLSerializer.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SerializerException(ex);
+        }
+    }
+
+    @Override
+    public IMapper getMapper() {
+        return mapper;
     }
 }
