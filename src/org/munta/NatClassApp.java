@@ -96,7 +96,7 @@ public final class NatClassApp {
                     try {
                         Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
                         synchronized (s) {
-                            Thread.sleep(100);
+                            Thread.sleep(1);
                             int count;
                             int mode = (int) ((0.5 + Math.random() * 6) + 1);
 

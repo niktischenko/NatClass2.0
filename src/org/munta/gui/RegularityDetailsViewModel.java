@@ -35,7 +35,6 @@ public class RegularityDetailsViewModel
         int index = jList.getSelectedIndex();
 
         this.elementRemoved(null);
-        runUpdate();
 
         if(index == -1)
             return;
@@ -56,7 +55,5 @@ public class RegularityDetailsViewModel
         for (Object o : r.getContext()) {
             this.elementAdded(o);
         }
-
-        runUpdate();
     }
 }
