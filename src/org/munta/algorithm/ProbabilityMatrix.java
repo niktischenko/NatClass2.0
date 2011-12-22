@@ -136,11 +136,8 @@ public class ProbabilityMatrix {
         Set<String> result = new HashSet<String>();
         Set<String> min = one.size() > another.size() ? another : one;
         Set<String> max = min == one ? another : one;
-        for (String s : min) {
-            if (max.contains(s)) {
-                result.add(s);
-            }
-        }
+        result.addAll(min);
+        result.retainAll(max);
         return result;
     }
 }
