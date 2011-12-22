@@ -37,6 +37,6 @@ public class ObjectSerializer implements IProjectSerializer {
 
     @Override
     public IMapper getMapper() {
-        return new MapperStub();
+        throw new UnsupportedOperationException("Method is not supported on this serializer.");
     }
 }

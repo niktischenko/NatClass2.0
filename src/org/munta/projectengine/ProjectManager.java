@@ -1,6 +1,7 @@
 package org.munta.projectengine;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -74,11 +75,13 @@ public final class ProjectManager {
             return false;
         }
         try {
-            projectFile.putProjectObjects(
-                    new ProjectObjectWithIdentifier(collectionOfEntities, FILENAME_ENTITIES),
-                    new ProjectObjectWithIdentifier(collectionOfRegularities, FILENAME_REGULARITIES),
-                    new ProjectObjectWithIdentifier(collectionOfIdealClasses, FILENAME_CLASSES),
-                    new ProjectObjectWithIdentifier(globalProperties, FILENAME_PROPERTIES));
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put(FILENAME_ENTITIES, collectionOfEntities);
+            map.put(FILENAME_REGULARITIES, collectionOfRegularities);
+            map.put(FILENAME_CLASSES, collectionOfIdealClasses);
+            map.put(FILENAME_PROPERTIES, globalProperties);
+            
+            projectFile.putProjectObjects(map);
 
             isDirty = false;
             return true;

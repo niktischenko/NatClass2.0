@@ -1,15 +1,15 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import org.munta.projectengine.serializer.xml.XMLObject;
-import org.munta.projectengine.serializer.xml.XMLProperty;
+import org.munta.projectengine.serializer.xml.XmlObject;
+import org.munta.projectengine.serializer.xml.XmlProperty;
 
-@XMLObject (name="Attribute")
+@XmlObject (name="Attribute")
 public class Attribute implements Serializable {
-    @XMLProperty(name="name", attribute=true)
+    @XmlProperty(name="name", attribute=true)
     protected String name;
     
-    @XMLProperty(name="value", attribute=true)
+    @XmlProperty(name="value", attribute=true)
     protected String value;
 
     public Attribute() {

@@ -1,10 +1,10 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import org.munta.projectengine.serializer.xml.XMLObject;
+import org.munta.projectengine.serializer.xml.XmlObject;
 import org.munta.utils.NotificationHashMap;
 
-@XMLObject(name="Regularities", map=true)
+@XmlObject(name="Regularities", map=true)
 public class RegularityCollection
         extends NotificationHashMap<String, Regularity>
         implements Serializable {

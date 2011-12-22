@@ -47,6 +47,6 @@ public final class JABXSerializer implements IProjectSerializer {
 
     @Override
     public IMapper getMapper() {
-        return new MapperStub();
+        throw new UnsupportedOperationException("Method is not supported on this serializer.");
     }
 }

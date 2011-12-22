@@ -1,10 +1,10 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import org.munta.projectengine.serializer.xml.XMLObject;
+import org.munta.projectengine.serializer.xml.XmlObject;
 import org.munta.utils.NotificationHashSet;
 
-@XMLObject(name="Attributes", collection=true)
+@XmlObject(name="Attributes", collection=true)
 public class AttributeCollection
         extends NotificationHashSet<Attribute>
         implements Serializable {

@@ -1,5 +1,6 @@
 package org.munta.projectengine;
 
+import java.io.ByteArrayInputStream;
 import org.munta.projectengine.serializer.SerializerException;
 import org.munta.projectengine.serializer.ObjectSerializer;
 import org.munta.projectengine.serializer.IProjectSerializer;
@@ -51,26 +52,24 @@ class ProjectFile {
         return filename != null;
     }
 
-    public Boolean putProjectObjects(ProjectObjectWithIdentifier... identifiers) throws IOException {
+    public Boolean putProjectObjects(Map<String, Object> map) throws IOException {
         if (!isOnFileSystem()) {
             return false;
         }
 
         ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(filename));
 
-        for (ProjectObjectWithIdentifier identifier : identifiers) {
-            if (null == identifier) {
-                continue;
-            }
-            Class objectClass = identifier.getProjectObject().getClass();
+        for (Map.Entry<String, Object> identifier : map.entrySet()) {
+
+            Class objectClass = identifier.getValue().getClass();
             IProjectSerializer serializer;
             try {
                 serializer = getCachedSerializer(objectClass);
 
-                ZipEntry zipEntry = new ZipEntry(identifier.getIdentifier());
-                zipEntry.setExtra(objectClass.toString().getBytes(utf8));
+                ZipEntry zipEntry = new ZipEntry(identifier.getKey());
+                zipEntry.setExtra(objectClass.getName().getBytes(utf8));
                 zos.putNextEntry(zipEntry);
-                serializer.serializeProjectObject(identifier.getProjectObject(), zos);
+                serializer.serializeProjectObject(identifier.getValue(), zos);
             } catch (SerializerException ex) {
                 continue;
             }
@@ -93,12 +92,17 @@ class ProjectFile {
         ZipEntry zipEntry;
         while ((zipEntry = zif.getNextEntry()) != null) {
 
+            byte[] data = new byte[(int)zipEntry.getSize()];
+            zif.read(data, 0, (int)zipEntry.getSize());
+            
             Class objectClass = null;
             try {
-                objectClass = Class.forName(new String(zipEntry.getExtra(), utf8));
+                String className = new String(zipEntry.getExtra(), utf8);
+                objectClass = Class.forName(className);
                 IProjectSerializer serializer = getCachedSerializer(objectClass);
-
-                Object o = serializer.deserializeProjectObject(zif);
+                
+                Object o = serializer.deserializeProjectObject(
+                        new ByteArrayInputStream(data));
                 map.put(zipEntry.getName(), o);
             } catch (ClassNotFoundException ex) {
                 continue;

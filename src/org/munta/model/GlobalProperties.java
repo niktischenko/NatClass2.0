@@ -1,10 +1,10 @@
 package org.munta.model;
 
 import java.io.Serializable;
-import org.munta.projectengine.serializer.xml.XMLObject;
-import org.munta.projectengine.serializer.xml.XMLProperty;
+import org.munta.projectengine.serializer.xml.XmlObject;
+import org.munta.projectengine.serializer.xml.XmlProperty;
 
-@XMLObject(name="Properties")
+@XmlObject(name="Properties")
 public class GlobalProperties implements Serializable {
 
     public int test = 1123;
@@ -13,7 +13,7 @@ public class GlobalProperties implements Serializable {
     /// Block 1 end
     
     /// Block 2 start
-    @XMLProperty(name="ProbabilityThreshold")
+    @XmlProperty(name="ProbabilityThreshold")
     private double probabilityThreshold;
     
     public double getProbabilityThreshold() {

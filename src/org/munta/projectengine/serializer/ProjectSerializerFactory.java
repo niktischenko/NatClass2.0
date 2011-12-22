@@ -1,6 +1,6 @@
 package org.munta.projectengine.serializer;
 
-import org.munta.projectengine.serializer.xml.XMLSerializer;
+import org.munta.projectengine.serializer.xml.XmlSerializer;
 
 public class ProjectSerializerFactory {
     public static final int TYPE_XML = 0;
@@ -15,7 +15,7 @@ public class ProjectSerializerFactory {
             case ProjectSerializerFactory.TYPE_BINARY:
                 return new ObjectSerializer();
             case ProjectSerializerFactory.TYPE_XML:
-                return new XMLSerializer();
+                return new XmlSerializer(objectType);
             default:
                 throw new SerializerException("Unknown serializer type");
         }

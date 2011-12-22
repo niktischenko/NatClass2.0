@@ -6,6 +6,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.munta.projectengine.serializer.IMapper;
 import org.munta.projectengine.serializer.SerializerException;
 import org.w3c.dom.Document;
@@ -13,21 +15,26 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-class InnerXMLObjectSerializer {
+class XmlObjectSerializerInternal {
 
-    private Document document;
     private IMapper mapper;
     private final String ENTRY_TAG_NAME = "entry";
 
-    public InnerXMLObjectSerializer(IMapper mapper) {
+    public XmlObjectSerializerInternal(IMapper mapper) {
         this.mapper = mapper;
     }
-
-    public void setDocument(Document document) {
-        this.document = document;
+    
+    public Document serialize(Object o) throws SerializerException {
+        try {
+            Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+            document.appendChild(serialize(document, o));
+            return document;
+        } catch (ParserConfigurationException ex) {
+            throw new SerializerException(ex);
+        }
     }
 
-    public Node serialize(Object o) throws SerializerException {
+    private Node serialize(Document document, Object o) throws SerializerException {
         Class clazz = o.getClass();
         if (clazz.equals(String.class)
                 || clazz.equals(Integer.class)
@@ -36,20 +43,20 @@ class InnerXMLObjectSerializer {
             return document.createTextNode(o.toString());
         }
 
-        XMLObject objectAnnotation = (XMLObject) clazz.getAnnotation(XMLObject.class);
+        XmlObject objectAnnotation = (XmlObject) clazz.getAnnotation(XmlObject.class);
         Element element = document.createElement(objectAnnotation.name());
         Field[] fields = clazz.getDeclaredFields();
         if (objectAnnotation.collection()) {
             Collection<Object> collection = (Collection<Object>) o;
             for (Object object : collection) {
-                Node child = serialize(object);
+                Node child = serialize(document, object);
                 element.appendChild(child);
             }
         }
         if (objectAnnotation.map()) {
             AbstractMap<Object, Object> map = (AbstractMap<Object, Object>) o;
             for (Object key : map.keySet()) {
-                Node child = serialize(map.get(key));
+                Node child = serialize(document, map.get(key));
                 if (child instanceof Element) {
                     ((Element) child).setAttribute(objectAnnotation.mapKeyAttribute(), key.toString());
                 } else {
@@ -64,7 +71,7 @@ class InnerXMLObjectSerializer {
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                XMLProperty propertyAnnotation = (XMLProperty) field.getAnnotation(XMLProperty.class);
+                XmlProperty propertyAnnotation = (XmlProperty) field.getAnnotation(XmlProperty.class);
                 if (null == propertyAnnotation) {
                     continue;
                 }
@@ -78,7 +85,7 @@ class InnerXMLObjectSerializer {
                     element.appendChild(el);
 
                     for (Object object : collection) {
-                        Node child = serialize(object);
+                        Node child = serialize(document, object);
                         el.appendChild(child);
                     }
                     continue;
@@ -87,7 +94,7 @@ class InnerXMLObjectSerializer {
                     Element el = element;
                     AbstractMap<Object, Object> map = (AbstractMap<Object, Object>) o;
                     for (Object key : map.keySet()) {
-                        Node child = serialize(map.get(key));
+                        Node child = serialize(document, map.get(key));
                         if (child instanceof Element) {
                             ((Element) child).setAttribute(propertyAnnotation.mapKeyAttribute(), key.toString());
                         } else {
@@ -101,42 +108,31 @@ class InnerXMLObjectSerializer {
                 }
 
                 Element el = document.createElement(propertyAnnotation.name());
-                el.appendChild(serialize(field.get(o)));
+                el.appendChild(serialize(document, field.get(o)));
                 element.appendChild(el);
 
             }
         } catch (Exception ex) {
-            Logger.getLogger(InnerXMLObjectSerializer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XmlObjectSerializerInternal.class.getName()).log(Level.SEVERE, null, ex);
             throw new SerializerException(ex);
         }
         return element;
     }
 
-    private Class getClassByTagName(Node node) {
-        if (node.getNodeType() == Node.TEXT_NODE) {
-            return String.class;
-        }
-        Collection<Class> registeredClasses = mapper.getRegisteredClasses();
-        for (Class clazz : registeredClasses) {
-            XMLObject objectAnnotation = (XMLObject) clazz.getAnnotation(XMLObject.class);
-            if (objectAnnotation.name().equals(node.getNodeName())) {
-                return clazz;
-            }
-        }
-        System.err.println("Unknown node: " + node.getNodeType() + "::" + node.getNodeName() + "::" + node.getNodeValue());
-        return null;
+    public Object deserialize(Document document) throws SerializerException {
+        return deserialize(document.getDocumentElement());
     }
-
-    public Object deserialize(Node node) throws SerializerException {
+    
+    private Object deserialize(Node node) throws SerializerException {
         try {
-            Class clazz = getClassByTagName(node);
+            Class clazz = mapper.getClassNameByTagName(node.getNodeName());
             if (clazz.equals(String.class)) {
                 return deserializeBasic(node);
             }
             Object object = clazz.newInstance();
             Element element = (Element) node;
 
-            XMLObject objectAnnotation = (XMLObject) clazz.getAnnotation(XMLObject.class);
+            XmlObject objectAnnotation = (XmlObject) clazz.getAnnotation(XmlObject.class);
             if (objectAnnotation.collection()) {
                 NodeList children = element.getChildNodes();
                 deserializeToCollection((Collection<Object>) object, children);
@@ -149,7 +145,7 @@ class InnerXMLObjectSerializer {
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
-                XMLProperty propertyAnnotation = (XMLProperty) field.getAnnotation(XMLProperty.class);
+                XmlProperty propertyAnnotation = (XmlProperty) field.getAnnotation(XmlProperty.class);
                 if (null == propertyAnnotation) { // not mapped to XML
                     continue;
                 }
@@ -184,7 +180,7 @@ class InnerXMLObjectSerializer {
             }
             return object;
         } catch (Exception ex) {
-            Logger.getLogger(InnerXMLObjectSerializer.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XmlObjectSerializerInternal.class.getName()).log(Level.SEVERE, null, ex);
             throw new SerializerException(ex);
         }
     }
