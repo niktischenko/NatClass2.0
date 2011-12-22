@@ -66,7 +66,7 @@ public final class ProjectManager {
         getCollectionOfRegularities().clear();
         getCollectionOfIdealClasses().clear();
         globalProperties.clear();
-        isDirty = true;
+        isDirty = false;
     }
 
     public Boolean saveProject() {
