@@ -1,6 +1,5 @@
 package org.munta.gui;
 
-import java.awt.Color;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -46,7 +45,6 @@ public class EntityDetailsViewModel
         int index = jList.getSelectedIndex();
 
         this.elementRemoved(null);
-        runUpdate();
         
         if(index == -1)
             return;
@@ -56,7 +54,5 @@ public class EntityDetailsViewModel
         for (Object o : e.getAttributes()) {
             this.elementAdded(o);
         }
-
-        runUpdate();
     }
 }
