@@ -134,6 +134,8 @@ public abstract class AbstractCollectionViewModel<E>
                 list.clear();
                 i0 = 0;
                 i1 = size;
+                action = 2;
+                runUpdate();
             } else {
                 list.remove((E) o);
                 if (i0 == -1) {
@@ -141,9 +143,8 @@ public abstract class AbstractCollectionViewModel<E>
                 } else {
                     i1 = size;
                 }
+                action = 2;
             }
-
-            action = 2;
         }
     }
 }

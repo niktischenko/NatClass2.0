@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import org.munta.gui.MainFrame;
 import org.munta.model.Attribute;
 import org.munta.model.Entity;
@@ -14,6 +15,19 @@ public final class NatClassApp {
 
     private MainFrame frame = null;
     private Thread t;
+    
+    private static Boolean isMac = null;
+    public static Boolean isMac() {
+        if(isMac == null) {
+            String os = System.getProperty("os.name");
+            if (os != null && os.toLowerCase().contains("mac")) {
+                isMac = true;
+            } else {
+                isMac = false;
+            }
+        }
+        return isMac;
+    }
 
     private NatClassApp() throws Exception {
 
@@ -37,19 +51,29 @@ public final class NatClassApp {
         ProjectManager.getInstance().getCollectionOfEntities().add(e2);
         ProjectManager.getInstance().getCollectionOfRegularities().add(r);
 
+        String os = System.getProperty("os.name");
+        if (isMac()) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.macos.useScreenMenuBar", "true");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "NatClass 2.0");
+        }
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         frame = new MainFrame(this);
+    }
+
+    public void newProject() {
+        ProjectManager.getInstance().newProject();
     }
     
     public Boolean openProject(String filePath) {
         return ProjectManager.getInstance().loadProject(filePath);
     }
-    
+
     public Boolean saveAsProject(String filePath) {
         return ProjectManager.getInstance().saveAsProject(filePath);
     }
-    
+
     public Boolean saveProject() {
         return ProjectManager.getInstance().saveProject();
     }
@@ -65,7 +89,14 @@ public final class NatClassApp {
     }
 
     private void run(String[] args) {
-        frame.setVisible(true);
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                frame.setVisible(true);
+            }
+        });
 
         t = new Thread(new Runnable() {
 
@@ -76,14 +107,14 @@ public final class NatClassApp {
 
                         Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
                         synchronized (s) {
-                            Thread.sleep(1000);
+                            Thread.sleep(100);
                             int count;
                             int mode = (int) ((0.5 + Math.random() * 6) + 1);
 
                             if ((mode & 1) == 0 && (mode & 2) == 0 && (mode & 4) == 0) {
                                 break;
                             }
-                            
+
                             if ((mode & 1) != 0) {
                                 Entity e1 = new Entity("Object: " + (int) (Math.random() * Integer.MAX_VALUE));
                                 count = (int) (Math.random() * 10);
