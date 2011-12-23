@@ -125,10 +125,11 @@ class XmlObjectSerializerInternal {
     
     private Object deserialize(Node node) throws SerializerException {
         try {
-            Class clazz = mapper.getClassNameByTagName(node.getNodeName());
-            if (clazz.equals(String.class)) {
+            if (node.getNodeType() == Node.TEXT_NODE) {
                 return deserializeBasic(node);
             }
+            Class clazz = mapper.getClassNameByTagName(node.getNodeName());
+            
             Object object = clazz.newInstance();
             Element element = (Element) node;
 

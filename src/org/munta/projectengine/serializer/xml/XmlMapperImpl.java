@@ -58,7 +58,7 @@ final class XmlMapperImpl implements IMapper {
         Map<Type, Type> resolvedTypes = new HashMap<Type, Type>();
         Type type = childClass;
         // start walking up the inheritance hierarchy until we hit baseClass
-        while (!getClass(type).equals(baseClass)) {
+        while (type != null && !getClass(type).equals(baseClass)) {
             if (type instanceof Class) {
                 // there is no useful information for us in raw types, so just keep going.
                 type = ((Class) type).getGenericSuperclass();

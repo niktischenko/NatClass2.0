@@ -15,6 +15,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import org.munta.projectengine.serializer.ProjectSerializerFactory;
+import org.munta.utils.UnclosableInputStream;
 
 class ProjectFile {
 
@@ -89,11 +90,10 @@ class ProjectFile {
         Map<String, Object> map = new HashMap<String, Object>();
 
         ZipInputStream zif = new ZipInputStream(new FileInputStream(filename));
+        UnclosableInputStream protectedZif = new UnclosableInputStream(zif);
+        
         ZipEntry zipEntry;
         while ((zipEntry = zif.getNextEntry()) != null) {
-
-            byte[] data = new byte[(int)zipEntry.getSize()];
-            zif.read(data, 0, (int)zipEntry.getSize());
             
             Class objectClass = null;
             try {
@@ -101,8 +101,7 @@ class ProjectFile {
                 objectClass = Class.forName(className);
                 IProjectSerializer serializer = getCachedSerializer(objectClass);
                 
-                Object o = serializer.deserializeProjectObject(
-                        new ByteArrayInputStream(data));
+                Object o = serializer.deserializeProjectObject(protectedZif);
                 map.put(zipEntry.getName(), o);
             } catch (ClassNotFoundException ex) {
                 continue;
@@ -110,7 +109,10 @@ class ProjectFile {
                 continue;
             }
         }
+        
+        protectedZif.forceClose();
+        protectedZif.close();
 
-        return null;
+        return map;
     }
 }
