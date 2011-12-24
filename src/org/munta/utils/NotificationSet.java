@@ -1,16 +1,18 @@
 package org.munta.utils;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
-public class NotificationHashSet<E> extends HashSet<E> {
+public class NotificationSet<E> extends TreeSet<E> {
     private Set<CollectionChangedListener> listeners;
     
-    public NotificationHashSet() {
+    public NotificationSet() {
         listeners = new HashSet<CollectionChangedListener>();
     }
     
-    public NotificationHashSet(Set<E> collection) {
+    public NotificationSet(Set<E> collection) {
         this();
         addAll(collection);
     }
@@ -32,6 +34,15 @@ public class NotificationHashSet<E> extends HashSet<E> {
         Boolean result = super.add(e);
         if(result) {
             fireElementAdded(e);
+        }
+        return result;
+    }
+
+    @Override
+    public boolean addAll(Collection<? extends E> clctn) {
+        Boolean result = true;
+        for(E e : clctn) {
+            result &= this.add(e);
         }
         return result;
     }

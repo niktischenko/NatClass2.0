@@ -5,7 +5,7 @@ import org.munta.projectengine.serializer.xml.XmlObject;
 import org.munta.projectengine.serializer.xml.XmlProperty;
 
 @XmlObject (name="Attribute")
-public class Attribute implements Serializable {
+public class Attribute implements Serializable, Comparable<Attribute> {
     @XmlProperty(name="name", attribute=true)
     protected String name;
     
@@ -59,5 +59,13 @@ public class Attribute implements Serializable {
     @Override
     public String toString() {
         return String.format("[%s:%s]", name, value);
+    }
+
+    @Override
+    public int compareTo(Attribute t) {
+        int diff = getName().compareTo(t.getName());
+        if(diff == 0) {
+            return getValue().compareTo(t.getValue());
+        } else return diff;
     }
 }

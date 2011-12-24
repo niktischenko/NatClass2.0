@@ -1,12 +1,13 @@
 package org.munta.gui;
 
+import java.util.Map.Entry;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.munta.model.Regularity;
 
 public class RegularityDetailsViewModel
-        extends AbstractCollectionViewModel<Regularity>
+        extends AbstractCollectionViewModel<Object>
         implements ListSelectionListener {
 
     private AnalysisColorer colorer;
@@ -36,24 +37,28 @@ public class RegularityDetailsViewModel
 
         this.elementRemoved(null);
 
-        if(index == -1)
+        if (index == -1) {
             return;
-            
-        Regularity r = regularityViewModel.getModelObjectAt(index).getValue();
-        
-        this.elementAdded("Target attribute:");
-        this.elementAdded(r.getTarget());
-        this.elementAdded(" ");
-        
-        this.elementAdded("Conditions:");
-        for (Object o : r.getConditions()) {
-            this.elementAdded(o);
         }
-        this.elementAdded(" ");
-        
-        this.elementAdded("Context:");
-        for (Object o : r.getContext()) {
-            this.elementAdded(o);
+
+        Entry<String, Regularity> e = regularityViewModel.getModelObjectAt(index);
+        if (e != null) {
+            Regularity r = e.getValue();
+
+            this.elementAdded("Target attribute:");
+            this.elementAdded(r.getTarget());
+            this.elementAdded(" ");
+
+            this.elementAdded("Conditions:");
+            for (Object o : r.getConditions()) {
+                this.elementAdded(o);
+            }
+            this.elementAdded(" ");
+
+            this.elementAdded("Context:");
+            for (Object o : r.getContext()) {
+                this.elementAdded(o);
+            }
         }
     }
 }

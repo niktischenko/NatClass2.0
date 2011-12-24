@@ -21,14 +21,16 @@ public class EntityDetailsViewModel
 
     @Override
     public Object getElementAt(int i) {
-        
-        if(colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS) {
+
+        if (colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS) {
             Attribute attr = getModelObjectAt(i);
-            if(colorer.getEntity().getAttributes().contains(attr) ) {
+            if(attr == null)
+                return null;
+            if (colorer.getEntity().getAttributes().contains(attr)) {
                 return new ListItem(colorer.getHighlightedColor(), getModelObjectAt(i).toString());
             }
         }
-        
+
         return new ListItem(getModelObjectAt(i).toString());
     }
 
@@ -45,14 +47,16 @@ public class EntityDetailsViewModel
         int index = jList.getSelectedIndex();
 
         this.elementRemoved(null);
-        
-        if(index == -1)
+
+        if (index == -1) {
             return;
+        }
 
         Entity e = entityViewModel.getModelObjectAt(index);
-        
-        for (Object o : e.getAttributes()) {
-            this.elementAdded(o);
+        if (e != null) {
+            for (Object o : e.getAttributes()) {
+                this.elementAdded(o);
+            }
         }
     }
 }

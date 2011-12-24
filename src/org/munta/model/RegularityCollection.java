@@ -2,11 +2,11 @@ package org.munta.model;
 
 import java.io.Serializable;
 import org.munta.projectengine.serializer.xml.XmlObject;
-import org.munta.utils.NotificationHashMap;
+import org.munta.utils.NotificationMap;
 
 @XmlObject(name="Regularities", map=true)
 public class RegularityCollection
-        extends NotificationHashMap<String, Regularity>
+        extends NotificationMap<String, Regularity>
         implements Serializable {
 
     public RegularityCollection() {
