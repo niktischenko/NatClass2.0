@@ -14,10 +14,12 @@ public abstract class AbstractCollectionViewModel<E>
         implements ListModel, CollectionChangedListener {
 
     private final List<E> list;
-    //private Collection collection;
+    private final List<E> filteredList;
+    private Collection collection;
 
     private AbstractCollectionViewModel(boolean bl) {
         list = new ArrayList<E>();
+        filteredList = new ArrayList<E>();
     }
 
     public AbstractCollectionViewModel(Collection collection) {
@@ -37,12 +39,25 @@ public abstract class AbstractCollectionViewModel<E>
     }
 
     private void initList(Collection collection) {
-        //this.collection = collection;
+        this.collection = collection;
         list.addAll(collection);
     }
 
     private void initList(Map map) {
+        this.collection = map.entrySet();
         list.addAll(map.entrySet());
+    }
+    
+    private void updateFilteredList() {
+        filteredList.clear();
+        for(E obj : list) {
+            if(onFilter(obj))
+                filteredList.add(obj);
+        }
+    }
+    
+    protected Boolean onFilter(E obj) {
+        return true;
     }
 
     public void dispose() {
@@ -50,13 +65,15 @@ public abstract class AbstractCollectionViewModel<E>
 
     @Override
     public int getSize() {
-        return list.size();
+        return filteredList.size();
     }
 
     public E getModelObjectAt(int i) {
         E e = null;
+        if(i >= filteredList.size())
+            return null;
         //synchronized (list) {
-        e = (E) list.get(i);
+        e = (E) filteredList.get(i);
         //}
         return e;
     }
@@ -64,6 +81,7 @@ public abstract class AbstractCollectionViewModel<E>
     private void elementAddedUnsafe(Object o) {
         int size = list.size();
         list.add((E) o);
+        updateFilteredList();
         fireIntervalAdded(this, size, size);
     }
 
@@ -74,6 +92,7 @@ public abstract class AbstractCollectionViewModel<E>
         } else {
             list.remove((E) o);
         }
+        updateFilteredList();
         fireIntervalRemoved(this, size, size);
     }
 

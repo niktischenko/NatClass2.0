@@ -5,7 +5,7 @@ import org.munta.projectengine.serializer.xml.XmlObject;
 import org.munta.projectengine.serializer.xml.XmlProperty;
 
 @XmlObject(name = "Entity")
-public class Entity implements Serializable {
+public class Entity implements Serializable, Comparable<Entity> {
 
     @XmlProperty(name = "name", attribute = true)
     private String name;
@@ -24,6 +24,22 @@ public class Entity implements Serializable {
     public Entity(String name) {
         this.name = name;
         attributes = new AttributeCollection();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Entity)) {
+            return false;
+        }
+
+        Entity e = (Entity) o;
+
+        return this.name.equals(e.name) && this.attributes.equals(e.attributes);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode() ^ attributes.hashCode();
     }
 
     public boolean checkAttribute(Attribute attribute) {
@@ -55,5 +71,10 @@ public class Entity implements Serializable {
     @Override
     public String toString() {
         return String.format("%s: %s", name, attributes.toString());
+    }
+
+    @Override
+    public int compareTo(Entity t) {
+        return getName().compareTo(t.getName());
     }
 }

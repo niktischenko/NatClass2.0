@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
-public class NotificationHashMap<K, V> extends HashMap<K, V> {
+public class NotificationMap<K, V> extends TreeMap<K, V> {
     
     private class EntryImpl<K, V> implements Entry<K, V> {
 
@@ -36,11 +37,11 @@ public class NotificationHashMap<K, V> extends HashMap<K, V> {
     
     private Set<CollectionChangedListener> listeners;
     
-    public NotificationHashMap() {
+    public NotificationMap() {
         listeners = new HashSet<CollectionChangedListener>();
     }
     
-    public NotificationHashMap(Map<K, V> map) {
+    public NotificationMap(Map<K, V> map) {
         this();
         putAll(map);
     }
@@ -65,8 +66,16 @@ public class NotificationHashMap<K, V> extends HashMap<K, V> {
 
     @Override
     public V put(K k, V v) {
+        V vv = super.put(k, v);
         fireElementAdded(k, v);
-        return super.put(k, v);
+        return vv;
+    }
+
+    @Override
+    public void putAll(Map<? extends K, ? extends V> map) {
+        for(Entry<? extends K, ? extends V> e : map.entrySet()) {
+            put(e.getKey(), e.getValue());
+        }
     }
 
     @Override

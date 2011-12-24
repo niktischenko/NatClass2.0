@@ -1,7 +1,5 @@
 package org.munta;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,12 +7,6 @@ import java.util.logging.Logger;
 import javax.swing.UIManager;
 import org.munta.gui.MainFrame;
 import org.munta.model.Attribute;
-import org.munta.model.AttributeCollection;
-import org.munta.model.EntityCollection;
-import org.munta.model.GlobalProperties;
-import org.munta.model.RegularityCollection;
-import org.munta.projectengine.serializer.IProjectSerializer;
-import org.munta.projectengine.serializer.ProjectSerializerFactory;
 import org.munta.model.Entity;
 import org.munta.model.Regularity;
 import org.munta.projectengine.ProjectManager;
@@ -23,6 +15,7 @@ public final class NatClassApp {
 
     private MainFrame frame = null;
     private Thread t;
+    private Boolean tb = false;
     private static Boolean isMac = null;
 
     public static Boolean isMac() {
@@ -93,7 +86,10 @@ public final class NatClassApp {
                     try {
                         Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
                         synchronized (s) {
-                            Thread.sleep(100);
+                            do {
+                                Thread.sleep(100);
+                            } while(!tb);
+                            
                             int count;
                             int mode = (int) ((0.5 + Math.random() * 6) + 1);
 
@@ -102,7 +98,7 @@ public final class NatClassApp {
                             }
 
                             if ((mode & 1) != 0) {
-                                Entity e1 = new Entity("Object: " + (int) (Math.random() * 10));
+                                Entity e1 = new Entity("Object: " + (int) (Math.random() * 10000));
                                 count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count; i++) {
                                     e1.getAttributes().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
@@ -111,7 +107,7 @@ public final class NatClassApp {
                             }
 
                             if ((mode & 2) != 0) {
-                                Entity e2 = new Entity("Object: " + (int) (Math.random() * 10));
+                                Entity e2 = new Entity("Object: " + (int) (Math.random() * 10000));
                                 count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count; i++) {
                                     e2.getAttributes().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
@@ -142,8 +138,12 @@ public final class NatClassApp {
                 }
             }
         });
-
-        //t.start();
+    }
+    
+    public void startStop() {
+        if(!t.isAlive())
+            t.start();
+        tb = !tb;
     }
 
     /**

@@ -24,7 +24,7 @@ public class XmlSerializer implements IProjectSerializer {
     private static IMapper mapper;
 
     public XmlSerializer(Class objectType) {
-        mapper = new XmlMapperImpl(objectType);
+        mapper = new XmlDynMapperImpl(objectType);
         serializer = new XmlObjectSerializerInternal(mapper);
     }
 

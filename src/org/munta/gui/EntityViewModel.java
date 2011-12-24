@@ -16,18 +16,32 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
     }
 
     @Override
+    protected Boolean onFilter(Entity obj) {
+        if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+            Regularity r = colorer.getRegularity();
+            for(Attribute attr : r.getConditions()) {
+                if(!obj.getAttributes().contains(attr)) return false;
+            }
+            return true;
+        }
+        
+        return true;
+    }
+
+    @Override
     public Object getElementAt(int i) {
         
         Entity e = getModelObjectAt(i);
+        if(e == null)
+            return null;
+        
         if(colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS) {
             if(e.getAttributes().equals(colorer.getEntity().getAttributes())) {
                 return new ListItem(colorer.getHighlightedColor(), getModelObjectAt(i).getName());
             }
         } else if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
             Regularity r = colorer.getRegularity();
-            for(Attribute attr : r.getConditions()) {
-                if(!e.getAttributes().contains(attr)) return null;
-            }
+            
             Color color = null;
             for(Attribute attr : e.getAttributes()) {
                 if(attr.getName().equals(r.getTarget().getName()))

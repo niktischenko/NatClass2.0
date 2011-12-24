@@ -14,11 +14,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.munta.projectengine.serializer.IMapper;
 
-final class XmlMapperImpl implements IMapper {
+final class XmlDynMapperImpl implements IMapper {
 
     private Map<String, Class> registeredClasses;
 
-    public XmlMapperImpl(Class objectType) {
+    public XmlDynMapperImpl(Class objectType) {
         registeredClasses = new HashMap<String, Class>();
         registerClass(objectType);
     }
@@ -127,6 +127,6 @@ final class XmlMapperImpl implements IMapper {
 
     @Override
     public Collection<Class> getRegisteredClasses() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return registeredClasses.values();
     }
 }

@@ -134,6 +134,15 @@ public class MainFrame extends JFrame {
                     ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
         }
     };
+    
+    private Action startStopAction = new AbstractAction("StartStop") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            
+            app.startStop();
+        }
+    };
 
     private Icon getIconFromResource(String iconName) {
         String iconPath = String.format("images/%s.png", iconName);
@@ -237,9 +246,7 @@ public class MainFrame extends JFrame {
 
         toolBar.addSeparator();
         button = new JButton();
-        button.setAction(newProjectAction);
-        button.setIcon(getIconFromResource("save"));
-        button.setText(null);
+        button.setAction(startStopAction);
         toolBar.add(button);
 
         add(toolBar, BorderLayout.PAGE_START);
@@ -283,6 +290,7 @@ public class MainFrame extends JFrame {
         regularityDetailsList.setCellRenderer(cr);
         regularityDetailsList.setModel(regularityDetailsViewModel);
         regularityList.addListSelectionListener(regularityDetailsViewModel);
+        regularityList.addListSelectionListener(colorer);
 
         JPanel regularityPanel = new JPanel();
         regularityPanel.setLayout(new GridLayout());
