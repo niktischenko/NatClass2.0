@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -24,7 +26,9 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
+import javax.swing.SwingWorker;
 import org.munta.NatClassApp;
+import org.munta.algorithm.RegularityBuilder;
 import org.munta.model.Entity;
 import org.munta.model.Regularity;
 import org.munta.projectengine.ProjectManager;
@@ -143,6 +147,29 @@ public class MainFrame extends JFrame {
             app.startStop();
         }
     };
+    
+    private Action buildReguilaritiesAction = new AbstractAction("Build Regularities") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    buildReguilaritiesAction.setEnabled(false);
+                    try {
+                        new RegularityBuilder().fillRegularities(
+                            ProjectManager.getInstance().getCollectionOfEntities(),
+                            ProjectManager.getInstance().getCollectionOfRegularities());
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    buildReguilaritiesAction.setEnabled(true);
+                }
+            }).start();
+        }
+    };
 
     private Icon getIconFromResource(String iconName) {
         String iconPath = String.format("images/%s.png", iconName);
@@ -247,6 +274,10 @@ public class MainFrame extends JFrame {
         toolBar.addSeparator();
         button = new JButton();
         button.setAction(startStopAction);
+        toolBar.add(button);
+        
+        button = new JButton();
+        button.setAction(buildReguilaritiesAction);
         toolBar.add(button);
 
         add(toolBar, BorderLayout.PAGE_START);

@@ -19,6 +19,20 @@ public class GlobalProperties implements Serializable {
     public double getProbabilityThreshold() {
         return probabilityThreshold;
     }
+    
+    @XmlProperty(name="MinLength")
+    private int minLength;
+    
+    public double getMinLength() {
+        return minLength;
+    }
+    
+    @XmlProperty(name="UseIntermediateResults")
+    private Boolean useIntermediateResults;
+    
+    public Boolean getUseIntermediateResults() {
+        return useIntermediateResults;
+    }
     /// Block 2 end
 
     public GlobalProperties() {
@@ -27,5 +41,13 @@ public class GlobalProperties implements Serializable {
     
     public void clear() {
         probabilityThreshold = 0.8;
+        minLength = 2;
+        useIntermediateResults = false;
+    }
+    
+    public void set(GlobalProperties g) {
+        probabilityThreshold = g.probabilityThreshold;
+        minLength = g.minLength;
+        useIntermediateResults = g.useIntermediateResults;
     }
 }

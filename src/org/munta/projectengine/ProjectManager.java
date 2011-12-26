@@ -16,10 +16,10 @@ public final class ProjectManager {
     public static final String FILENAME_REGULARITIES = "regularities.xml";
     public static final String FILENAME_CLASSES = "classes.xml";
     public static final String FILENAME_PROPERTIES = "properties.xml";
-    private EntityCollection collectionOfEntities;
-    private RegularityCollection collectionOfRegularities;
-    private EntityCollection collectionOfIdealClasses;
-    private GlobalProperties globalProperties;
+    private final EntityCollection collectionOfEntities;
+    private final RegularityCollection collectionOfRegularities;
+    private final EntityCollection collectionOfIdealClasses;
+    private final GlobalProperties globalProperties;
 
     public EntityCollection getCollectionOfEntities() {
         return collectionOfEntities;
@@ -124,7 +124,7 @@ public final class ProjectManager {
             }
             GlobalProperties properties = (GlobalProperties) map.get(FILENAME_PROPERTIES);
             if (classes != null) {
-                globalProperties = properties;
+                globalProperties.set(properties);
             }
 
         } catch (IOException ex) {

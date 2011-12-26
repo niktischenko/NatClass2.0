@@ -15,7 +15,7 @@ public abstract class AbstractCollectionViewModel<E>
 
     private final List<E> list;
     private final List<E> filteredList;
-    private Collection collection;
+    //private Collection collection;
 
     private AbstractCollectionViewModel(boolean bl) {
         list = new ArrayList<E>();
@@ -39,12 +39,12 @@ public abstract class AbstractCollectionViewModel<E>
     }
 
     private void initList(Collection collection) {
-        this.collection = collection;
+        //this.collection = collection;
         list.addAll(collection);
     }
 
     private void initList(Map map) {
-        this.collection = map.entrySet();
+        //this.collection = map.entrySet();
         list.addAll(map.entrySet());
     }
     
@@ -87,13 +87,16 @@ public abstract class AbstractCollectionViewModel<E>
 
     private void elementRemovedUnsafe(Object o) {
         int size = list.size();
+        int size0;
         if (o == null) {
             list.clear();
+            size0 = 0;
         } else {
             list.remove((E) o);
+            size0 = size;
         }
         updateFilteredList();
-        fireIntervalRemoved(this, size, size);
+        fireIntervalRemoved(this, size0, size);
     }
 
     @Override

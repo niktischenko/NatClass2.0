@@ -110,7 +110,13 @@ public final class NatClassApp {
                                 Entity e2 = new Entity("Object: " + (int) (Math.random() * 10000));
                                 count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count; i++) {
-                                    e2.getAttributes().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
+                                    int x = (int) (Math.random() * 2);
+                                    int y = (int) (Math.random() * 10);
+                                    
+                                    e2.getAttributes().add(new Attribute("a" + x, "" + y));
+                                    if(x == 1 && y == 1) {
+                                        e2.getAttributes().add(new Attribute("a" + (x+1), "" + y));
+                                    }
                                 }
                                 ProjectManager.getInstance().getCollectionOfEntities().add(e2);
                             }
