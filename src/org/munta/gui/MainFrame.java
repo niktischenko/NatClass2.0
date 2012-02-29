@@ -30,6 +30,8 @@ import javax.swing.JSplitPane;
 import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.munta.NatClassApp;
 import org.munta.algorithm.RegularityBuilder;
 import org.munta.model.Entity;
@@ -143,6 +145,32 @@ public class MainFrame extends JFrame {
             
             colorer.setRegularityAnalysisMode(
                     ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+            entityViewModel.redrawList();
+            entityDetailsViewModel.redrawList();
+            regularityViewModel.redrawList();
+            regularityDetailsViewModel.redrawList();
+        }
+    };
+    
+    private ListSelectionListener regularityAnalysisModelListener = new ListSelectionListener() {
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            
+            if(lse.getValueIsAdjusting())
+                return;
+            
+            int index = regularityList.getSelectedIndex();
+            if(index == -1)
+                return;
+            
+            if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+                colorer.setRegularityAnalysisMode(
+                        ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+
+                entityViewModel.redrawList();
+                entityDetailsViewModel.redrawList();
+            }
         }
     };
     
@@ -416,7 +444,8 @@ public class MainFrame extends JFrame {
         regularityDetailsList.setCellRenderer(cr);
         regularityDetailsList.setModel(regularityDetailsViewModel);
         regularityList.addListSelectionListener(regularityDetailsViewModel);
-        regularityList.addListSelectionListener(colorer);
+        
+        regularityList.addListSelectionListener(regularityAnalysisModelListener);
 
         JPanel regularityPanel = new JPanel();
         regularityPanel.setLayout(new GridLayout());

@@ -16,6 +16,14 @@ public class AttributeCollection
     public AttributeCollection() {
         super();
     }
+    
+    public Boolean containsByName(Attribute obj) {
+        for (Attribute attr : this) {
+            if(attr.getName().equals(obj.getName()))
+                return true;
+        }
+        return false;
+    }
 
     @Override
     public String toString() {

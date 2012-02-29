@@ -19,6 +19,10 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
     protected Boolean onFilter(Entity obj) {
         if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
             Regularity r = colorer.getRegularity();
+            
+            if(!obj.getAttributes().containsByName(r.getTarget()))
+                return false;
+            
             for(Attribute attr : r.getConditions()) {
                 if(!obj.getAttributes().contains(attr)) return false;
             }

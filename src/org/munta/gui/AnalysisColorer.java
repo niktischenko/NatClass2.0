@@ -8,7 +8,7 @@ import javax.swing.event.ListSelectionListener;
 import org.munta.model.Entity;
 import org.munta.model.Regularity;
 
-public final class AnalysisColorer implements ListSelectionListener  {
+public final class AnalysisColorer {
     public static final int OVERVIEW = 1;
     public static final int ENTITY_ANALYSIS = 2;
     public static final int REGULARITY_ANALYSIS = 3;
@@ -66,33 +66,5 @@ public final class AnalysisColorer implements ListSelectionListener  {
     
     public AnalysisColorer() {
         setOverviewMode();
-    }
-    
-    public void updateLists() {
-        
-    }
-
-    @Override
-    public void valueChanged(ListSelectionEvent lse) {
-        if (lse.getValueIsAdjusting()) {
-            return;
-        }
-
-        if (!JList.class.isAssignableFrom(lse.getSource().getClass())) {
-            return;
-        }
-        JList jList = (JList) lse.getSource();
-        Object listModelRaw = jList.getModel();
-        if (!(listModelRaw instanceof AbstractCollectionViewModel)) {
-            return;
-        }
-        AbstractCollectionViewModel listModel = (AbstractCollectionViewModel)listModelRaw;
-        
-        int index = jList.getSelectedIndex();
-        Entry<String, Regularity> obj = (Entry<String, Regularity>)listModel.getModelObjectAt(index);
-        if(obj == null)
-            return;
-        
-        this.obj = obj.getValue();
     }
 }

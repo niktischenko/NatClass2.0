@@ -87,7 +87,7 @@ public final class NatClassApp {
                         Set<Entity> s = ProjectManager.getInstance().getCollectionOfEntities();
                         synchronized (s) {
                             do {
-                                Thread.sleep(100);
+                                Thread.sleep(10);
                             } while(!tb);
                             
                             int count;
@@ -100,10 +100,14 @@ public final class NatClassApp {
                             if ((mode & 1) != 0) {
                                 Entity e1 = new Entity("Object: " + (int) (Math.random() * 10000));
                                 count = 1 + (int) (Math.random() * 10);
-                                for (int i = 0; i < count; i++) {
-                                    e1.getAttributes().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
+                                for (int i = 0; i < count;) {
+                                    Attribute a = new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10));
+                                    if(!e1.getAttributes().containsByName(a)) {
+                                        e1.getAttributes().add(a);
+                                        i++;
+                                    }
                                 }
-                                ProjectManager.getInstance().getCollectionOfIdealClasses().add(e1);
+                                ProjectManager.getInstance().getCollectionOfEntities().add(e1);
                             }
 
                             if ((mode & 2) != 0) {
@@ -118,16 +122,21 @@ public final class NatClassApp {
                                         e2.getAttributes().add(new Attribute("a" + (x+1), "" + y));
                                     }
                                 }
-                                ProjectManager.getInstance().getCollectionOfEntities().add(e2);
+                                ProjectManager.getInstance().getCollectionOfIdealClasses().add(e2);
                             }
 
                             if ((mode & 4) != 0) {
                                 Regularity r = new Regularity();
                                 r.setTarget(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
 
-                                count = 1 + (int) (Math.random() * 10);
-                                for (int i = 0; i < count; i++) {
-                                    r.getConditions().add(new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10)));
+                                count = 1 + (int) (Math.random() * 9);
+                                for (int i = 0; i < count;) {
+                                    Attribute attr = new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10));
+                                    
+                                    if(!r.getConditions().containsByName(attr) && !r.getTarget().getName().equals(attr.getName())) {
+                                        r.getConditions().add(attr);
+                                        i++;
+                                    }
                                 }
 
                                 count = 1 + (int) (Math.random() * 10);

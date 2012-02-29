@@ -136,6 +136,7 @@ public abstract class AbstractCollectionViewModel<E>
     }
     
     public void redrawList() {
+        updateFilteredList();
         fireContentsChanged(this, 0, filteredList.size());
     }
 }
