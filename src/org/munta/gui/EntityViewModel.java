@@ -36,8 +36,11 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
             return null;
         
         if(colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS) {
+            if(e.equals(colorer.getEntity())) {
+                return new ListItem(colorer.getHighlightedColor(), getModelObjectAt(i).getName(), true);
+            }
             if(e.getAttributes().equals(colorer.getEntity().getAttributes())) {
-                return new ListItem(colorer.getHighlightedColor(), getModelObjectAt(i).getName());
+                return new ListItem(colorer.getPositiveColor(), getModelObjectAt(i).getName());
             }
         } else if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
             Regularity r = colorer.getRegularity();

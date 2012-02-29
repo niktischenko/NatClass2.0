@@ -2,6 +2,7 @@ package org.munta.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -43,6 +44,13 @@ class CellRenderer extends JLabel
                 }
                 setForeground(c);
                 setBackground(list.getBackground());
+            }
+            
+            Font f = getFont();
+            if(((ListItem) value).getIsBold()) {
+                setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+            } else {
+                setFont(f.deriveFont(f.getStyle() & ~Font.BOLD));
             }
 
             return this;

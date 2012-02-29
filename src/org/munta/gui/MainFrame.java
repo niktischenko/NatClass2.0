@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultButtonModel;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -22,9 +23,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.JToolBar;
 import javax.swing.SwingWorker;
 import org.munta.NatClassApp;
@@ -110,6 +113,8 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent ae) {
             colorer.setOverviewMode();
+            entityViewModel.redrawList();
+            entityDetailsViewModel.redrawList();
         }
     };
     private Action setEntityAnalysisModelAction = new AbstractAction("Object Analysis") {
@@ -122,6 +127,8 @@ public class MainFrame extends JFrame {
                 return;
             
             colorer.setEntityAnalysisMode((Entity)entityViewModel.getModelObjectAt(index));
+            entityViewModel.redrawList();
+            entityDetailsViewModel.redrawList();
         }
     };
     
@@ -136,6 +143,20 @@ public class MainFrame extends JFrame {
             
             colorer.setRegularityAnalysisMode(
                     ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+        }
+    };
+    
+    private Action setClassesAnalysisModelAction = new AbstractAction("Classes Analysis") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            
+            int index = regularityList.getSelectedIndex();
+            if(index == -1)
+                return;
+            
+            //colorer.setRegularityAnalysisMode(
+            //        ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
         }
     };
     
@@ -168,6 +189,42 @@ public class MainFrame extends JFrame {
                     buildReguilaritiesAction.setEnabled(true);
                 }
             }).start();
+        }
+    };
+    
+    private DefaultButtonModel overviewButtonModel = new DefaultButtonModel() {
+        @Override
+        public boolean isSelected() {
+            fireStateChanged();
+            if(colorer == null) return false;
+            return colorer.getMode() == AnalysisColorer.OVERVIEW;
+        }
+    };
+    
+    private DefaultButtonModel entitiesButtonModel = new DefaultButtonModel() {
+        @Override
+        public boolean isSelected() {
+            fireStateChanged();
+            if(colorer == null) return false;
+            return colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS;
+        }
+    };
+    
+    private DefaultButtonModel regularitiesButtonModel = new DefaultButtonModel() {
+        @Override
+        public boolean isSelected() {
+            fireStateChanged();
+            if(colorer == null) return false;
+            return colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS;
+        }
+    };
+    
+    private DefaultButtonModel classesButtonModel = new DefaultButtonModel() {
+        @Override
+        public boolean isSelected() {
+            fireStateChanged();
+            if(colorer == null) return false;
+            return colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS;
         }
     };
 
@@ -224,26 +281,35 @@ public class MainFrame extends JFrame {
         }
         menuBar.add(fileMenu);
 
-        JMenu modeMenu = new JMenu("View");
-        JMenuItem overviewMenuItem = new JRadioButtonMenuItem();
-        overviewMenuItem.setAction(setOverviewModelAction);
-        modeMenu.add(overviewMenuItem);
-        JMenuItem a1MenuItem = new JRadioButtonMenuItem("Object analysis");
-        a1MenuItem.setAction(setEntityAnalysisModelAction);
-        modeMenu.add(a1MenuItem);
-        JMenuItem a2MenuItem = new JRadioButtonMenuItem("Regularity analysis");
-        a2MenuItem.setAction(setRegularityAnalysisModelAction);
-        modeMenu.add(a2MenuItem);
-        JMenuItem a3MenuItem = new JRadioButtonMenuItem("Analysys 3");
-        modeMenu.add(a3MenuItem);
-        menuBar.add(modeMenu);
-
         ButtonGroup modeGroup = new ButtonGroup();
-        modeGroup.add(overviewMenuItem);
-        modeGroup.add(a1MenuItem);
-        modeGroup.add(a2MenuItem);
-        modeGroup.add(a3MenuItem);
-
+        JMenu modeMenu = new JMenu("View");
+        JMenuItem menuItem;
+        
+        menuItem = new JRadioButtonMenuItem();
+        menuItem.setAction(setOverviewModelAction);
+        menuItem.setModel(overviewButtonModel);
+        modeMenu.add(menuItem);
+        modeGroup.add(menuItem);
+        
+        menuItem = new JRadioButtonMenuItem();
+        menuItem.setAction(setEntityAnalysisModelAction);
+        menuItem.setModel(entitiesButtonModel);
+        modeMenu.add(menuItem);
+        modeGroup.add(menuItem);
+        
+        menuItem = new JRadioButtonMenuItem();
+        menuItem.setAction(setRegularityAnalysisModelAction);
+        menuItem.setModel(regularitiesButtonModel);
+        modeMenu.add(menuItem);
+        modeGroup.add(menuItem);
+        
+        menuItem = new JRadioButtonMenuItem();
+        menuItem.setAction(setClassesAnalysisModelAction);
+        menuItem.setModel(classesButtonModel);
+        modeMenu.add(menuItem);
+        modeGroup.add(menuItem);
+        
+        menuBar.add(modeMenu);
         setJMenuBar(menuBar);
     }
 
@@ -279,7 +345,36 @@ public class MainFrame extends JFrame {
         button = new JButton();
         button.setAction(buildReguilaritiesAction);
         toolBar.add(button);
-
+        
+        toolBar.addSeparator();
+        
+        ButtonGroup bg = new ButtonGroup();
+        JRadioButton radioButton;
+        
+        radioButton = new JRadioButton();
+        radioButton.setAction(setOverviewModelAction);
+        radioButton.setModel(overviewButtonModel);
+        bg.add(radioButton);
+        toolBar.add(radioButton);
+        
+        radioButton = new JRadioButton();
+        radioButton.setAction(setEntityAnalysisModelAction);
+        radioButton.setModel(entitiesButtonModel);
+        bg.add(radioButton);
+        toolBar.add(radioButton);
+        
+        radioButton = new JRadioButton();
+        radioButton.setAction(setRegularityAnalysisModelAction);
+        radioButton.setModel(regularitiesButtonModel);
+        bg.add(radioButton);
+        toolBar.add(radioButton);
+        
+        radioButton = new JRadioButton();
+        radioButton.setAction(setClassesAnalysisModelAction);
+        radioButton.setModel(classesButtonModel);
+        bg.add(radioButton);
+        toolBar.add(radioButton);
+        
         add(toolBar, BorderLayout.PAGE_START);
     }
 

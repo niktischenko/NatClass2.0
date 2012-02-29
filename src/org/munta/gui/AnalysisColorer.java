@@ -18,11 +18,11 @@ public final class AnalysisColorer implements ListSelectionListener  {
     private Object obj;
 
     public Color getHighlightedColor() {
-        return new Color(0, 180, 0);
+        return new Color(0, 0, 180);
     }
     
     public Color getPositiveColor() {
-        return new Color(0, 180, 0);
+        return new Color(0, 150, 0);
     }
     
     public Color getNegativeColor() {

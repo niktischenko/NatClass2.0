@@ -27,7 +27,7 @@ public class EntityDetailsViewModel
             if(attr == null)
                 return null;
             if (colorer.getEntity().getAttributes().contains(attr)) {
-                return new ListItem(colorer.getHighlightedColor(), getModelObjectAt(i).toString());
+                return new ListItem(colorer.getPositiveColor(), getModelObjectAt(i).toString());
             }
         }
 
