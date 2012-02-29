@@ -16,6 +16,12 @@ public final class ProjectManager {
     public static final String FILENAME_REGULARITIES = "regularities.xml";
     public static final String FILENAME_CLASSES = "classes.xml";
     public static final String FILENAME_PROPERTIES = "properties.xml";
+    
+    public static final String CLASSNAME_ENTITIES = EntityCollection.class.getName();
+    public static final String CLASSNAME_REGULARITIES = RegularityCollection.class.getName();
+    public static final String CLASSNAME_CLASSES = EntityCollection.class.getName();
+    public static final String CLASSNAME_PROPERTIES = GlobalProperties.class.getName();
+    
     private final EntityCollection collectionOfEntities;
     private final RegularityCollection collectionOfRegularities;
     private final EntityCollection collectionOfIdealClasses;

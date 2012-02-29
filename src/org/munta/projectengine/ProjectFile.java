@@ -68,7 +68,7 @@ class ProjectFile {
                 serializer = getCachedSerializer(objectClass);
 
                 ZipEntry zipEntry = new ZipEntry(identifier.getKey());
-                zipEntry.setExtra(objectClass.getName().getBytes(utf8));
+                //zipEntry.setExtra(objectClass.getName().getBytes(utf8));
                 zos.putNextEntry(zipEntry);
                 serializer.serializeProjectObject(identifier.getValue(), zos);
             } catch (SerializerException ex) {
@@ -97,7 +97,20 @@ class ProjectFile {
             
             Class objectClass = null;
             try {
-                String className = new String(zipEntry.getExtra(), utf8);
+                
+                String className;// = new String(zipEntry.getExtra(), utf8);
+                if(zipEntry.getName().equals(ProjectManager.FILENAME_CLASSES)) {
+                    className = ProjectManager.CLASSNAME_CLASSES;
+                } else if(zipEntry.getName().equals(ProjectManager.FILENAME_ENTITIES)) {
+                    className = ProjectManager.CLASSNAME_ENTITIES;
+                } else if(zipEntry.getName().equals(ProjectManager.FILENAME_PROPERTIES)) {
+                    className = ProjectManager.CLASSNAME_PROPERTIES;
+                } else if(zipEntry.getName().equals(ProjectManager.FILENAME_REGULARITIES)) {
+                    className = ProjectManager.CLASSNAME_REGULARITIES;
+                } else {
+                    continue;
+                }
+                
                 objectClass = Class.forName(className);
                 IProjectSerializer serializer = getCachedSerializer(objectClass);
                 
