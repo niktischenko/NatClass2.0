@@ -17,6 +17,18 @@ public final class AnalysisColorer {
     private int mode;
     private Object obj;
 
+    public Color getTargetColor() {
+        return Color.ORANGE;
+    }
+    
+    public Color getConditionColor() {
+        return new Color(0, 191, 255);
+    }
+    
+    public Color getContextColor() {
+        return Color.LIGHT_GRAY;
+    }
+    
     public Color getHighlightedColor() {
         return new Color(0, 0, 180);
     }

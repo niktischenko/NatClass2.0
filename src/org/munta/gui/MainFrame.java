@@ -116,8 +116,7 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent ae) {
             colorer.setOverviewMode();
-            entityViewModel.redrawList();
-            entityDetailsViewModel.redrawList();
+            redrawLists();
         }
     };
     private Action setEntityAnalysisModelAction = new AbstractAction("Object Analysis") {
@@ -130,8 +129,7 @@ public class MainFrame extends JFrame {
                 return;
             
             colorer.setEntityAnalysisMode((Entity)entityViewModel.getModelObjectAt(index));
-            entityViewModel.redrawList();
-            entityDetailsViewModel.redrawList();
+            redrawLists();
         }
     };
     
@@ -146,10 +144,7 @@ public class MainFrame extends JFrame {
             
             colorer.setRegularityAnalysisMode(
                     ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
-            entityViewModel.redrawList();
-            entityDetailsViewModel.redrawList();
-            regularityViewModel.redrawList();
-            regularityDetailsViewModel.redrawList();
+            redrawLists();
         }
     };
     
@@ -169,8 +164,7 @@ public class MainFrame extends JFrame {
                 colorer.setRegularityAnalysisMode(
                         ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
 
-                entityViewModel.redrawList();
-                entityDetailsViewModel.redrawList();
+                redrawLists();
             }
         }
     };
@@ -441,6 +435,15 @@ public class MainFrame extends JFrame {
         outerSplitPane.setResizeWeight(0.3);
 
         add(outerSplitPane, BorderLayout.CENTER);
+    }
+    
+    private void redrawLists() {
+        entityViewModel.redrawList();
+        entityDetailsViewModel.redrawList();
+        regularityViewModel.redrawList();
+        regularityDetailsViewModel.redrawList();
+        classViewModel.redrawList();
+        classDetailsViewModel.redrawList();
     }
 
     @Override
