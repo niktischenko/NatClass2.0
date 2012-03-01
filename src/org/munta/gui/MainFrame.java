@@ -41,6 +41,8 @@ import org.munta.projectengine.ProjectManager;
 public class MainFrame extends JFrame {
 
     private NatClassApp app;
+    //Colorer
+    private AnalysisColorer colorer = new AnalysisColorer();
     //List models
     private EntityViewModel entityViewModel = null;
     private EntityDetailsViewModel entityDetailsViewModel = null;
@@ -48,7 +50,6 @@ public class MainFrame extends JFrame {
     private RegularityDetailsViewModel regularityDetailsViewModel = null;
     private EntityViewModel classViewModel = null;
     private EntityDetailsViewModel classDetailsViewModel = null;
-    private AnalysisColorer colorer;
     // Lists
     private JList entityList;
     private JList entityDetailsList;
@@ -207,54 +208,17 @@ public class MainFrame extends JFrame {
                 @Override
                 public void run() {
                     buildReguilaritiesAction.setEnabled(false);
-                    try {
-                        new RegularityBuilder().fillRegularities(
-                            ProjectManager.getInstance().getCollectionOfEntities(),
-                            ProjectManager.getInstance().getCollectionOfRegularities());
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    app.buildRegularities();
                     buildReguilaritiesAction.setEnabled(true);
                 }
             }).start();
         }
     };
     
-    private DefaultButtonModel overviewButtonModel = new DefaultButtonModel() {
-        @Override
-        public boolean isSelected() {
-            fireStateChanged();
-            if(colorer == null) return false;
-            return colorer.getMode() == AnalysisColorer.OVERVIEW;
-        }
-    };
-    
-    private DefaultButtonModel entitiesButtonModel = new DefaultButtonModel() {
-        @Override
-        public boolean isSelected() {
-            fireStateChanged();
-            if(colorer == null) return false;
-            return colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS;
-        }
-    };
-    
-    private DefaultButtonModel regularitiesButtonModel = new DefaultButtonModel() {
-        @Override
-        public boolean isSelected() {
-            fireStateChanged();
-            if(colorer == null) return false;
-            return colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS;
-        }
-    };
-    
-    private DefaultButtonModel classesButtonModel = new DefaultButtonModel() {
-        @Override
-        public boolean isSelected() {
-            fireStateChanged();
-            if(colorer == null) return false;
-            return colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS;
-        }
-    };
+    private DefaultButtonModel overviewButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.OVERVIEW);
+    private DefaultButtonModel entitiesButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.ENTITY_ANALYSIS);
+    private DefaultButtonModel regularitiesButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.REGULARITY_ANALYSIS);
+    private DefaultButtonModel classesButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.CLASS_ANALYSIS);
 
     private Icon getIconFromResource(String iconName) {
         String iconPath = String.format("images/%s.png", iconName);
@@ -407,7 +371,6 @@ public class MainFrame extends JFrame {
     }
 
     private void initPanels() {
-        colorer = new AnalysisColorer();
         entityViewModel = new EntityViewModel(colorer, ProjectManager.getInstance().getCollectionOfEntities());
         entityDetailsViewModel = new EntityDetailsViewModel(colorer, entityViewModel);
         ProjectManager.getInstance().getCollectionOfEntities().addCollectionChangedListener(entityViewModel);

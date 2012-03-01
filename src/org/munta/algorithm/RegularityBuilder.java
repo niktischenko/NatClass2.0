@@ -82,7 +82,7 @@ public class RegularityBuilder {
         }
     }
 
-    public void fillRegularities(EntityCollection entities, RegularityCollection regularities) throws InterruptedException {
+    public void fillRegularities(EntityCollection entities, RegularityCollection regularities) {
         prepareBuilder(entities);
 
         regularities.clear();
@@ -101,6 +101,10 @@ public class RegularityBuilder {
                 }
             });
         }
-        threadPool.invokeAll(taskList);
+        try {
+            threadPool.invokeAll(taskList);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(RegularityBuilder.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

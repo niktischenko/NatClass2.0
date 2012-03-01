@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.UIManager;
+import org.munta.algorithm.RegularityBuilder;
 import org.munta.gui.MainFrame;
 import org.munta.model.Attribute;
 import org.munta.model.Entity;
@@ -65,6 +66,12 @@ public final class NatClassApp {
             frame.dispose();
             frame = null;
         }
+    }
+    
+    public void buildRegularities() {
+        new RegularityBuilder().fillRegularities(
+                ProjectManager.getInstance().getCollectionOfEntities(),
+                ProjectManager.getInstance().getCollectionOfRegularities());
     }
 
     private void run(String[] args) {
