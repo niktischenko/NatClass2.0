@@ -37,9 +37,9 @@ public class EntityDetailsViewModel
                 return new ListItem(colorer.getConditionColor(), attr.toString(), true);
             }
             
-            if(r.getContext().contains(attr)) {
-                return new ListItem(colorer.getContextColor(), attr.toString(), true);
-            }
+            //if(r.getContext().contains(attr)) {
+            //    return new ListItem(colorer.getContextColor(), attr.toString(), true);
+            //}
             
             if(attr.getName().equals(r.getTarget().getName())) {
                 if(attr.equals(r.getTarget())) {

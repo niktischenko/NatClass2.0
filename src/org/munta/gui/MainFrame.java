@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
@@ -27,13 +25,10 @@ import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.JToolBar;
-import javax.swing.SwingWorker;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.munta.NatClassApp;
-import org.munta.algorithm.RegularityBuilder;
 import org.munta.model.Entity;
 import org.munta.model.Regularity;
 import org.munta.projectengine.ProjectManager;
@@ -48,8 +43,8 @@ public class MainFrame extends JFrame {
     private EntityDetailsViewModel entityDetailsViewModel = null;
     private RegularityViewModel regularityViewModel = null;
     private RegularityDetailsViewModel regularityDetailsViewModel = null;
-    private EntityViewModel classViewModel = null;
-    private EntityDetailsViewModel classDetailsViewModel = null;
+    private ClassesViewModel classViewModel = null;
+    private ClassesDetailsViewModel classDetailsViewModel = null;
     // Lists
     private JList entityList;
     private JList entityDetailsList;
@@ -59,6 +54,8 @@ public class MainFrame extends JFrame {
     private JList classDetailsList;
     // FileDialog
     private FileDialog fileDialog;
+    // Other stuff
+    private JStatusBar statusBar;
     // Actions
     private Action exitAction = new AbstractAction("Exit") {
 
@@ -153,18 +150,28 @@ public class MainFrame extends JFrame {
         @Override
         public void valueChanged(ListSelectionEvent lse) {
             
-            if(lse.getValueIsAdjusting())
+            if(lse.getValueIsAdjusting()) {
                 return;
+            }
             
             int index = regularityList.getSelectedIndex();
-            if(index == -1)
+            if(index == -1) {
                 return;
+            }
             
             if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+                
+                int entityIndex = entityList.getSelectedIndex();
+                entityList.clearSelection();
+                
                 colorer.setRegularityAnalysisMode(
                         ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
-
+                
                 redrawLists();
+                
+                if(entityIndex >= 0) { 
+                    entityList.setSelectedIndex(entityIndex);
+                }
             }
         }
     };
@@ -373,8 +380,8 @@ public class MainFrame extends JFrame {
         regularityDetailsViewModel = new RegularityDetailsViewModel(colorer, regularityViewModel);
         ProjectManager.getInstance().getCollectionOfRegularities().addCollectionChangedListener(regularityViewModel);
 
-        classViewModel = new EntityViewModel(colorer, ProjectManager.getInstance().getCollectionOfIdealClasses());
-        classDetailsViewModel = new EntityDetailsViewModel(colorer, classViewModel);
+        classViewModel = new ClassesViewModel(colorer, ProjectManager.getInstance().getCollectionOfIdealClasses());
+        classDetailsViewModel = new ClassesDetailsViewModel(colorer, classViewModel);
         ProjectManager.getInstance().getCollectionOfIdealClasses().addCollectionChangedListener(classViewModel);
 
         CellRenderer cr = new CellRenderer();
@@ -445,6 +452,11 @@ public class MainFrame extends JFrame {
         classViewModel.redrawList();
         classDetailsViewModel.redrawList();
     }
+    
+    private void initStatusBar() {
+        statusBar = new JStatusBar();
+        add(statusBar, BorderLayout.SOUTH);
+    }
 
     @Override
     public void dispose() {
@@ -473,6 +485,7 @@ public class MainFrame extends JFrame {
         initMenuBar();
         initToolBar();
         initPanels();
+        initStatusBar();
 
         pack();
         setSize(800, 480);

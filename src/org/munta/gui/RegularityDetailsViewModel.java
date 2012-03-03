@@ -63,12 +63,14 @@ public class RegularityDetailsViewModel
         for (Object o : r.getConditions()) {
             this.elementAdded(getColorCondition(o));
         }
-        this.elementAdded("===========");
+        
+        // We decided not to show the context in this version
+        //this.elementAdded("===========");
 
-        this.elementAdded(new ListItem(Color.BLUE, "Context:", true));
-        for (Object o : r.getContext()) {
-            this.elementAdded(getColorContext(o));
-        }
+        //this.elementAdded(new ListItem(Color.BLUE, "Context:", true));
+        //for (Object o : r.getContext()) {
+        //    this.elementAdded(getColorContext(o));
+        //}
     }
 
     @Override
