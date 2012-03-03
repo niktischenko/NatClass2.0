@@ -162,7 +162,9 @@ public class MainFrame extends JFrame {
             if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
                 
                 int entityIndex = entityList.getSelectedIndex();
+                int classIndex = classList.getSelectedIndex();
                 entityList.clearSelection();
+                classList.clearSelection();
                 
                 colorer.setRegularityAnalysisMode(
                         ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
@@ -171,6 +173,9 @@ public class MainFrame extends JFrame {
                 
                 if(entityIndex >= 0) { 
                     entityList.setSelectedIndex(entityIndex);
+                }
+                if(classIndex >= 0) { 
+                    classList.setSelectedIndex(classIndex);
                 }
             }
         }
