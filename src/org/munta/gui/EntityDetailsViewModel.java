@@ -34,14 +34,18 @@ public class EntityDetailsViewModel
             
             Regularity r = colorer.getRegularity();
             if(r.getConditions().contains(attr)) {
-                return new ListItem(colorer.getPositiveColor(), attr.toString());
+                return new ListItem(colorer.getConditionColor(), attr.toString(), true);
             }
+            
+            //if(r.getContext().contains(attr)) {
+            //    return new ListItem(colorer.getContextColor(), attr.toString(), true);
+            //}
             
             if(attr.getName().equals(r.getTarget().getName())) {
                 if(attr.equals(r.getTarget())) {
-                    return new ListItem(colorer.getHighlightedColor(), attr.toString(), true);
+                    return new ListItem(colorer.getTargetColor(), attr.toString(), true);
                 } else {
-                    return new ListItem(colorer.getNegativeColor(), attr.toString());
+                    return new ListItem(colorer.getNegativeColor(), attr.toString(), true);
                 }
             }
         }

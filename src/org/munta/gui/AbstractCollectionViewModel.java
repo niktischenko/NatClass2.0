@@ -17,7 +17,7 @@ public abstract class AbstractCollectionViewModel<E>
     private final List<E> filteredList;
     //private Collection collection;
 
-    private AbstractCollectionViewModel(boolean bl) {
+    private AbstractCollectionViewModel(boolean reserved) {
         list = new ArrayList<E>();
         filteredList = new ArrayList<E>();
     }
@@ -49,10 +49,23 @@ public abstract class AbstractCollectionViewModel<E>
     }
     
     private void updateFilteredList() {
+        int firstSize = filteredList.size();
+        
         filteredList.clear();
+        
         for(E obj : list) {
             if(onFilter(obj))
                 filteredList.add(obj);
+        }
+        
+        int secondSize = filteredList.size();
+        if(secondSize > firstSize) {
+            fireIntervalAdded(this, firstSize, secondSize - 1);
+        } else if(secondSize < firstSize) {
+            fireIntervalRemoved(this, secondSize, firstSize - 1);
+        }
+        if(secondSize > 0) {
+            fireContentsChanged(this, 0, secondSize - 1);
         }
     }
     
@@ -70,7 +83,7 @@ public abstract class AbstractCollectionViewModel<E>
 
     public E getModelObjectAt(int i) {
         E e = null;
-        if(i >= filteredList.size())
+        if(i < 0 || i >= filteredList.size())
             return null;
         //synchronized (list) {
         e = (E) filteredList.get(i);
@@ -137,6 +150,6 @@ public abstract class AbstractCollectionViewModel<E>
     
     public void redrawList() {
         updateFilteredList();
-        fireContentsChanged(this, 0, filteredList.size());
+        fireContentsChanged(this, 0, filteredList.size() - 1);
     }
 }
