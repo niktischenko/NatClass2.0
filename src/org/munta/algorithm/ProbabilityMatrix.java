@@ -1,9 +1,5 @@
 package org.munta.algorithm;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.munta.model.Attribute;
 import org.munta.model.AttributeCollection;
 import org.munta.model.Entity;
@@ -31,113 +27,66 @@ public class ProbabilityMatrix {
     }
 
     public double probability() {
-        double passed = get(0, 0);
-        double all = get(0, 0) + get(1, 0);
-        return passed / all;
+        double passedAll = get(0, 0);
+        double passedRest = get(1, 0) + get(0, 0);
+        if (passedRest == 0) {
+            return 0;
+        }
+//        System.err.println("probability: " + passedAll + " / " + passedRest + " total: " + (data[0] + data[1] + data[2] + data[3]));
+        return passedAll / passedRest;
     }
-    private static Map<Attribute, Set<String>> cachePassed = new HashMap<Attribute, Set<String>>();
-    private static Map<Attribute, Set<String>> cacheNotPassed = new HashMap<Attribute, Set<String>>();
-
-    public static void resetCache() {
-        cachePassed.clear();
-        cacheNotPassed.clear();
+    
+    public int total() {
+        return data[0]+data[1]+data[2]+data[3];
     }
-
+    
     public static ProbabilityMatrix build(Regularity regularity, EntityCollection entities) {
         ProbabilityMatrix matrix = new ProbabilityMatrix();
-        matrix.set(0, 0, countBoth(regularity, entities));
-        matrix.set(1, 0, countConditionOnly(regularity, entities));
-        matrix.set(0, 1, countTargetOnly(regularity, entities));
-        matrix.set(1, 1, countNone(regularity, entities));
+        AttributeCollection target = new AttributeCollection();
+        target.add(regularity.getTarget());
+        
+        int m[][] = buildMatrix(target, regularity.getConditions(), entities);
+        matrix.set(0, 0, m[0][0]);
+        matrix.set(1, 0, m[1][0]);
+        matrix.set(0, 1, m[0][1]);
+        matrix.set(1, 1, m[1][1]);
         return matrix;
     }
 
-    private static int countBoth(Regularity regularity, EntityCollection entities) {
-        AttributeCollection attributes = regularity.getConditions();
-        attributes.add(regularity.getTarget());
-        int count = countAttributeCollectionPassed(attributes, entities).size();
-        attributes.remove(regularity.getTarget());
-        return count;
-    }
-
-    private static int countConditionOnly(Regularity regularity, EntityCollection entities) {
-        Set<String> passedOnCondition = countAttributeCollectionPassed(regularity.getConditions(), entities);
-        Set<String> notPassedOnTarget = countAttributeNotPassed(regularity.getTarget(), entities);
-        return setsIntersection(passedOnCondition, notPassedOnTarget).size();
-    }
-
-    private static int countTargetOnly(Regularity regularity, EntityCollection entities) {
-        Set<String> notPassedOnCondition = countAttributeCollectionNotPassed(regularity.getConditions(), entities);
-        Set<String> passedOnTarget = countAttributePassed(regularity.getTarget(), entities);
-        return setsIntersection(notPassedOnCondition, passedOnTarget).size();
-    }
-
-    private static int countNone(Regularity regularity, EntityCollection entities) {
-        AttributeCollection attributes = regularity.getConditions();
-        attributes.add(regularity.getTarget());
-        int count = countAttributeCollectionNotPassed(attributes, entities).size();
-        attributes.remove(regularity.getTarget());
-        return count;
-    }
-
-    private static Set<String> countAttributeCollectionPassed(AttributeCollection attributes, EntityCollection entities) {
-        Set<String> passedEntities = null;
-        for (Attribute attribute : attributes) {
-            Set<String> passed = countAttributePassed(attribute, entities);
-            if (passedEntities == null) {
-                passedEntities = passed;
-                continue;
-            }
-            passedEntities = setsIntersection(passedEntities, passed);
-        }
-        return passedEntities;
-    }
-
-    private static Set<String> countAttributeCollectionNotPassed(AttributeCollection attributes, EntityCollection entities) {
-        Set<String> notPassedEntities = null;
-        for (Attribute attribute : attributes) {
-            Set<String> notPassed = countAttributeNotPassed(attribute, entities);
-            if (notPassedEntities == null) {
-                notPassedEntities = notPassed;
-                continue;
-            }
-            notPassedEntities = setsIntersection(notPassedEntities, notPassed);
-        }
-        return notPassedEntities;
-    }
-
-    private static Set<String> countAttributePassed(Attribute attribute, EntityCollection entities) {
-        if (!cachePassed.containsKey(attribute)) {
-            Set<String> passedEntities = countAttribute(attribute, entities, true);
-            cachePassed.put(attribute, passedEntities);
-        }
-        return cachePassed.get(attribute);
-    }
-
-    private static Set<String> countAttributeNotPassed(Attribute attribute, EntityCollection entities) {
-        if (!cacheNotPassed.containsKey(attribute)) {
-            Set<String> notPassedEntities = countAttribute(attribute, entities, false);
-            cacheNotPassed.put(attribute, notPassedEntities);
-        }
-        return cacheNotPassed.get(attribute);
-    }
-
-    private static Set<String> countAttribute(Attribute attribute, EntityCollection entities, boolean condition) {
-        Set<String> passedOnCondition = new HashSet<String>();
+    
+    private static int[][] buildMatrix(AttributeCollection target, AttributeCollection condition, EntityCollection entities) {
+        int[][] matrix = new int[2][];
+        matrix[0] = new int[2];
+        matrix[1] = new int[2];
+        matrix[0][0] = 0;
+        matrix[0][1] = 0;
+        matrix[1][0] = 0;
+        matrix[1][1] = 0;
         for (Entity entity : entities) {
-            if (entity.checkAttribute(attribute) == condition) {
-                passedOnCondition.add(entity.getName());
+            boolean bp0 = checkOnEntity(entity, target);
+            boolean bp1 = checkOnEntity(entity, condition);
+            if (bp0 && bp1) {
+                matrix[0][0] += 1;
+            }
+            if (bp0 && !bp1) {
+                matrix[0][1] += 1;
+            }
+            if (!bp0 && bp1) {
+                matrix[1][0] += 1;
+            }
+            if (!bp0 && !bp1) {
+                matrix[1][1] += 1;
             }
         }
-        return passedOnCondition;
+        return matrix;
     }
 
-    private static Set<String> setsIntersection(Set<String> one, Set<String> another) {
-        Set<String> result = new HashSet<String>();
-        Set<String> min = one.size() > another.size() ? another : one;
-        Set<String> max = min == one ? another : one;
-        result.addAll(min);
-        result.retainAll(max);
-        return result;
+    private static boolean checkOnEntity(Entity entity, AttributeCollection attributes) {
+        for (Attribute attr: attributes) {
+            if (!entity.checkAttribute(attr)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

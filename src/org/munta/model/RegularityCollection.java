@@ -28,6 +28,9 @@ public class RegularityCollection
     }
     
     public void add(Regularity r) {
+        if (values().contains(r)) {
+            return;
+        }
         this.put(String.format("R%d", this.size() + 1), r);
     }
 }

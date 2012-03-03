@@ -50,4 +50,24 @@ public class Regularity implements Serializable {
                 conditions.toString(),
                 context.toString());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Regularity)) {
+            return false;
+        }
+
+        Regularity r = (Regularity) obj;
+
+        return this.target.equals(r.target) && this.conditions.equals(r.conditions) && this.context.equals(r.context);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + (this.conditions != null ? this.conditions.hashCode() : 0);
+        hash = 97 * hash + (this.context != null ? this.context.hashCode() : 0);
+        hash = 97 * hash + (this.target != null ? this.target.hashCode() : 0);
+        return hash;
+    }
 }
