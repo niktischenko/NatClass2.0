@@ -26,7 +26,7 @@ public class ClassesDetailsViewModel
         if(attr == null)
             return null;
         
-        if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+        if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             
             Regularity r = colorer.getRegularity();
             if(r.getConditions().contains(attr)) {

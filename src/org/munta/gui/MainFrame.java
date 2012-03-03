@@ -5,6 +5,10 @@ import java.awt.FileDialog;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Map.Entry;
@@ -121,30 +125,55 @@ public class MainFrame extends JFrame {
         @Override
         public void actionPerformed(ActionEvent ae) {
             
-            int index = entityList.getSelectedIndex();
-            if(index == -1)
+            colorer.setEntityAnalysisMode();
+            setEntityAnalysisModelSetEntityAction.actionPerformed(null);
+            setEntityAnalysisModelSetClassAction.actionPerformed(null);
+        }
+    };
+    private Action setEntityAnalysisModelSetEntityAction = new AbstractAction("Set master object") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
                 return;
             
-            colorer.setEntityAnalysisMode((Entity)entityViewModel.getModelObjectAt(index));
+            int index = entityList.getSelectedIndex();
+            if(index != -1) {
+                colorer.setEntity((Entity)entityViewModel.getModelObjectAt(index));
+            }
+            
             redrawLists();
         }
     };
-    
+    private Action setEntityAnalysisModelSetClassAction = new AbstractAction("Set master class") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
+                return;
+            
+            int index = classList.getSelectedIndex();
+            if(index != -1) {
+                colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
+            }
+            
+            redrawLists();
+        }
+    };
     private Action setRegularityAnalysisModelAction = new AbstractAction("Regularity Analysis") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
+            colorer.setRegularityAnalysisMode();
             
             int index = regularityList.getSelectedIndex();
-            if(index == -1)
-                return;
+            if(index != -1) {
+                colorer.setRegularity(((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+            }
             
-            colorer.setRegularityAnalysisMode(
-                    ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
             redrawLists();
         }
     };
-    
     private ListSelectionListener regularityAnalysisModelListener = new ListSelectionListener() {
 
         @Override
@@ -166,8 +195,7 @@ public class MainFrame extends JFrame {
                 entityList.clearSelection();
                 classList.clearSelection();
                 
-                colorer.setRegularityAnalysisMode(
-                        ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+                colorer.setRegularity(((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
                 
                 redrawLists();
                 
@@ -185,13 +213,34 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
+            colorer.setClassAnalysisMode();
             
-            int index = regularityList.getSelectedIndex();
-            if(index == -1)
+            int index = classList.getSelectedIndex();
+            if(index != -1) {
+                colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
+            }
+            redrawLists();
+        }
+    };
+    
+    private ListSelectionListener classAnalysisModelListener = new ListSelectionListener() {
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            
+            if(lse.getValueIsAdjusting()) {
                 return;
+            }
             
-            //colorer.setRegularityAnalysisMode(
-            //        ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+            int index = classList.getSelectedIndex();
+            if(index == -1) {
+                return;
+            }
+            
+            if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS) {
+                colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
+                redrawLists();
+            }
         }
     };
     
@@ -199,7 +248,6 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
             app.startStop();
         }
     };
@@ -399,6 +447,28 @@ public class MainFrame extends JFrame {
         entityDetailsList.setCellRenderer(cr);
         entityDetailsList.setModel(entityDetailsViewModel);
         entityList.addListSelectionListener(entityDetailsViewModel);
+        entityList.addMouseListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                if(me.getClickCount() == 2 || !colorer.isEntityAnalysisReady()) {
+                    setEntityAnalysisModelSetEntityAction.actionPerformed(null);
+                }
+                super.mouseClicked(me);
+            }
+            
+        });
+        entityList.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if(ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                    setEntityAnalysisModelSetEntityAction.actionPerformed(null);
+                }
+                super.keyPressed(ke);
+            }
+            
+        });
 
         JPanel entityPanel = new JPanel();
         entityPanel.setLayout(new GridLayout());
@@ -413,7 +483,6 @@ public class MainFrame extends JFrame {
         regularityDetailsList.setCellRenderer(cr);
         regularityDetailsList.setModel(regularityDetailsViewModel);
         regularityList.addListSelectionListener(regularityDetailsViewModel);
-        
         regularityList.addListSelectionListener(regularityAnalysisModelListener);
 
         JPanel regularityPanel = new JPanel();
@@ -429,6 +498,29 @@ public class MainFrame extends JFrame {
         classDetailsList.setCellRenderer(cr);
         classDetailsList.setModel(classDetailsViewModel);
         classList.addListSelectionListener(classDetailsViewModel);
+        classList.addListSelectionListener(classAnalysisModelListener);
+        classList.addMouseListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                if(me.getClickCount() == 2 || !colorer.isClassAnalysisReady()) {
+                    setEntityAnalysisModelSetClassAction.actionPerformed(null);
+                }
+                super.mouseClicked(me);
+            }
+            
+        });
+        classList.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if(ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                    setEntityAnalysisModelSetClassAction.actionPerformed(null);
+                }
+                super.keyPressed(ke);
+            }
+            
+        });
 
         JPanel classPanel = new JPanel();
         classPanel.setLayout(new GridLayout());

@@ -1,10 +1,6 @@
 package org.munta.gui;
 
 import java.awt.Color;
-import java.util.Map.Entry;
-import javax.swing.JList;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.munta.model.Entity;
 import org.munta.model.Regularity;
 
@@ -15,7 +11,9 @@ public final class AnalysisColorer {
     public static final int CLASS_ANALYSIS = 4;
     
     private int mode;
-    private Object obj;
+    private Entity entity = null;
+    private Entity ideal = null;
+    private Regularity regularity = null;
 
     public Color getTargetColor() {
         return Color.ORANGE;
@@ -41,16 +39,34 @@ public final class AnalysisColorer {
         return new Color(180, 0, 0);
     }
     
+    private void resetSelected() {
+        entity = null;
+        ideal = null;
+        regularity = null;
+    }
+    
     public Entity getEntity() {
-        if(obj instanceof Entity)
-            return (Entity)obj;
-        return null;
+        return entity;
+    }
+    
+    public void setEntity(Entity value) {
+        entity = value;
+    }
+    
+    public Entity getIdealClass() {
+        return ideal;
+    }
+    
+    public void setIdealClass(Entity value) {
+        ideal = value;
     }
 
     public Regularity getRegularity() {
-        if(obj instanceof Regularity)
-            return (Regularity)obj;
-        return null;
+        return regularity;
+    }
+
+    public void setRegularity(Regularity regularity) {
+        this.regularity = regularity;
     }
     
     public int getMode() {
@@ -61,19 +77,31 @@ public final class AnalysisColorer {
         mode = OVERVIEW;
     }
     
-    public void setEntityAnalysisMode(Entity e) {
+    public boolean isEntityAnalysisReady() {
+        return entity != null;
+    }
+    
+    public boolean isClassAnalysisReady() {
+        return ideal != null;
+    }
+    
+    public boolean isRegularityAnalysisReady() {
+        return regularity != null;
+    }
+    
+    public void setEntityAnalysisMode() {
+        resetSelected();
         mode = ENTITY_ANALYSIS;
-        obj = e;
     }
     
-    public void setRegularityAnalysisMode(Regularity r) {
+    public void setRegularityAnalysisMode() {
+        resetSelected();
         mode = REGULARITY_ANALYSIS;
-        obj = r;
     }
     
-    public void setClassAnalysisMode(Entity c) {
+    public void setClassAnalysisMode() {
+        resetSelected();
         mode = CLASS_ANALYSIS;
-        obj = c;
     }
     
     public AnalysisColorer() {

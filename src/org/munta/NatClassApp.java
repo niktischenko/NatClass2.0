@@ -119,10 +119,10 @@ public final class NatClassApp {
 
                             if ((mode & 2) != 0) {
                                 Entity e2 = new Entity("Object: " + (int) (Math.random() * 10000));
-                                count = 1 + (int) (Math.random() * 10);
+                                count = 1 + (int) (Math.random() * 100);
                                 for (int i = 0; i < count; i++) {
                                     Attribute a = new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10));
-                                    if(!e2.getAttributes().containsByName(a)) {
+                                    if(!e2.getAttributes().contains(a)) {
                                         e2.getAttributes().add(a);
                                         i++;
                                     }
