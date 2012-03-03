@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Entities>
+    <Entity name="1_v1">
+        <Attributes>
+            <Attribute name="A" value="1"/>
+            <Attribute name="C" value="1"/>
+            <Attribute name="D" value="1"/>
+        </Attributes>
+    </Entity>
+    <Entity name="2_v2">
+        <Attributes>
+            <Attribute name="A" value="1"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="1"/>
+            <Attribute name="D" value="1"/>
+        </Attributes>
+    </Entity>
+    <Entity name="3_v3">
+        <Attributes>
+            <Attribute name="A" value="0"/>
+            <Attribute name="B" value="1"/>
+            <Attribute name="D" value="1"/>
+        </Attributes>
+    </Entity>
+    <Entity name="4_v4">
+        <Attributes>
+            <Attribute name="A" value="0"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="1"/>
+            <Attribute name="D" value="1"/>
+        </Attributes>
+    </Entity>
+    <Entity name="5_v5">
+        <Attributes>
+            <Attribute name="A" value="1"/>
+            <Attribute name="B" value="1"/>
+            <Attribute name="C" value="0"/>
+            <Attribute name="D" value="0"/>
+        </Attributes>
+    </Entity>
+    <Entity name="6_v6">
+        <Attributes>
+            <Attribute name="A" value="1"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="0"/>
+            <Attribute name="D" value="0"/>
+        </Attributes>
+    </Entity>
+    <Entity name="7_v7">
+        <Attributes>
+            <Attribute name="A" value="0"/>
+            <Attribute name="B" value="1"/>
+            <Attribute name="C" value="0"/>
+            <Attribute name="D" value="0"/>
+        </Attributes>
+    </Entity>
+    <Entity name="8_v8">
+        <Attributes>
+            <Attribute name="A" value="0"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="0"/>
+            <Attribute name="D" value="0"/>
+        </Attributes>
+    </Entity>
+</Entities>

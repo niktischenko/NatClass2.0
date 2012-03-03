@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import javax.swing.UIManager;
 import org.munta.algorithm.RegularityBuilder;
+import org.munta.algorithm.ProbabilityMatrix;
 import org.munta.gui.MainFrame;
 import org.munta.model.Attribute;
 import org.munta.model.Entity;
@@ -47,6 +48,7 @@ public final class NatClassApp {
     }
 
     public Boolean openProject(String filePath) {
+        newProject();
         return ProjectManager.getInstance().loadProject(filePath);
     }
 

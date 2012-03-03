@@ -16,6 +16,28 @@ public class GlobalProperties implements Serializable {
     @XmlProperty(name="ProbabilityThreshold")
     private double probabilityThreshold;
     
+    @XmlProperty(name="FisherThreshold")
+    private double fisherThreshold;
+    
+    @XmlProperty(name="YuleThreshold")
+    private double yuleThreshold;
+
+    public double getYuleThreshold() {
+        return yuleThreshold;
+    }
+
+    public void setYuleThreshold(double yuleThreshold) {
+        this.yuleThreshold = yuleThreshold;
+    }
+
+    public double getFisherThreshold() {
+        return fisherThreshold;
+    }
+
+    public void setFisherThreshold(double fisherThreshold) {
+        this.fisherThreshold = fisherThreshold;
+    }
+    
     public double getProbabilityThreshold() {
         return probabilityThreshold;
     }
@@ -42,6 +64,8 @@ public class GlobalProperties implements Serializable {
     public void clear() {
         probabilityThreshold = 0.8;
         minLength = 2;
+        fisherThreshold = 0.05;
+        yuleThreshold = 0.9;
         useIntermediateResults = false;
     }
     
