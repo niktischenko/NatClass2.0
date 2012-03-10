@@ -120,96 +120,113 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
+
             int index = entityList.getSelectedIndex();
-            if(index == -1)
+            if (index == -1) {
                 return;
-            
-            colorer.setEntityAnalysisMode((Entity)entityViewModel.getModelObjectAt(index));
+            }
+
+            colorer.setEntityAnalysisMode((Entity) entityViewModel.getModelObjectAt(index));
             redrawLists();
         }
     };
-    
     private Action setRegularityAnalysisModelAction = new AbstractAction("Regularity Analysis") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
+
             int index = regularityList.getSelectedIndex();
-            if(index == -1)
+            if (index == -1) {
                 return;
-            
+            }
+
             colorer.setRegularityAnalysisMode(
-                    ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+                    ((Entry<String, Regularity>) regularityViewModel.getModelObjectAt(index)).getValue());
             redrawLists();
         }
     };
-    
     private ListSelectionListener regularityAnalysisModelListener = new ListSelectionListener() {
 
         @Override
         public void valueChanged(ListSelectionEvent lse) {
-            
-            if(lse.getValueIsAdjusting()) {
+
+            if (lse.getValueIsAdjusting()) {
                 return;
             }
-            
+
             int index = regularityList.getSelectedIndex();
-            if(index == -1) {
+            if (index == -1) {
                 return;
             }
-            
-            if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
-                
+
+            if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+
                 int entityIndex = entityList.getSelectedIndex();
                 entityList.clearSelection();
-                
+
                 colorer.setRegularityAnalysisMode(
-                        ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
-                
+                        ((Entry<String, Regularity>) regularityViewModel.getModelObjectAt(index)).getValue());
+
                 redrawLists();
-                
-                if(entityIndex >= 0) { 
+
+                if (entityIndex >= 0) {
                     entityList.setSelectedIndex(entityIndex);
                 }
             }
         }
     };
-    
     private Action setClassesAnalysisModelAction = new AbstractAction("Classes Analysis") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
+
             int index = regularityList.getSelectedIndex();
-            if(index == -1)
+            if (index == -1) {
                 return;
-            
+            }
+
             //colorer.setRegularityAnalysisMode(
             //        ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
         }
     };
-    
     private Action startStopAction = new AbstractAction("StartStop") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
+
             app.startStop();
         }
     };
-    
     private Action buildReguilaritiesAction = new AbstractAction("Build Regularities") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
+
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
                     buildReguilaritiesAction.setEnabled(false);
+                    buildIdealClasses.setEnabled(false);
                     app.buildRegularities();
+                    buildIdealClasses.setEnabled(true);
+                    buildReguilaritiesAction.setEnabled(true);
+                }
+            }).start();
+        }
+    };
+    private Action buildIdealClasses = new AbstractAction("Build classes") {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            new Thread(new Runnable() {
+
+                @Override
+                public void run() {
+                    buildReguilaritiesAction.setEnabled(false);
+                    buildIdealClasses.setEnabled(false);
+                    app.buildIdealClasses();
+                    buildIdealClasses.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);
                 }
             }).start();
@@ -277,31 +294,31 @@ public class MainFrame extends JFrame {
         ButtonGroup modeGroup = new ButtonGroup();
         JMenu modeMenu = new JMenu("View");
         JMenuItem menuItem;
-        
+
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setOverviewModelAction);
         menuItem.setModel(overviewButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-        
+
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setEntityAnalysisModelAction);
         menuItem.setModel(entitiesButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-        
+
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setRegularityAnalysisModelAction);
         menuItem.setModel(regularitiesButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-        
+
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setClassesAnalysisModelAction);
         menuItem.setModel(classesButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-        
+
         menuBar.add(modeMenu);
         setJMenuBar(menuBar);
     }
@@ -334,40 +351,44 @@ public class MainFrame extends JFrame {
         button = new JButton();
         button.setAction(startStopAction);
         toolBar.add(button);
-        
+
         button = new JButton();
         button.setAction(buildReguilaritiesAction);
         toolBar.add(button);
         
+        button = new JButton();
+        button.setAction(buildIdealClasses);
+        toolBar.add(button);
+
         toolBar.addSeparator();
-        
+
         ButtonGroup bg = new ButtonGroup();
         JRadioButton radioButton;
-        
+
         radioButton = new JRadioButton();
         radioButton.setAction(setOverviewModelAction);
         radioButton.setModel(overviewButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-        
+
         radioButton = new JRadioButton();
         radioButton.setAction(setEntityAnalysisModelAction);
         radioButton.setModel(entitiesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-        
+
         radioButton = new JRadioButton();
         radioButton.setAction(setRegularityAnalysisModelAction);
         radioButton.setModel(regularitiesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-        
+
         radioButton = new JRadioButton();
         radioButton.setAction(setClassesAnalysisModelAction);
         radioButton.setModel(classesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-        
+
         add(toolBar, BorderLayout.PAGE_START);
     }
 
@@ -408,7 +429,7 @@ public class MainFrame extends JFrame {
         regularityDetailsList.setCellRenderer(cr);
         regularityDetailsList.setModel(regularityDetailsViewModel);
         regularityList.addListSelectionListener(regularityDetailsViewModel);
-        
+
         regularityList.addListSelectionListener(regularityAnalysisModelListener);
 
         JPanel regularityPanel = new JPanel();
@@ -443,7 +464,7 @@ public class MainFrame extends JFrame {
 
         add(outerSplitPane, BorderLayout.CENTER);
     }
-    
+
     private void redrawLists() {
         entityViewModel.redrawList();
         entityDetailsViewModel.redrawList();
@@ -452,7 +473,7 @@ public class MainFrame extends JFrame {
         classViewModel.redrawList();
         classDetailsViewModel.redrawList();
     }
-    
+
     private void initStatusBar() {
         statusBar = new JStatusBar();
         add(statusBar, BorderLayout.SOUTH);

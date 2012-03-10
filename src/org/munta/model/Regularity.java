@@ -13,21 +13,32 @@ public class Regularity implements Serializable {
     private AttributeCollection context;
     @XmlProperty(name = "Target")
     private Attribute target;
+    private double probability;
 
     public Regularity() {
         conditions = new AttributeCollection();
         context = new AttributeCollection();
         target = new Attribute();
+        probability = 0.0D;
     }
 
     public Regularity(Regularity regularity) {
         this.conditions = new AttributeCollection(regularity.conditions);
         this.context = new AttributeCollection(regularity.context);
         this.target = new Attribute(target);
+        this.probability = regularity.probability;
     }
 
     public AttributeCollection getContext() {
         return context;
+    }
+
+    public double getProbability() {
+        return probability;
+    }
+
+    public void setProbability(double probability) {
+        this.probability = probability;
     }
 
     public AttributeCollection getConditions() {

@@ -46,7 +46,6 @@ public class RegularityBuilder {
 
     private void fillRegularitiesImpl(Attribute target, Map<String, Attribute> set, RegularityCollection regularities) {
         for (Attribute attr : allAttributes) {
-//            System.err.println(attr);
 
             if (target.getName().equals(attr.getName())) {
                 continue;
@@ -69,7 +68,6 @@ public class RegularityBuilder {
             if (m.probability() < properties.getProbabilityThreshold()) {
                 // failed for probability
                 regularityPassed = false;
-//                System.err.println("Regularity " + r.toString() + " does not meet probability threshold: " + m.probability() + " <> " + properties.getProbabilityThreshold());
             }
 
             if (m.get(0, 0) == 1) {
@@ -81,7 +79,6 @@ public class RegularityBuilder {
                 if (fisherYuleResult != FisherYuleAlgorithm.RESULT_PASSED_AS_CONDITION) {
                     // failed for fished
                     regularityPassed = false;
-//                    System.err.println("Regularity " + r.toString() + " does not meet fisher thresold: " + properties.getFisherThreshold());
                 }
             }
 
@@ -99,11 +96,9 @@ public class RegularityBuilder {
                 if (properties.getUseIntermediateResults() && r.getConditions().size() >= properties.getMinLength()) {
                     // save intermediate regularity
                     addRegularity(regularities, r);
-//                    System.err.println("Regularity " + r.toString() + " was saved as intermediate");
                 }
                 // continue generation
                 fillRegularitiesImpl(target, newSet, regularities);
-//                System.err.println("Continue generation for " + r.toString());
             }
         }
     }
@@ -117,7 +112,6 @@ public class RegularityBuilder {
         ArrayList<Callable<Object>> taskList = new ArrayList<Callable<Object>>();
         final RegularityCollection localRegularities = regularities;
         for (Attribute attr : allAttributes) {
-//            fillRegularitiesImpl(attr, new HashMap<String, Attribute>(), localRegularities);
             final Attribute localAttr = attr;
             taskList.add(new Callable<Object>() {
 

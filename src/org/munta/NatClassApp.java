@@ -5,12 +5,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.UIManager;
+import org.munta.algorithm.IdealClassBuilder;
 import org.munta.algorithm.RegularityBuilder;
 import org.munta.algorithm.ProbabilityMatrix;
 import org.munta.gui.MainFrame;
 import org.munta.model.Attribute;
 import org.munta.model.Entity;
+import org.munta.model.EntityCollection;
 import org.munta.model.Regularity;
+import org.munta.model.RegularityCollection;
 import org.munta.projectengine.ProjectManager;
 
 public final class NatClassApp {
@@ -69,11 +72,21 @@ public final class NatClassApp {
             frame = null;
         }
     }
-    
+
     public void buildRegularities() {
         new RegularityBuilder().fillRegularities(
                 ProjectManager.getInstance().getCollectionOfEntities(),
                 ProjectManager.getInstance().getCollectionOfRegularities());
+    }
+
+    public void buildIdealClasses() {
+        IdealClassBuilder builder = new IdealClassBuilder();
+        RegularityCollection regularities = ProjectManager.getInstance().getCollectionOfRegularities();
+        EntityCollection entities = ProjectManager.getInstance().getCollectionOfEntities();
+        builder.fillRegularitiesProbabilitiy(entities, regularities);
+        for (Entity e : entities) {
+            builder.buildClass(e, entities, regularities, ProjectManager.getInstance().getCollectionOfIdealClasses());
+        }
     }
 
     private void run(String[] args) {
@@ -97,8 +110,8 @@ public final class NatClassApp {
                         synchronized (s) {
                             do {
                                 Thread.sleep(10);
-                            } while(!tb);
-                            
+                            } while (!tb);
+
                             int count;
                             int mode = (int) ((0.5 + Math.random() * 6) + 1);
 
@@ -111,7 +124,7 @@ public final class NatClassApp {
                                 count = 1 + (int) (Math.random() * 10);
                                 for (int i = 0; i < count;) {
                                     Attribute a = new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10));
-                                    if(!e1.getAttributes().containsByName(a)) {
+                                    if (!e1.getAttributes().containsByName(a)) {
                                         e1.getAttributes().add(a);
                                         i++;
                                     }
@@ -125,10 +138,10 @@ public final class NatClassApp {
                                 for (int i = 0; i < count; i++) {
                                     int x = (int) (Math.random() * 2);
                                     int y = (int) (Math.random() * 10);
-                                    
+
                                     e2.getAttributes().add(new Attribute("a" + x, "" + y));
-                                    if(x == 1 && y == 1) {
-                                        e2.getAttributes().add(new Attribute("a" + (x+1), "" + y));
+                                    if (x == 1 && y == 1) {
+                                        e2.getAttributes().add(new Attribute("a" + (x + 1), "" + y));
                                     }
                                 }
                                 ProjectManager.getInstance().getCollectionOfIdealClasses().add(e2);
@@ -141,8 +154,8 @@ public final class NatClassApp {
                                 count = 1 + (int) (Math.random() * 9);
                                 for (int i = 0; i < count;) {
                                     Attribute attr = new Attribute("a" + (int) (Math.random() * 10), "" + (int) (Math.random() * 10));
-                                    
-                                    if(!r.getConditions().containsByName(attr) && !r.getTarget().getName().equals(attr.getName())) {
+
+                                    if (!r.getConditions().containsByName(attr) && !r.getTarget().getName().equals(attr.getName())) {
                                         r.getConditions().add(attr);
                                         i++;
                                     }
@@ -163,10 +176,11 @@ public final class NatClassApp {
             }
         });
     }
-    
+
     public void startStop() {
-        if(!t.isAlive())
+        if (!t.isAlive()) {
             t.start();
+        }
         tb = !tb;
     }
 
