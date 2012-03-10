@@ -294,7 +294,7 @@ public class MainFrame extends JFrame {
                     app.buildIdealClasses();
                     buildIdealClassesAction.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);
-                    b.setAction(buildReguilaritiesAction);
+                    b.setAction(buildIdealClassesAction);
                 }
             }).start();
         }
