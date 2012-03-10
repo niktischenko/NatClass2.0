@@ -266,8 +266,8 @@ public class MainFrame extends JFrame {
                 public void run() {
                     AbstractButton b = ((AbstractButton)fae.getSource());       
                     b.setAction(cancelProcessAction);
-                    buildReguilaritiesAction.setEnabled(false);
-                    buildIdealClassesAction.setEnabled(false);
+//                    buildReguilaritiesAction.setEnabled(false);
+//                    buildIdealClassesAction.setEnabled(false);
                     app.buildRegularities();
                     buildReguilaritiesAction.setEnabled(true);
                     buildIdealClassesAction.setEnabled(true);
@@ -289,8 +289,8 @@ public class MainFrame extends JFrame {
                 public void run() {
                     AbstractButton b = ((AbstractButton)fae.getSource());       
                     b.setAction(cancelProcessAction);
-                    buildIdealClassesAction.setEnabled(false);
-                    buildReguilaritiesAction.setEnabled(false);
+//                    buildIdealClassesAction.setEnabled(false);
+//                    buildReguilaritiesAction.setEnabled(false);
                     app.buildIdealClasses();
                     buildIdealClassesAction.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);

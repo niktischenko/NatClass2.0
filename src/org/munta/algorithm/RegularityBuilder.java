@@ -21,6 +21,9 @@ public class RegularityBuilder {
 
     private EntityCollection storedEntities;
     private AttributeCollection allAttributes;
+    private int taskCountDone;
+    private int taskCount;
+    private final Object lock = new Object();
 
     public RegularityBuilder() {
         storedEntities = new EntityCollection();
@@ -45,6 +48,9 @@ public class RegularityBuilder {
     }
 
     private void fillRegularitiesImpl(Attribute target, Map<String, Attribute> set, RegularityCollection regularities) {
+        if (CancelEvent.getInstance().getStopPendingReset()) {
+            return;
+        }
         for (Attribute attr : allAttributes) {
 
             if (target.getName().equals(attr.getName())) {
@@ -111,6 +117,11 @@ public class RegularityBuilder {
         ExecutorService threadPool = Executors.newCachedThreadPool();
         ArrayList<Callable<Object>> taskList = new ArrayList<Callable<Object>>();
         final RegularityCollection localRegularities = regularities;
+        taskCount = allAttributes.size();
+        for (Attribute a : allAttributes) {
+            System.err.print(a.toString()+" ");
+        }
+        taskCountDone = 0;
         for (Attribute attr : allAttributes) {
             final Attribute localAttr = attr;
             taskList.add(new Callable<Object>() {
@@ -118,11 +129,19 @@ public class RegularityBuilder {
                 @Override
                 public Object call() throws Exception {
                     fillRegularitiesImpl(localAttr, new HashMap<String, Attribute>(), localRegularities);
+                    synchronized (lock) {
+                        taskCountDone++;
+                        System.err.println("Task done "+taskCountDone+" from "+taskCount);
+                        if (taskCount == taskCountDone) {
+                            CancelEvent.getInstance().setFlag();
+                        }
+                    }
                     return null;
                 }
             });
         }
         try {
+            CancelEvent.getInstance().resetFlag();
             threadPool.invokeAll(taskList);
         } catch (InterruptedException ex) {
             Logger.getLogger(RegularityBuilder.class.getName()).log(Level.SEVERE, null, ex);
