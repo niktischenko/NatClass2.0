@@ -17,12 +17,7 @@ public final class CancelEvent {
     }
     
     public Boolean getStopPendingReset() {
-        if(isStopPending) {
-            isStopPending = false;
-            return true;
-        } else {
-            return isStopPending;
-        }
+        return isStopPending;
     }
     
     public void waitFlag() {
@@ -33,10 +28,12 @@ public final class CancelEvent {
     }
     
     public void setFlag() {
+        isStopPending = false;
         latch.countDown();
     }
     
     public void resetFlag() {
+        isStopPending = false;
         latch = new CountDownLatch(1);
     }
     
