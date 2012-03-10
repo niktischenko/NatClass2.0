@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.UIManager;
+import org.munta.algorithm.CancelEvent;
 import org.munta.algorithm.IdealClassBuilder;
 import org.munta.algorithm.RegularityBuilder;
 import org.munta.gui.MainFrame;
@@ -46,6 +47,7 @@ public final class NatClassApp {
     }
 
     public void newProject() {
+        stopAlgoritms();
         ProjectManager.getInstance().newProject();
     }
 
@@ -64,6 +66,7 @@ public final class NatClassApp {
 
     public void exitApplication() {
 
+        stopAlgoritms();
         t.interrupt();
 
         if (frame != null) {
@@ -86,6 +89,11 @@ public final class NatClassApp {
         for (Entity e : entities) {
             builder.buildClass(e, entities, regularities, ProjectManager.getInstance().getCollectionOfIdealClasses());
         }
+    }
+    
+    public void stopAlgoritms() {
+        CancelEvent.getInstance().setStopPending();
+        CancelEvent.getInstance().waitFlag();
     }
 
     private void run(String[] args) {

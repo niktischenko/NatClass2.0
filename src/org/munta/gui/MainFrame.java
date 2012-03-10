@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Map.Entry;
 import javax.swing.AbstractAction;
+import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultButtonModel;
@@ -24,6 +25,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
@@ -256,16 +258,20 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
+            final ActionEvent fae = ae;
             
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
+                    AbstractButton b = ((AbstractButton)fae.getSource());       
+                    b.setAction(cancelProcessAction);
                     buildReguilaritiesAction.setEnabled(false);
                     buildIdealClassesAction.setEnabled(false);
                     app.buildRegularities();
                     buildReguilaritiesAction.setEnabled(true);
                     buildIdealClassesAction.setEnabled(true);
+                    b.setAction(buildReguilaritiesAction);
                 }
             }).start();
         }
@@ -274,20 +280,41 @@ public class MainFrame extends JFrame {
     private Action buildIdealClassesAction = new AbstractAction("Build classes") {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent ae) {
+            final ActionEvent fae = ae;
+            
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
+                    AbstractButton b = ((AbstractButton)fae.getSource());       
+                    b.setAction(cancelProcessAction);
                     buildIdealClassesAction.setEnabled(false);
                     buildReguilaritiesAction.setEnabled(false);
                     app.buildIdealClasses();
                     buildIdealClassesAction.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);
+                    b.setAction(buildReguilaritiesAction);
                 }
             }).start();
         }
         
+    };
+    
+    private Action cancelProcessAction = new AbstractAction("Stop") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            final ActionEvent fae = ae;
+            
+            int m = JOptionPane.showConfirmDialog(MainFrame.this,
+                    "Do you want to stop current calculation process?",
+                    "Are you sure?",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+            if(m == JOptionPane.YES_OPTION) {
+                app.stopAlgoritms();
+            }
+        }
     };
     
     private DefaultButtonModel overviewButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.OVERVIEW);
@@ -406,10 +433,6 @@ public class MainFrame extends JFrame {
 
         toolBar.addSeparator();
         button = new JButton();
-        button.setAction(startStopAction);
-        toolBar.add(button);
-        
-        button = new JButton();
         button.setAction(buildReguilaritiesAction);
         toolBar.add(button);
         
@@ -445,6 +468,11 @@ public class MainFrame extends JFrame {
         radioButton.setModel(classesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
+        
+        toolBar.addSeparator();
+        button = new JButton();
+        button.setAction(startStopAction);
+        toolBar.add(button);
         
         add(toolBar, BorderLayout.PAGE_START);
     }
