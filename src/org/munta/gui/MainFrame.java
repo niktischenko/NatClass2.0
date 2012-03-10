@@ -5,6 +5,10 @@ import java.awt.FileDialog;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Map.Entry;
@@ -120,13 +124,39 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
+            
+            colorer.setEntityAnalysisMode();
+            setEntityAnalysisModelSetEntityAction.actionPerformed(null);
+            setEntityAnalysisModelSetClassAction.actionPerformed(null);
+        }
+    };
+    private Action setEntityAnalysisModelSetEntityAction = new AbstractAction("Set master object") {
 
-            int index = entityList.getSelectedIndex();
-            if (index == -1) {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
                 return;
+            
+            int index = entityList.getSelectedIndex();
+            if(index != -1) {
+                colorer.setEntity((Entity)entityViewModel.getModelObjectAt(index));
             }
+            
+            redrawLists();
+        }
+    };
+    private Action setEntityAnalysisModelSetClassAction = new AbstractAction("Set master class") {
 
-            colorer.setEntityAnalysisMode((Entity) entityViewModel.getModelObjectAt(index));
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
+                return;
+            
+            int index = classList.getSelectedIndex();
+            if(index != -1) {
+                colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
+            }
+            
             redrawLists();
         }
     };
@@ -134,14 +164,13 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-
+            colorer.setRegularityAnalysisMode();
+            
             int index = regularityList.getSelectedIndex();
-            if (index == -1) {
-                return;
+            if(index != -1) {
+                colorer.setRegularity(((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
             }
-
-            colorer.setRegularityAnalysisMode(
-                    ((Entry<String, Regularity>) regularityViewModel.getModelObjectAt(index)).getValue());
+            
             redrawLists();
         }
     };
@@ -149,73 +178,100 @@ public class MainFrame extends JFrame {
 
         @Override
         public void valueChanged(ListSelectionEvent lse) {
-
-            if (lse.getValueIsAdjusting()) {
+            
+            if(lse.getValueIsAdjusting()) {
                 return;
             }
-
+            
             int index = regularityList.getSelectedIndex();
-            if (index == -1) {
+            if(index == -1) {
                 return;
             }
-
-            if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
-
+            
+            if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+                
                 int entityIndex = entityList.getSelectedIndex();
+                int classIndex = classList.getSelectedIndex();
                 entityList.clearSelection();
-
-                colorer.setRegularityAnalysisMode(
-                        ((Entry<String, Regularity>) regularityViewModel.getModelObjectAt(index)).getValue());
-
+                classList.clearSelection();
+                
+                colorer.setRegularity(((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+                
                 redrawLists();
-
-                if (entityIndex >= 0) {
+                
+                if(entityIndex >= 0) { 
                     entityList.setSelectedIndex(entityIndex);
+                }
+                if(classIndex >= 0) { 
+                    classList.setSelectedIndex(classIndex);
                 }
             }
         }
     };
+    
     private Action setClassesAnalysisModelAction = new AbstractAction("Classes Analysis") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-
-            int index = regularityList.getSelectedIndex();
-            if (index == -1) {
-                return;
+            colorer.setClassAnalysisMode();
+            
+            int index = classList.getSelectedIndex();
+            if(index != -1) {
+                colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
             }
-
-            //colorer.setRegularityAnalysisMode(
-            //        ((Entry<String, Regularity>)regularityViewModel.getModelObjectAt(index)).getValue());
+            redrawLists();
         }
     };
+    
+    private ListSelectionListener classAnalysisModelListener = new ListSelectionListener() {
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            
+            if(lse.getValueIsAdjusting()) {
+                return;
+            }
+            
+            int index = classList.getSelectedIndex();
+            if(index == -1) {
+                return;
+            }
+            
+            if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS) {
+                colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
+                redrawLists();
+            }
+        }
+    };
+    
     private Action startStopAction = new AbstractAction("StartStop") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-
             app.startStop();
         }
     };
+    
     private Action buildReguilaritiesAction = new AbstractAction("Build Regularities") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-
+            
             new Thread(new Runnable() {
 
                 @Override
                 public void run() {
                     buildReguilaritiesAction.setEnabled(false);
-                    buildIdealClasses.setEnabled(false);
+                    buildIdealClassesAction.setEnabled(false);
                     app.buildRegularities();
-                    buildIdealClasses.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);
+                    buildIdealClassesAction.setEnabled(true);
                 }
             }).start();
         }
     };
-    private Action buildIdealClasses = new AbstractAction("Build classes") {
+    
+    private Action buildIdealClassesAction = new AbstractAction("Build classes") {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -223,14 +279,15 @@ public class MainFrame extends JFrame {
 
                 @Override
                 public void run() {
+                    buildIdealClassesAction.setEnabled(false);
                     buildReguilaritiesAction.setEnabled(false);
-                    buildIdealClasses.setEnabled(false);
                     app.buildIdealClasses();
-                    buildIdealClasses.setEnabled(true);
+                    buildIdealClassesAction.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);
                 }
             }).start();
         }
+        
     };
     
     private DefaultButtonModel overviewButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.OVERVIEW);
@@ -294,31 +351,31 @@ public class MainFrame extends JFrame {
         ButtonGroup modeGroup = new ButtonGroup();
         JMenu modeMenu = new JMenu("View");
         JMenuItem menuItem;
-
+        
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setOverviewModelAction);
         menuItem.setModel(overviewButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-
+        
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setEntityAnalysisModelAction);
         menuItem.setModel(entitiesButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-
+        
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setRegularityAnalysisModelAction);
         menuItem.setModel(regularitiesButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-
+        
         menuItem = new JRadioButtonMenuItem();
         menuItem.setAction(setClassesAnalysisModelAction);
         menuItem.setModel(classesButtonModel);
         modeMenu.add(menuItem);
         modeGroup.add(menuItem);
-
+        
         menuBar.add(modeMenu);
         setJMenuBar(menuBar);
     }
@@ -351,44 +408,44 @@ public class MainFrame extends JFrame {
         button = new JButton();
         button.setAction(startStopAction);
         toolBar.add(button);
-
+        
         button = new JButton();
         button.setAction(buildReguilaritiesAction);
         toolBar.add(button);
         
         button = new JButton();
-        button.setAction(buildIdealClasses);
+        button.setAction(buildIdealClassesAction);
         toolBar.add(button);
-
+        
         toolBar.addSeparator();
-
+        
         ButtonGroup bg = new ButtonGroup();
         JRadioButton radioButton;
-
+        
         radioButton = new JRadioButton();
         radioButton.setAction(setOverviewModelAction);
         radioButton.setModel(overviewButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-
+        
         radioButton = new JRadioButton();
         radioButton.setAction(setEntityAnalysisModelAction);
         radioButton.setModel(entitiesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-
+        
         radioButton = new JRadioButton();
         radioButton.setAction(setRegularityAnalysisModelAction);
         radioButton.setModel(regularitiesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-
+        
         radioButton = new JRadioButton();
         radioButton.setAction(setClassesAnalysisModelAction);
         radioButton.setModel(classesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
-
+        
         add(toolBar, BorderLayout.PAGE_START);
     }
 
@@ -415,6 +472,28 @@ public class MainFrame extends JFrame {
         entityDetailsList.setCellRenderer(cr);
         entityDetailsList.setModel(entityDetailsViewModel);
         entityList.addListSelectionListener(entityDetailsViewModel);
+        entityList.addMouseListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                if(me.getClickCount() == 2 || !colorer.isEntityAnalysisReady()) {
+                    setEntityAnalysisModelSetEntityAction.actionPerformed(null);
+                }
+                super.mouseClicked(me);
+            }
+            
+        });
+        entityList.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if(ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                    setEntityAnalysisModelSetEntityAction.actionPerformed(null);
+                }
+                super.keyPressed(ke);
+            }
+            
+        });
 
         JPanel entityPanel = new JPanel();
         entityPanel.setLayout(new GridLayout());
@@ -429,7 +508,6 @@ public class MainFrame extends JFrame {
         regularityDetailsList.setCellRenderer(cr);
         regularityDetailsList.setModel(regularityDetailsViewModel);
         regularityList.addListSelectionListener(regularityDetailsViewModel);
-
         regularityList.addListSelectionListener(regularityAnalysisModelListener);
 
         JPanel regularityPanel = new JPanel();
@@ -445,6 +523,29 @@ public class MainFrame extends JFrame {
         classDetailsList.setCellRenderer(cr);
         classDetailsList.setModel(classDetailsViewModel);
         classList.addListSelectionListener(classDetailsViewModel);
+        classList.addListSelectionListener(classAnalysisModelListener);
+        classList.addMouseListener(new MouseAdapter() {
+            
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                if(me.getClickCount() == 2 || !colorer.isClassAnalysisReady()) {
+                    setEntityAnalysisModelSetClassAction.actionPerformed(null);
+                }
+                super.mouseClicked(me);
+            }
+            
+        });
+        classList.addKeyListener(new KeyAdapter() {
+
+            @Override
+            public void keyPressed(KeyEvent ke) {
+                if(ke.getKeyCode() == KeyEvent.VK_ENTER) {
+                    setEntityAnalysisModelSetClassAction.actionPerformed(null);
+                }
+                super.keyPressed(ke);
+            }
+            
+        });
 
         JPanel classPanel = new JPanel();
         classPanel.setLayout(new GridLayout());
@@ -464,7 +565,7 @@ public class MainFrame extends JFrame {
 
         add(outerSplitPane, BorderLayout.CENTER);
     }
-
+    
     private void redrawLists() {
         entityViewModel.redrawList();
         entityDetailsViewModel.redrawList();
@@ -473,7 +574,7 @@ public class MainFrame extends JFrame {
         classViewModel.redrawList();
         classDetailsViewModel.redrawList();
     }
-
+    
     private void initStatusBar() {
         statusBar = new JStatusBar();
         add(statusBar, BorderLayout.SOUTH);

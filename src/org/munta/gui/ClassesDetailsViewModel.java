@@ -23,6 +23,29 @@ public class ClassesDetailsViewModel
     @Override
     public Object getElementAt(int i) {
         Attribute attr = getModelObjectAt(i);
+        if(attr == null)
+            return null;
+        
+        if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
+            
+            Regularity r = colorer.getRegularity();
+            if(r.getConditions().contains(attr)) {
+                return new ListItem(colorer.getConditionColor(), attr.toString(), true);
+            }
+            
+            //if(r.getContext().contains(attr)) {
+            //    return new ListItem(colorer.getContextColor(), attr.toString(), true);
+            //}
+            
+            if(attr.getName().equals(r.getTarget().getName())) {
+                if(attr.equals(r.getTarget())) {
+                    return new ListItem(colorer.getTargetColor(), attr.toString(), true);
+                } else {
+                    return new ListItem(colorer.getNegativeColor(), attr.toString(), true);
+                }
+            }
+        }
+        
         return new ListItem(attr.toString());
     }
 

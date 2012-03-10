@@ -26,11 +26,11 @@ public class EntityDetailsViewModel
         if(attr == null)
             return null;
         
-        if (colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS) {
+        if (colorer.getMode() == AnalysisColorer.ENTITY_ANALYSIS && colorer.isEntityAnalysisReady()) {
             if (colorer.getEntity().getAttributes().contains(attr)) {
                 return new ListItem(colorer.getPositiveColor(), attr.toString());
             }
-        } else if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+        } else if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             
             Regularity r = colorer.getRegularity();
             if(r.getConditions().contains(attr)) {

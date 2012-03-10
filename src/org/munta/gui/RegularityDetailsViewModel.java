@@ -26,7 +26,7 @@ public class RegularityDetailsViewModel
     }
     
     private Object getColorTarget(Object o) {
-        if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+        if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             return new ListItem(colorer.getTargetColor(), o.toString(), true);
         } else {
             return o;
@@ -34,7 +34,7 @@ public class RegularityDetailsViewModel
     }
 
     private Object getColorCondition(Object o) {
-        if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+        if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             return new ListItem(colorer.getConditionColor(), o.toString(), true);
         } else {
             return o;
@@ -42,7 +42,7 @@ public class RegularityDetailsViewModel
     }
 
     private Object getColorContext(Object o) {
-        if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
+        if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             return new ListItem(colorer.getContextColor(), o.toString(), true);
         } else {
             return o;
@@ -92,15 +92,14 @@ public class RegularityDetailsViewModel
         
         JList jList = (JList) lse.getSource();
         int index = jList.getSelectedIndex();
-        if (index == -1) {
-            return;
+        if (index != -1) {
+            Entry<String, Regularity> e = regularityViewModel.getModelObjectAt(index);
+            if (e != null) {
+                Regularity r = e.getValue();
+                selectedRegularity = r;
+            }
         }
-
-        Entry<String, Regularity> e = regularityViewModel.getModelObjectAt(index);
-        if (e != null) {
-            Regularity r = e.getValue();
-            selectedRegularity = r;
-            updateSelectedRegularity(r);
-        }
+        
+        updateSelectedRegularity(selectedRegularity);
     }
 }
