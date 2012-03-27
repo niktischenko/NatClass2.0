@@ -5,7 +5,7 @@ import org.munta.projectengine.serializer.xml.XmlObject;
 import org.munta.projectengine.serializer.xml.XmlProperty;
 
 @XmlObject(name="Properties")
-public class GlobalProperties implements Serializable {
+public final class GlobalProperties implements Serializable {
 
     public int test = 1123;
     

@@ -260,20 +260,26 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent ae) {
             final ActionEvent fae = ae;
             
-            new Thread(new Runnable() {
+            SettingsDialog sd = new SettingsDialog(MainFrame.this,
+                    ProjectManager.getInstance().getGlobalProperties());
+            sd.setVisible(true);
+            
+            if(sd.getDialogResult()) {
+                new Thread(new Runnable() {
 
-                @Override
-                public void run() {
-                    AbstractButton b = ((AbstractButton)fae.getSource());       
-                    b.setAction(cancelProcessAction);
-                    buildReguilaritiesAction.setEnabled(false);
-                    buildIdealClassesAction.setEnabled(false);
-                    app.buildRegularities();
-                    buildReguilaritiesAction.setEnabled(true);
-                    buildIdealClassesAction.setEnabled(true);
-                    b.setAction(buildReguilaritiesAction);
-                }
-            }).start();
+                    @Override
+                    public void run() {
+                        AbstractButton b = ((AbstractButton)fae.getSource());       
+                        b.setAction(cancelProcessAction);
+                        buildReguilaritiesAction.setEnabled(false);
+                        buildIdealClassesAction.setEnabled(false);
+                        app.buildRegularities();
+                        buildReguilaritiesAction.setEnabled(true);
+                        buildIdealClassesAction.setEnabled(true);
+                        b.setAction(buildReguilaritiesAction);
+                    }
+                }).start();
+            }
         }
     };
     
