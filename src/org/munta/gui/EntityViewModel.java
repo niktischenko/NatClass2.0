@@ -6,7 +6,8 @@ import org.munta.model.Entity;
 import org.munta.model.EntityCollection;
 import org.munta.model.Regularity;
 
-public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
+public class EntityViewModel
+    extends AbstractCollectionViewModel<Entity> {
 
     private AnalysisColorer colorer;
     
@@ -24,6 +25,15 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
                 if(!obj.getAttributes().contains(attr)) return false;
             }
             return true;
+        } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
+            Entity ideal = colorer.getIdealClass();
+            
+            for(Attribute attr : obj.getAttributes()) {
+                if(!ideal.checkAttribute(attr)) {
+                    return false;
+                }
+            }
+            return true;
         }
         
         return true;
@@ -31,7 +41,6 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
 
     @Override
     public Object getElementAt(int i) {
-        
         Entity e = getModelObjectAt(i);
         if(e == null)
             return null;
@@ -46,7 +55,6 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
         } else if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             Regularity r = colorer.getRegularity();
             
-            Color color = null;
             for(Attribute attr : e.getAttributes()) {
                 if(attr.getName().equals(r.getTarget().getName()))
                 {
@@ -56,6 +64,18 @@ public class EntityViewModel extends AbstractCollectionViewModel<Entity> {
                        return new ListItem(colorer.getNegativeColor(), e.getName());
                    }
                 }
+            }
+        } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
+            Entity ideal = colorer.getIdealClass();
+            
+            Boolean useColor = true; 
+            for(Attribute attr : e.getAttributes()) {
+                if(!e.checkAttribute(attr)) {
+                    useColor = false;
+                }
+            }
+            if(useColor) {
+                return new ListItem(colorer.getPositiveColor(), e.getName());
             }
         }
         

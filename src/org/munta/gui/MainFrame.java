@@ -32,6 +32,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.munta.NatClassApp;
@@ -191,7 +192,7 @@ public class MainFrame extends JFrame {
             }
             
             if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
-                
+                // This is a workaround for the selection bug
                 int entityIndex = entityList.getSelectedIndex();
                 int classIndex = classList.getSelectedIndex();
                 entityList.clearSelection();
@@ -240,8 +241,21 @@ public class MainFrame extends JFrame {
             }
             
             if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS) {
+                // This is a workaround for the selection bug
+                int entityIndex = entityList.getSelectedIndex();
+                int regularityIndex = regularityList.getSelectedIndex();
+                entityList.clearSelection();
+                regularityList.clearSelection();
+                
                 colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
                 redrawLists();
+                
+                if(entityIndex >= 0) { 
+                    entityList.setSelectedIndex(entityIndex);
+                }
+                if(regularityIndex >= 0) { 
+                    regularityList.setSelectedIndex(regularityIndex);
+                }
             }
         }
     };
