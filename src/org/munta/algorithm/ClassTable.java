@@ -46,19 +46,20 @@ public class ClassTable {
         table.get(attr.getName()).put(attr.getValue(), item);
     }
 
-    public double getMaxGamma() {
-        double gamma = 0.0D;
+    public double getMaxGamma(boolean on) {
+        double gamma = ((table.values().iterator().next()).values().iterator().next()).getGamma();
         attributeForMaxGamma = new Attribute();
         for (String name : table.keySet()) {
             for (String value : table.get(name).keySet()) {
                 ClassTableItem item = table.get(name).get(value);
-                if (item.getGamma() > gamma) {
+                if (!item.isOn() && item.getGamma() >= gamma) {
                     gamma = item.getGamma();
                     attributeForMaxGamma.setName(name);
                     attributeForMaxGamma.setValue(value);
                 }
             }
         }
+        System.err.println("Gamma: " + gamma);
         return gamma;
     }
 
@@ -69,7 +70,6 @@ public class ClassTable {
     public ClassTable generateForEntity(Entity e) {
         ClassTable t = new ClassTable(this);
         for (Attribute attr : e.getAttributes()) {
-            t.set(attr, new ClassTableItem());
             t.get(attr).setOn(true);
         }
         return t;
@@ -88,16 +88,18 @@ public class ClassTable {
     }
 
     public double calcGamma(RegularityCollection regularities) {
-        double gamma = 0.0D;
+        double gamma = 0;
         for (Regularity r : regularities.values()) {
             if (checkAttributesCollection(r.getConditions())) {
                 if (checkAttribute(r.getTarget())) {
-                    gamma += Math.log(1.0D - r.getProbability());
-                } else {
-                    gamma -= Math.log(1.0D - r.getProbability());
+                    gamma += Math.log(1 - r.getProbability());
+                }
+                if (checkAttributeNegative(r.getTarget()))  {
+                    gamma -= Math.log(1 - r.getProbability());
                 }
             }
         }
+        System.err.println("Calculated gamma " + gamma);
         return gamma;
     }
 
@@ -115,12 +117,16 @@ public class ClassTable {
     }
 
     private boolean checkAttribute(Attribute attr) {
-        if (!table.containsKey(attr.getName())) {
-            return false;
+        return get(attr).isOn();
+    }
+
+    private boolean checkAttributeNegative(Attribute attr) {
+        Map<String, ClassTableItem> items = table.get(attr.getName());
+        for (String value : items.keySet()) {
+            if (!value.equals(attr.getValue()) && items.get(value).isOn()) {
+                return true;
+            }
         }
-        if (!table.get(attr.getName()).containsKey(attr.getValue())) {
-            return false;
-        }
-        return true;
+        return false;
     }
 }

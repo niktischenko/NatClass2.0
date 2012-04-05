@@ -63,8 +63,7 @@ public abstract class AbstractCollectionViewModel<E>
             fireIntervalAdded(this, firstSize, secondSize - 1);
         } else if(secondSize < firstSize) {
             fireIntervalRemoved(this, secondSize, firstSize - 1);
-        }
-        if(secondSize > 0) {
+        } else if(secondSize > 0) {
             fireContentsChanged(this, 0, secondSize - 1);
         }
     }
@@ -95,7 +94,7 @@ public abstract class AbstractCollectionViewModel<E>
         int size = list.size();
         list.add((E) o);
         updateFilteredList();
-        fireIntervalAdded(this, size, size);
+        //fireIntervalAdded(this, size, size);
     }
 
     private void elementRemovedUnsafe(Object o) {
@@ -109,7 +108,7 @@ public abstract class AbstractCollectionViewModel<E>
             size0 = size;
         }
         updateFilteredList();
-        fireIntervalRemoved(this, size0, size);
+        //fireIntervalRemoved(this, size0, size);
     }
 
     @Override
@@ -150,6 +149,6 @@ public abstract class AbstractCollectionViewModel<E>
     
     public void redrawList() {
         updateFilteredList();
-        fireContentsChanged(this, 0, filteredList.size() - 1);
+        //fireContentsChanged(this, 0, filteredList.size() - 1);
     }
 }

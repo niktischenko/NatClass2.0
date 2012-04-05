@@ -14,7 +14,7 @@ public class ClassTableItem {
         this.gamma = gamma;
     }
 
-    public double getGamma() {
+    public Double getGamma() {
         return gamma;
     }
 

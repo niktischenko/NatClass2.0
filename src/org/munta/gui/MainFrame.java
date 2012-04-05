@@ -36,6 +36,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.munta.NatClassApp;
 import org.munta.model.Entity;
+import org.munta.model.GlobalProperties;
 import org.munta.model.Regularity;
 import org.munta.projectengine.ProjectManager;
 
@@ -191,7 +192,7 @@ public class MainFrame extends JFrame {
             }
             
             if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS) {
-                
+                // This is a workaround for the selection bug
                 int entityIndex = entityList.getSelectedIndex();
                 int classIndex = classList.getSelectedIndex();
                 entityList.clearSelection();
@@ -240,8 +241,21 @@ public class MainFrame extends JFrame {
             }
             
             if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS) {
+                // This is a workaround for the selection bug
+                int entityIndex = entityList.getSelectedIndex();
+                int regularityIndex = regularityList.getSelectedIndex();
+                entityList.clearSelection();
+                regularityList.clearSelection();
+                
                 colorer.setIdealClass((Entity)classViewModel.getModelObjectAt(index));
                 redrawLists();
+                
+                if(entityIndex >= 0) { 
+                    entityList.setSelectedIndex(entityIndex);
+                }
+                if(regularityIndex >= 0) { 
+                    regularityList.setSelectedIndex(regularityIndex);
+                }
             }
         }
     };
@@ -260,19 +274,22 @@ public class MainFrame extends JFrame {
         public void actionPerformed(ActionEvent ae) {
             final ActionEvent fae = ae;
             
-            SettingsDialog sd = new SettingsDialog(MainFrame.this,
-                    ProjectManager.getInstance().getGlobalProperties());
+            GlobalProperties newProps = new GlobalProperties();
+            newProps.set(ProjectManager.getInstance().getGlobalProperties());
+            
+            SettingsDialog sd = new SettingsDialog(MainFrame.this, newProps);
             sd.setVisible(true);
             
             if(sd.getDialogResult()) {
+                ProjectManager.getInstance().getGlobalProperties().set(newProps);
                 new Thread(new Runnable() {
 
                     @Override
                     public void run() {
                         AbstractButton b = ((AbstractButton)fae.getSource());       
                         b.setAction(cancelProcessAction);
-                        buildReguilaritiesAction.setEnabled(false);
-                        buildIdealClassesAction.setEnabled(false);
+    //                    buildReguilaritiesAction.setEnabled(false);
+    //                    buildIdealClassesAction.setEnabled(false);
                         app.buildRegularities();
                         buildReguilaritiesAction.setEnabled(true);
                         buildIdealClassesAction.setEnabled(true);
@@ -295,8 +312,8 @@ public class MainFrame extends JFrame {
                 public void run() {
                     AbstractButton b = ((AbstractButton)fae.getSource());       
                     b.setAction(cancelProcessAction);
-                    buildIdealClassesAction.setEnabled(false);
-                    buildReguilaritiesAction.setEnabled(false);
+//                    buildIdealClassesAction.setEnabled(false);
+//                    buildReguilaritiesAction.setEnabled(false);
                     app.buildIdealClasses();
                     buildIdealClassesAction.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);

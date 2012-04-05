@@ -86,6 +86,7 @@ public final class NatClassApp {
         RegularityCollection regularities = ProjectManager.getInstance().getCollectionOfRegularities();
         EntityCollection entities = ProjectManager.getInstance().getCollectionOfEntities();
         builder.fillRegularitiesProbabilitiy(entities, regularities);
+        ProjectManager.getInstance().getCollectionOfIdealClasses().clear();
         for (Entity e : entities) {
             builder.buildClass(e, entities, regularities, ProjectManager.getInstance().getCollectionOfIdealClasses());
         }

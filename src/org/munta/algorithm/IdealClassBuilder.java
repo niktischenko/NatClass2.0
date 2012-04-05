@@ -12,8 +12,8 @@ public class IdealClassBuilder {
     private AttributeCollection allAttributes;
 
     synchronized void saveClass(Entity idealizedClass, EntityCollection classes) {
-        int num = classes.size()+1;
-        idealizedClass.setName("C"+num);
+        int num = classes.size() + 1;
+        idealizedClass.setName("C" + num);
         for (Entity c : classes) {
             if (c.getAttributes().equals(idealizedClass.getAttributes())) {
                 return; // dublicate
@@ -21,7 +21,7 @@ public class IdealClassBuilder {
         }
         classes.add(idealizedClass);
     }
-    
+
     public void fillRegularitiesProbabilitiy(EntityCollection entities, RegularityCollection regularities) {
         for (Regularity r : regularities.values()) {
             ProbabilityMatrix m = ProbabilityMatrix.build(r, entities);
@@ -37,30 +37,43 @@ public class IdealClassBuilder {
 
         ClassTable table = new ClassTable(allAttributes);
         table = table.generateForEntity(startObject);
+        table.calcGamma(regularities);
 
-        double gamma = table.getMaxGamma();
-        while (true) {
+        double gamma = table.getMaxGamma(true);
+        System.err.println("Starting gamma: " + gamma);
+        Attribute maxAttr = null;
+        Attribute newMaxAttr = null;
+        do {
             int ok = 0;
+            System.err.println("Before step: "+table.generateClass());
             double newGamma = stepAdd(table, regularities);
             if (newGamma > gamma) {
                 ok++;
-                gamma = newGamma;
-                table.get(table.getAttributeForMaxGamma()).setOn(true);
+                newMaxAttr = table.getAttributeForMaxGamma();
+                table.get(newMaxAttr).setOn(true);
                 saveClass(table.generateClass(), classes);
+                System.err.println("=== NEW: " + newGamma + " OLD: " + gamma + " for attr " + table.getAttributeForMaxGamma() + " ====");
+                System.err.println(table.generateClass());
+                gamma = newGamma;
             }
             newGamma = stepDel(table, regularities);
             if (newGamma > gamma) {
                 ok++;
-                table.get(table.getAttributeForMaxGamma()).setOn(false);
+                newMaxAttr = table.getAttributeForMaxGamma();
+                table.get(newMaxAttr).setOn(false);
                 saveClass(table.generateClass(), classes);
+                System.err.println("=== NEW: " + newGamma + " OLD: " + gamma + " for attr " + table.getAttributeForMaxGamma() + " ====");
+                System.err.println(table.generateClass());
                 gamma = newGamma;
             }
             if (ok == 0) {
                 break;
             }
             ok = 0;
-        }
+            maxAttr = newMaxAttr;
+        } while (true); // && (!newMaxAttr.equals(maxAttr)));
         saveClass(table.generateClass(), classes);
+        System.err.println(table.generateClass());
     }
 
     private double stepAdd(ClassTable table, RegularityCollection regularities) {
@@ -72,7 +85,7 @@ public class IdealClassBuilder {
                 table.get(attr).setOn(false);
             }
         }
-        return table.getMaxGamma();
+        return table.getMaxGamma(false);
     }
 
     private double stepDel(ClassTable table, RegularityCollection regularities) {
@@ -84,6 +97,6 @@ public class IdealClassBuilder {
                 table.get(attr).setOn(true);
             }
         }
-        return table.getMaxGamma();
+        return table.getMaxGamma(true);
     }
 }

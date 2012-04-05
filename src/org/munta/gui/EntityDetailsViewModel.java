@@ -31,7 +31,6 @@ public class EntityDetailsViewModel
                 return new ListItem(colorer.getPositiveColor(), attr.toString());
             }
         } else if (colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
-            
             Regularity r = colorer.getRegularity();
             if(r.getConditions().contains(attr)) {
                 return new ListItem(colorer.getConditionColor(), attr.toString(), true);
@@ -47,6 +46,12 @@ public class EntityDetailsViewModel
                 } else {
                     return new ListItem(colorer.getNegativeColor(), attr.toString(), true);
                 }
+            }
+        } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
+            Entity ideal = colorer.getIdealClass();
+            
+            if(ideal.checkAttribute(attr)) {
+                return new ListItem(colorer.getPositiveColor(), attr.toString());
             }
         }
 
