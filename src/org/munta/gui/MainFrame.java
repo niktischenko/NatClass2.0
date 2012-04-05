@@ -286,17 +286,21 @@ public class MainFrame extends JFrame {
 
                     @Override
                     public void run() {
+                        if (ProjectManager.getInstance().getCollectionOfEntities().isEmpty()) {
+                            JOptionPane.showMessageDialog(MainFrame.this, "No entities");
+                            return;
+                        }
                         AbstractButton b = ((AbstractButton)fae.getSource());       
                         b.setAction(cancelProcessAction);
     //                    buildReguilaritiesAction.setEnabled(false);
-    //                    buildIdealClassesAction.setEnabled(false);
+                        buildIdealClassesAction.setEnabled(false);
                         app.buildRegularities();
                         buildReguilaritiesAction.setEnabled(true);
                         buildIdealClassesAction.setEnabled(true);
                         b.setAction(buildReguilaritiesAction);
                     }
                 }).start();
-            }
+            };
         }
     };
     
@@ -310,10 +314,14 @@ public class MainFrame extends JFrame {
 
                 @Override
                 public void run() {
+                    if (ProjectManager.getInstance().getCollectionOfRegularities().isEmpty()) {
+                        JOptionPane.showMessageDialog(MainFrame.this, "No regularities");
+                        return;
+                    }
                     AbstractButton b = ((AbstractButton)fae.getSource());       
                     b.setAction(cancelProcessAction);
 //                    buildIdealClassesAction.setEnabled(false);
-//                    buildReguilaritiesAction.setEnabled(false);
+                    buildReguilaritiesAction.setEnabled(false);
                     app.buildIdealClasses();
                     buildIdealClassesAction.setEnabled(true);
                     buildReguilaritiesAction.setEnabled(true);

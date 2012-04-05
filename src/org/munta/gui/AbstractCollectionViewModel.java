@@ -117,7 +117,7 @@ public abstract class AbstractCollectionViewModel<E>
             elementAddedUnsafe(o);
         } else {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
+                SwingUtilities.invokeLater(new Runnable() {
 
                     @Override
                     public void run() {
@@ -135,7 +135,7 @@ public abstract class AbstractCollectionViewModel<E>
             elementRemovedUnsafe(o);
         } else {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
+                SwingUtilities.invokeLater(new Runnable() {
 
                     @Override
                     public void run() {

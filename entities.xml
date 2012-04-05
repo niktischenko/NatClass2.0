@@ -3,23 +3,40 @@
     <Entity name="1_v1">
         <Attributes>
             <Attribute name="A" value="1"/>
+            <Attribute name="B" value="1"/>
             <Attribute name="C" value="1"/>
-            <Attribute name="D" value="1"/>
+            <Attribute name="D" value="0"/>
+            <Attribute name="E" value="0"/>
+            <Attribute name="F" value="0"/>
+            <Attribute name="G" value="0"/>
+            <Attribute name="H" value="0"/>
+            <Attribute name="I" value="0"/>
         </Attributes>
     </Entity>
     <Entity name="2_v2">
         <Attributes>
             <Attribute name="A" value="1"/>
-            <Attribute name="B" value="0"/>
+            <Attribute name="B" value="1"/>
             <Attribute name="C" value="1"/>
-            <Attribute name="D" value="1"/>
+            <Attribute name="D" value="0"/>
+            <Attribute name="E" value="0"/>
+            <Attribute name="F" value="0"/>
+            <Attribute name="G" value="0"/>
+            <Attribute name="H" value="0"/>
+            <Attribute name="I" value="0"/>
         </Attributes>
     </Entity>
     <Entity name="3_v3">
         <Attributes>
             <Attribute name="A" value="0"/>
-            <Attribute name="B" value="1"/>
-            <Attribute name="D" value="1"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="0"/>
+            <Attribute name="D" value="0"/>
+            <Attribute name="E" value="0"/>
+            <Attribute name="F" value="0"/>
+            <Attribute name="G" value="0"/>
+            <Attribute name="H" value="0"/>
+            <Attribute name="I" value="0"/>
         </Attributes>
     </Entity>
     <Entity name="4_v4">
@@ -28,30 +45,50 @@
             <Attribute name="B" value="0"/>
             <Attribute name="C" value="1"/>
             <Attribute name="D" value="1"/>
+            <Attribute name="E" value="1"/>
+            <Attribute name="F" value="1"/>
+            <Attribute name="G" value="0"/>
+            <Attribute name="H" value="0"/>
+            <Attribute name="I" value="0"/>
         </Attributes>
     </Entity>
     <Entity name="5_v5">
         <Attributes>
-            <Attribute name="A" value="1"/>
-            <Attribute name="B" value="1"/>
-            <Attribute name="C" value="0"/>
-            <Attribute name="D" value="0"/>
+            <Attribute name="A" value="0"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="1"/>
+            <Attribute name="D" value="1"/>
+            <Attribute name="E" value="1"/>
+            <Attribute name="F" value="1"/>
+            <Attribute name="G" value="0"/>
+            <Attribute name="H" value="0"/>
+            <Attribute name="I" value="0"/>
         </Attributes>
     </Entity>
     <Entity name="6_v6">
         <Attributes>
-            <Attribute name="A" value="1"/>
+            <Attribute name="A" value="0"/>
             <Attribute name="B" value="0"/>
-            <Attribute name="C" value="0"/>
-            <Attribute name="D" value="0"/>
+            <Attribute name="C" value="1"/>
+            <Attribute name="D" value="1"/>
+            <Attribute name="E" value="1"/>
+            <Attribute name="F" value="1"/>
+            <Attribute name="G" value="0"/>
+            <Attribute name="H" value="0"/>
+            <Attribute name="I" value="0"/>
         </Attributes>
     </Entity>
     <Entity name="7_v7">
         <Attributes>
             <Attribute name="A" value="0"/>
-            <Attribute name="B" value="1"/>
+            <Attribute name="B" value="0"/>
             <Attribute name="C" value="0"/>
             <Attribute name="D" value="0"/>
+            <Attribute name="E" value="0"/>
+            <Attribute name="F" value="0"/>
+            <Attribute name="G" value="0"/>
+            <Attribute name="H" value="0"/>
+            <Attribute name="I" value="0"/>
         </Attributes>
     </Entity>
     <Entity name="8_v8">
@@ -60,6 +97,37 @@
             <Attribute name="B" value="0"/>
             <Attribute name="C" value="0"/>
             <Attribute name="D" value="0"/>
+            <Attribute name="E" value="0"/>
+            <Attribute name="F" value="1"/>
+            <Attribute name="G" value="1"/>
+            <Attribute name="H" value="1"/>
+            <Attribute name="I" value="1"/>
+        </Attributes>
+    </Entity>
+    <Entity name="9_v9">
+        <Attributes>
+            <Attribute name="A" value="0"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="0"/>
+            <Attribute name="D" value="0"/>
+            <Attribute name="E" value="0"/>
+            <Attribute name="F" value="1"/>
+            <Attribute name="G" value="1"/>
+            <Attribute name="H" value="1"/>
+            <Attribute name="I" value="1"/>
+        </Attributes>
+    </Entity>
+    <Entity name="0_v10">
+        <Attributes>
+            <Attribute name="A" value="0"/>
+            <Attribute name="B" value="0"/>
+            <Attribute name="C" value="0"/>
+            <Attribute name="D" value="0"/>
+            <Attribute name="E" value="0"/>
+            <Attribute name="F" value="1"/>
+            <Attribute name="G" value="1"/>
+            <Attribute name="H" value="1"/>
+            <Attribute name="I" value="1"/>
         </Attributes>
     </Entity>
 </Entities>
