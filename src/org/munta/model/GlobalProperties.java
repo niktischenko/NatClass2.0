@@ -88,6 +88,8 @@ public final class GlobalProperties implements Serializable {
     public void set(GlobalProperties g) {
         probabilityThreshold = g.probabilityThreshold;
         minLength = g.minLength;
+        fisherThreshold = g.fisherThreshold;
+        yuleThreshold = g.yuleThreshold;
         useIntermediateResults = g.useIntermediateResults;
     }
 }
