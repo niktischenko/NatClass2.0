@@ -1,14 +1,13 @@
 package org.munta.model;
 
 import java.io.Serializable;
+import org.munta.gui.SettingsDialogItem;
 import org.munta.projectengine.serializer.xml.XmlObject;
 import org.munta.projectengine.serializer.xml.XmlProperty;
 
 @XmlObject(name="Properties")
 public final class GlobalProperties implements Serializable {
 
-    public int test = 1123;
-    
     /// Block 1 start
     /// Block 1 end
     
@@ -22,6 +21,7 @@ public final class GlobalProperties implements Serializable {
     @XmlProperty(name="YuleThreshold")
     private double yuleThreshold;
 
+    @SettingsDialogItem(displayName="Yule Threshold")
     public double getYuleThreshold() {
         return yuleThreshold;
     }
@@ -30,6 +30,7 @@ public final class GlobalProperties implements Serializable {
         this.yuleThreshold = yuleThreshold;
     }
 
+    @SettingsDialogItem(displayName="Fisher Threshold")
     public double getFisherThreshold() {
         return fisherThreshold;
     }
@@ -38,22 +39,37 @@ public final class GlobalProperties implements Serializable {
         this.fisherThreshold = fisherThreshold;
     }
     
+    @SettingsDialogItem(displayName="Probability Threshold")
     public double getProbabilityThreshold() {
         return probabilityThreshold;
+    }
+    
+    public void setProbabilityThreshold(double value) {
+        probabilityThreshold = value;
     }
     
     @XmlProperty(name="MinLength")
     private int minLength;
     
-    public double getMinLength() {
+    @SettingsDialogItem(displayName="Minimum chain length")
+    public int getMinLength() {
         return minLength;
     }
     
-    @XmlProperty(name="UseIntermediateResults")
-    private Boolean useIntermediateResults;
+    public void setMinLength(int value) {
+        minLength = value;
+    }
     
-    public Boolean getUseIntermediateResults() {
+    @XmlProperty(name="UseIntermediateResults")
+    private boolean useIntermediateResults;
+    
+    @SettingsDialogItem(displayName="Use Intermediate Chains")
+    public boolean getUseIntermediateResults() {
         return useIntermediateResults;
+    }
+    
+    public void setUseIntermediateResults(boolean value) {
+        useIntermediateResults = value;
     }
     /// Block 2 end
 
@@ -62,9 +78,9 @@ public final class GlobalProperties implements Serializable {
     }
     
     public void clear() {
-        probabilityThreshold = 0.8;
-        minLength = 2;
-        fisherThreshold = 0.05;
+        probabilityThreshold = 0.75;
+        minLength = 1;
+        fisherThreshold = 0.001;
         yuleThreshold = 0.9;
         useIntermediateResults = false;
     }
