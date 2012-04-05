@@ -47,9 +47,9 @@ public class RegularityBuilder {
         regularities.add(regularity);
     }
 
-    private void fillRegularitiesImpl(Attribute target, Map<String, Attribute> set, RegularityCollection regularities) {
+    private void fillRegularitiesImpl(Attribute target, Map<String, Attribute> set, RegularityCollection regularities, double fisherRecord, double probabilutyRecord) throws Exception {
         if (CancelEvent.getInstance().getStopPendingReset()) {
-            return;
+            throw new Exception("Stop request");
         }
         for (Attribute attr : allAttributes) {
 
@@ -75,17 +75,28 @@ public class RegularityBuilder {
                 // failed for probability
                 regularityPassed = false;
             }
+//            if (m.probability() <= probabilutyRecord) {
+//                regularityPassed = false;
+//                System.err.println("Probability became worse: "+m.probability()+" was: "+probabilutyRecord);
+//            }
 
             if (m.get(0, 0) == 1) {
                 regularityPassed = false;
             }
 
+            FisherYuleAlgorithm.FisherYuleResult result = null;
+
             if (regularityPassed) {
-                int fisherYuleResult = FisherYuleAlgorithm.checkFisherAndYuleCriteria(m, properties.getFisherThreshold(), properties.getYuleThreshold());
-                if (fisherYuleResult != FisherYuleAlgorithm.RESULT_PASSED_AS_CONDITION) {
+                result = FisherYuleAlgorithm.checkFisherAndYuleCriteria(m, properties.getFisherThreshold(), properties.getYuleThreshold());
+//                System.err.println("Fisher result: " + result.passedResult);
+                if (result.passedResult != FisherYuleAlgorithm.RESULT_PASSED_AS_CONDITION) {
                     // failed for fished
                     regularityPassed = false;
                 }
+//                if (result.fisherValue >= fisherRecord && fisherRecord != 0) {
+//                    regularityPassed = false;
+//                    System.err.println("New fisher value is worse :" + fisherRecord + " -> " + result.fisherValue);
+//                }
             }
 
             if (!regularityPassed) {
@@ -104,7 +115,7 @@ public class RegularityBuilder {
                     addRegularity(regularities, r);
                 }
                 // continue generation
-                fillRegularitiesImpl(target, newSet, regularities);
+                fillRegularitiesImpl(target, newSet, regularities, result.fisherValue, m.probability());
             }
         }
     }
@@ -119,7 +130,7 @@ public class RegularityBuilder {
         final RegularityCollection localRegularities = regularities;
         taskCount = allAttributes.size();
         for (Attribute a : allAttributes) {
-            System.err.print(a.toString()+" ");
+            System.err.print(a.toString() + " ");
         }
         taskCountDone = 0;
         for (Attribute attr : allAttributes) {
@@ -128,10 +139,12 @@ public class RegularityBuilder {
 
                 @Override
                 public Object call() throws Exception {
-                    fillRegularitiesImpl(localAttr, new HashMap<String, Attribute>(), localRegularities);
-                    synchronized (lock) {
+                    try {
+                        fillRegularitiesImpl(localAttr, new HashMap<String, Attribute>(), localRegularities, 0, 0);
+                    } catch (Exception e) {
+                    } finally {
                         taskCountDone++;
-                        System.err.println("Task done "+taskCountDone+" from "+taskCount);
+                        System.err.println("Task done " + taskCountDone + " from " + taskCount);
                         if (taskCount == taskCountDone) {
                             CancelEvent.getInstance().setFlag();
                         }

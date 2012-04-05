@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Properties>
-<ProbabilityThreshold>0.9</ProbabilityThreshold>
+<ProbabilityThreshold>0.8</ProbabilityThreshold>
 <MinLength>0</MinLength>
 <UseIntermediateResults>true</UseIntermediateResults>
 <FisherThreshold>0.005</FisherThreshold>

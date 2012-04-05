@@ -27,36 +27,41 @@ class FisherYuleAlgorithm {
         factorValues[10] = 15.104;
     }
 
-    private static class FisherYuleResult {
-
-        private double fisherValue;
-        private double yuleValue;
-        private int resultCode;
+    static class FisherYuleResult {
+        double fisherValue;
+        double yuleValue;
+        int resultCode;
+        int passedResult;
     }
 
-    public static int checkFisherAndYuleCriteria(
+    public static FisherYuleResult checkFisherAndYuleCriteria(
             ProbabilityMatrix matrix,
             double fisherThreshold,
             double yuleThreshold) {
         try {
             FisherYuleResult result = checkFisherAndYuleAlgorithm(matrix, fisherThreshold, yuleThreshold);
-//            System.err.println("Fisher value: "+result.fisherValue+"\nYule value: "+result.yuleValue);
+//            System.err.println("Fisher value: " + result.fisherValue + "\nYule value: " + result.yuleValue);
             switch (result.resultCode) {
                 case 1:
                 case 2:
-                    return RESULT_NOT_PASSED;
+                    result.passedResult = RESULT_NOT_PASSED;
+                    break;
                 case 3:
-                    return RESULT_PASSED_AS_CONDITION;
+                    result.passedResult = RESULT_PASSED_AS_CONDITION;
+                    break;
                 default:
 //                    System.err.println("NO DATA");
-                    return RESULT_NOT_PASSED;
+                    result.passedResult = RESULT_NOT_PASSED;
+                    break;
             }
+            return result;
 
         } catch (MathException ex) {
             Logger.getLogger(FisherYuleAlgorithm.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return RESULT_NOT_PASSED;
-
+        FisherYuleResult result = new FisherYuleResult();
+        result.passedResult = RESULT_NOT_PASSED;
+        return result;
     }
 
     private static FisherYuleResult checkFisherAndYuleAlgorithm(ProbabilityMatrix m, double fisherThreshold, double yuleThreshold) throws MathException {
@@ -161,7 +166,7 @@ class FisherYuleAlgorithm {
                 lambda = normal.inverseCumulativeProbability(1 - 0.5 * fisherThreshold);
                 kritQ = q_ - 0.5 * lambda * Math.abs(1 - q_ * q_) * Math.sqrt(1.0 / m00 + 1. / m01 + 1. / m10 + 1. / m11);
             }
-            
+
             result.yuleValue = kritQ;
             if (kritQ < yuleThreshold) {
                 result.resultCode = 2;
