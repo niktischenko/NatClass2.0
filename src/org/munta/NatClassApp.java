@@ -88,8 +88,12 @@ public final class NatClassApp {
         builder.fillRegularitiesProbabilitiy(entities, regularities);
         ProjectManager.getInstance().getCollectionOfIdealClasses().clear();
         for (Entity e : entities) {
+            if (CancelEvent.getInstance().getStopPendingReset()) {
+                break;
+            }
             builder.buildClass(e, entities, regularities, ProjectManager.getInstance().getCollectionOfIdealClasses());
         }
+        CancelEvent.getInstance().setFlag();
     }
     
     public void stopAlgoritms() {
