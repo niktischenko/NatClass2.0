@@ -143,10 +143,12 @@ public class RegularityBuilder {
                         fillRegularitiesImpl(localAttr, new HashMap<String, Attribute>(), localRegularities, 0, 0);
                     } catch (Exception e) {
                     } finally {
-                        taskCountDone++;
-                        System.err.println("Task done " + taskCountDone + " from " + taskCount);
-                        if (taskCount == taskCountDone) {
-                            CancelEvent.getInstance().setFlag();
+                        synchronized (lock) {
+                            taskCountDone++;
+                            System.err.println("Task done " + taskCountDone + " from " + taskCount);
+                            if (taskCount == taskCountDone) {
+                                CancelEvent.getInstance().setFlag();
+                            }
                         }
                     }
                     return null;
