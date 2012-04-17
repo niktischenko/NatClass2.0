@@ -51,7 +51,7 @@ public class RegularityBuilder {
         regularities.add(regularity);
     }
 
-    private boolean checkRegularity(Regularity r, EntityCollection entities) {
+    private boolean checkRegularity(Regularity r, EntityCollection entities, boolean probabilityCheck, boolean fisherCheck) {
         GlobalProperties properties = ProjectManager.getInstance().getGlobalProperties();
         ProbabilityMatrix m = ProbabilityMatrix.build(r, entities);
         FisherYuleAlgorithm.FisherYuleResult result = FisherYuleAlgorithm.checkFisherAndYuleCriteria(m, properties.getFisherThreshold(), properties.getYuleThreshold());
@@ -61,11 +61,15 @@ public class RegularityBuilder {
 //        System.err.println(r.toString());
 //        System.err.println("----------");
 
-        if (m.probability() <= properties.getProbabilityThreshold()) {
-            return false;
+        if (probabilityCheck) {
+            if (m.probability() <= properties.getProbabilityThreshold()) {
+                return false;
+            }
         }
-        if (result.passedResult != FisherYuleAlgorithm.RESULT_PASSED_AS_CONDITION) {
-            return false;
+        if (fisherCheck) {
+            if (result.passedResult != FisherYuleAlgorithm.RESULT_PASSED_AS_CONDITION) {
+                return false;
+            }
         }
         return true;
     }
@@ -151,7 +155,7 @@ public class RegularityBuilder {
 
             boolean good = true;
 
-            if (!checkRegularity(r, storedEntities)) {
+            if (!checkRegularity(r, storedEntities, false, true)) {
                 good = false;
             }
 
@@ -163,17 +167,19 @@ public class RegularityBuilder {
                     for (int[] combination : combinations) {
                         AttributeCollection aa = selectByMask(orderedAttributes, combination);
                         EntityCollection ee = filterEntities(storedEntities, aa);
-                        if (!checkRegularity(r, ee)) {
+                        if (!checkRegularity(r, ee, true, true)) {
 //                            System.err.println("Dropped by minimization");
                             good = false;
                         }
                     }
                 }
             }
-            if (good) {
+            if (good && checkRegularity(r, storedEntities, true, false)) {
                 if (properties.getUseIntermediateResults()) {
                     addRegularity(regularities, r);
                 }
+            }
+            if (good && checkRegularity(r, storedEntities, false, true)) {
                 continued = true;
                 fillRegularitiesImpl(target, newSet, regularities, fisherRecord, probabilutyRecord);
             }
