@@ -33,7 +33,7 @@ public class ProbabilityMatrix {
             return 0;
         }
 //        System.err.println("probability: " + passedAll + " / " + passedRest + " total: " + (data[0] + data[1] + data[2] + data[3]));
-        return (1+passedAll) / (2+passedRest);
+        return (passedAll) / (passedRest);
     }
     
     public int total() {

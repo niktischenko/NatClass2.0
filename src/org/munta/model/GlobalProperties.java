@@ -79,7 +79,7 @@ public final class GlobalProperties implements Serializable {
     
     public void clear() {
         probabilityThreshold = 0.75;
-        minLength = 1;
+        minLength = 2;
         fisherThreshold = 0.001;
         yuleThreshold = 0.9;
         useIntermediateResults = false;
