@@ -474,36 +474,36 @@ public class MainFrame extends JFrame {
         toolBar.addSeparator();
         
         ButtonGroup bg = new ButtonGroup();
-        JRadioButton radioButton;
+        JButton radioButton;
         
-        radioButton = new JRadioButton();
+        radioButton = new JButton();
         radioButton.setAction(setOverviewModelAction);
         radioButton.setModel(overviewButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
         
-        radioButton = new JRadioButton();
+        radioButton = new JButton();
         radioButton.setAction(setEntityAnalysisModelAction);
         radioButton.setModel(entitiesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
         
-        radioButton = new JRadioButton();
+        radioButton = new JButton();
         radioButton.setAction(setRegularityAnalysisModelAction);
         radioButton.setModel(regularitiesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
         
-        radioButton = new JRadioButton();
+        radioButton = new JButton();
         radioButton.setAction(setClassesAnalysisModelAction);
         radioButton.setModel(classesButtonModel);
         bg.add(radioButton);
         toolBar.add(radioButton);
         
-        toolBar.addSeparator();
-        button = new JButton();
-        button.setAction(startStopAction);
-        toolBar.add(button);
+        //toolBar.addSeparator();
+        //button = new JButton();
+        //button.setAction(startStopAction);
+        //toolBar.add(button);
         
         add(toolBar, BorderLayout.PAGE_START);
     }
