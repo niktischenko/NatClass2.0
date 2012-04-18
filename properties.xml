@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <Properties>
 <ProbabilityThreshold>0.8</ProbabilityThreshold>
-<MinLength>0</MinLength>
+<MinLength>2</MinLength>
 <UseIntermediateResults>true</UseIntermediateResults>
-<FisherThreshold>0.005</FisherThreshold>
+<FisherThreshold>0.05</FisherThreshold>
 <YuleThreshold>0.9</YuleThreshold>
+<RecursionDeep>2</RecursionDeep>
 </Properties>

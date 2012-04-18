@@ -2,11 +2,8 @@ package org.munta.algorithm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -70,13 +67,6 @@ public class RegularityBuilder {
         return true;
     }
 
-    private long factorial(long n) {
-        if (n <= 1) {
-            return 1;
-        }
-        return n * (factorial(n - 1));
-    }
-
     private int[] nextCombination(int[] current, int n) {
         int[] nn = current.clone();
         int k = nn.length;
@@ -93,8 +83,6 @@ public class RegularityBuilder {
     }
 
     private List<int[]> cnk(int all, int count) {
-//        int size = (int)(factorial(all) / (factorial(all - count) * factorial(count)));
-//        System.err.println("cnk: " + all + " " + count + " size: " + size);
         List<int[]> combinations = new ArrayList<int[]>();
         int[] start = new int[count];
         for (int i = 0; i < count; i++) {
@@ -108,12 +96,6 @@ public class RegularityBuilder {
             }
             combinations.add(i, nn);
         }
-//        for (int i = 0; i < size; i++) {
-//            for (int j = 0; j < count; j++) {
-//                System.err.print(combinations[i][j] + " ");
-//            }
-//            System.err.println();
-//        }
         return combinations;
     }
 
@@ -122,7 +104,6 @@ public class RegularityBuilder {
         for (int i : mask) {
             a.add(source.get(i));
         }
-//        System.err.println("FILTERED: " + a);
         return a;
     }
 
@@ -133,7 +114,7 @@ public class RegularityBuilder {
         GlobalProperties properties = ProjectManager.getInstance().getGlobalProperties();
         boolean continued = false;
         for (Attribute attr : allAttributes) {
-            System.err.println("==========START============\n");
+//            System.err.println("==========START============\n");
             if (target.getName().equals(attr.getName())) {
                 continue;
             }
@@ -170,14 +151,14 @@ public class RegularityBuilder {
                     }
                 }
             }
-            if (good) {
-                if (properties.getUseIntermediateResults()) {
+            if (good || r.getConditions().size() < properties.getRecursionDeep()) {
+                if (good && properties.getUseIntermediateResults()) {
                     addRegularity(regularities, r);
                 }
                 continued = true;
                 fillRegularitiesImpl(target, newSet, regularities, fisherRecord, probabilutyRecord);
             }
-            System.err.println("==========END==============\n");
+//            System.err.println("==========END==============\n");
         }
         if (!continued) {
             if (set.size() >= properties.getMinLength()) {
@@ -236,9 +217,6 @@ public class RegularityBuilder {
         ArrayList<Callable<Object>> taskList = new ArrayList<Callable<Object>>();
         final RegularityCollection localRegularities = regularities;
         taskCount = allAttributes.size();
-//        for (Attribute a : allAttributes) {
-//            System.err.print(a.toString() + " ");
-//        }
         taskCountDone = 0;
         for (Attribute attr : allAttributes) {
             final Attribute localAttr = attr;
