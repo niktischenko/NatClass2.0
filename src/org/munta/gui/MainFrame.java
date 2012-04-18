@@ -97,6 +97,13 @@ public class MainFrame extends JFrame {
             app.openProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
         }
     };
+    private Action saveProjectAction = new AbstractAction("Save") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            app.saveProject();
+        }
+    };
     private Action saveAsProjectAction = new AbstractAction("Save As...") {
 
         @Override
@@ -457,7 +464,7 @@ public class MainFrame extends JFrame {
         toolBar.add(button);
 
         button = new JButton();
-        button.setAction(newProjectAction);
+        button.setAction(saveProjectAction);
         button.setIcon(getIconFromResource("save"));
         button.setText(null);
         toolBar.add(button);

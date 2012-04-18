@@ -103,18 +103,12 @@ public final class ProjectManager {
     }
 
     public Boolean loadProject(String filename) {
-        projectFile.setFilename(filename);
-
-        if (!projectFile.isOnFileSystem()) {
-            return false;
-        }
         try {
-
+            newProject();
+            projectFile.setFilename(filename);
             Map<String, Object> map = projectFile.getProjectObjects();
             if(map == null)
                 return false;
-
-            newProject();
 
             EntityCollection entities = (EntityCollection) map.get(FILENAME_ENTITIES);
             if (entities != null) {

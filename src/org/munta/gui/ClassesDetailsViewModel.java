@@ -44,6 +44,8 @@ public class ClassesDetailsViewModel
                     return new ListItem(colorer.getNegativeColor(), attr.toString(), true);
                 }
             }
+        } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
+            return new ListItem(colorer.getPositiveColor(), attr.toString());
         }
         
         return new ListItem(attr.toString());
