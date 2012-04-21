@@ -9,11 +9,11 @@ public class ListItem {
     private Boolean isBold;
 
     public ListItem(String s) {
-        this(null, s, false);
+        this(null, s, true);
     }
     
     public ListItem(Color c, String s) {
-        this(c, s, false);
+        this(c, s, true);
     }
     
     public ListItem(Color c, String s, Boolean isBold) {

@@ -29,7 +29,7 @@ public class RegularityDetailsViewModel
         if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             return new ListItem(colorer.getTargetColor(), o.toString(), true);
         } else {
-            return o;
+            return new ListItem(o.toString());
         }
     }
 
@@ -37,7 +37,7 @@ public class RegularityDetailsViewModel
         if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             return new ListItem(colorer.getConditionColor(), o.toString(), true);
         } else {
-            return o;
+            return new ListItem(o.toString());
         }
     }
 
@@ -45,7 +45,7 @@ public class RegularityDetailsViewModel
         if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             return new ListItem(colorer.getContextColor(), o.toString(), true);
         } else {
-            return o;
+            return new ListItem(o.toString());
         }
     }
     

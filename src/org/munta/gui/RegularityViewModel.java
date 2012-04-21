@@ -40,6 +40,6 @@ public class RegularityViewModel
 
     @Override
     public Object getElementAt(int i) {
-        return getModelObjectAt(i).getKey();
+        return new ListItem(getModelObjectAt(i).getKey());
     }
 }
