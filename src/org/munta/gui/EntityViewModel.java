@@ -50,7 +50,7 @@ public class EntityViewModel
                 return new ListItem(colorer.getTargetColor(), getModelObjectAt(i).getName(), true);
             }
             if(e.getAttributes().equals(colorer.getEntity().getAttributes())) {
-                return new ListItem(colorer.getPositiveColor(), getModelObjectAt(i).getName());
+                return new ListItem(colorer.getPositiveColor(), getModelObjectAt(i).getName(), true);
             }
         } else if(colorer.getMode() == AnalysisColorer.REGULARITY_ANALYSIS && colorer.isRegularityAnalysisReady()) {
             Regularity r = colorer.getRegularity();
@@ -59,15 +59,13 @@ public class EntityViewModel
                 if(attr.getName().equals(r.getTarget().getName()))
                 {
                    if(attr.getValue().equals(r.getTarget().getValue())) {
-                       return new ListItem(colorer.getPositiveColor(), e.getName());
+                       return new ListItem(colorer.getPositiveColor(), e.getName(), true);
                    } else {
-                       return new ListItem(colorer.getNegativeColor(), e.getName());
+                       return new ListItem(colorer.getNegativeColor(), e.getName(), true);
                    }
                 }
             }
         } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
-            Entity ideal = colorer.getIdealClass();
-            
             Boolean useColor = true; 
             for(Attribute attr : e.getAttributes()) {
                 if(!e.checkAttribute(attr)) {
@@ -75,7 +73,7 @@ public class EntityViewModel
                 }
             }
             if(useColor) {
-                return new ListItem(colorer.getPositiveColor(), e.getName());
+                return new ListItem(colorer.getPositiveColor(), e.getName(), true);
             }
         }
         

@@ -44,11 +44,11 @@ public class ClassesViewModel extends AbstractCollectionViewModel<Entity> {
                 if(attr.getName().equals(r.getTarget().getName()))
                 {
                    if(attr.getValue().equals(r.getTarget().getValue())) {
-                       return new ListItem(colorer.getPositiveColor(), e.getName());
+                       return new ListItem(colorer.getPositiveColor(), e.getName(), true);
                    }
                 }
             }
-            return new ListItem(colorer.getNegativeColor(), e.getName());
+            return new ListItem(colorer.getNegativeColor(), e.getName(), true);
         }
         
         return new ListItem(e.getName());

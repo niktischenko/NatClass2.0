@@ -50,7 +50,7 @@ public class ClassesDetailsViewModel
                 Entity e = colorer.getEntity();
                 
                 if(e.checkAttribute(attr)) {
-                    return new ListItem(colorer.getPositiveColor(), attr.toString());
+                    return new ListItem(colorer.getPositiveColor(), attr.toString(), true);
                 }
             }
         }
