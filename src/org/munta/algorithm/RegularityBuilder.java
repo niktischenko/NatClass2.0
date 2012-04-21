@@ -107,7 +107,7 @@ public class RegularityBuilder {
         return a;
     }
 
-    private void fillRegularitiesImpl(Attribute target, Map<String, Attribute> set, RegularityCollection regularities, double fisherRecord, double probabilutyRecord) throws Exception {
+    private void fillRegularitiesImpl(Attribute target, Map<String, Attribute> set, RegularityCollection regularities, boolean isPreviousRegularityGood) throws Exception {
         if (CancelEvent.getInstance().getStopPendingReset()) {
             throw new Exception("Stop request");
         }
@@ -128,6 +128,7 @@ public class RegularityBuilder {
 
             Regularity r = new Regularity();
             r.setTarget(target);
+            r.setTerminated(false);
             r.getConditions().addAll(newSet.values());
 
             boolean good = true;
@@ -152,21 +153,33 @@ public class RegularityBuilder {
                 }
             }
             if (good || r.getConditions().size() < properties.getRecursionDeep()) {
-                if (good && properties.getUseIntermediateResults()) {
-                    addRegularity(regularities, r);
+                if (good) {
+                    continued = true;
                 }
-                continued = true;
-                fillRegularitiesImpl(target, newSet, regularities, fisherRecord, probabilutyRecord);
+                fillRegularitiesImpl(target, newSet, regularities, good);
             }
 //            System.err.println("==========END==============\n");
         }
+        if (set.size() < properties.getMinLength() - 1) {
+            return;
+        }
+        if (!isPreviousRegularityGood) {
+            return;
+        }
         if (!continued) {
-            if (set.size() >= properties.getMinLength()) {
-                Regularity r = new Regularity();
-                r.setTarget(target);
-                r.getConditions().addAll(set.values());
-                addRegularity(regularities, r);
-            }
+            Regularity r = new Regularity();
+            r.setTarget(target);
+            r.getConditions().addAll(set.values());
+            r.setTerminated(true);
+            addRegularity(regularities, r);
+
+        } else if (properties.getUseIntermediateResults()) {
+            Regularity r = new Regularity();
+            r.setTarget(target);
+            r.getConditions().addAll(set.values());
+            r.setTerminated(false);
+            addRegularity(regularities, r);
+
         }
     }
 
@@ -218,14 +231,31 @@ public class RegularityBuilder {
         final RegularityCollection localRegularities = regularities;
         taskCount = allAttributes.size();
         taskCountDone = 0;
-        for (Attribute attr : allAttributes) {
+        AttributeCollection targets = new AttributeCollection();
+        targets.add(new Attribute("115", "0"));
+        targets.add(new Attribute("115", "1"));
+        targets.add(new Attribute("116", "0"));
+        targets.add(new Attribute("116", "1"));
+        targets.add(new Attribute("117", "0"));
+        targets.add(new Attribute("117", "1"));
+        targets.add(new Attribute("118", "0"));
+        targets.add(new Attribute("118", "1"));
+        targets.add(new Attribute("119", "0"));
+        targets.add(new Attribute("119", "1"));
+        targets.add(new Attribute("120", "0"));
+        targets.add(new Attribute("120", "1"));
+        targets.add(new Attribute("121", "0"));
+        targets.add(new Attribute("121", "1"));
+        
+        //for (Attribute attr : allAttributes) {
+        for (Attribute attr : targets) {
             final Attribute localAttr = attr;
             taskList.add(new Callable<Object>() {
 
                 @Override
                 public Object call() throws Exception {
                     try {
-                        fillRegularitiesImpl(localAttr, new HashMap<String, Attribute>(), localRegularities, 0, 0);
+                        fillRegularitiesImpl(localAttr, new HashMap<String, Attribute>(), localRegularities, false);
                     } catch (Exception e) {
                         Logger.getLogger(RegularityBuilder.class.getName()).log(Level.SEVERE, null, e);
                     } finally {
