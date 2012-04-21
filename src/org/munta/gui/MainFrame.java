@@ -17,8 +17,6 @@ import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultButtonModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -27,7 +25,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -42,6 +39,8 @@ import org.munta.projectengine.ProjectManager;
 
 public class MainFrame extends JFrame {
 
+    private static final String staticTitle = "NatClass 2.0";
+    
     private NatClassApp app;
     //Colorer
     private AnalysisColorer colorer = new AnalysisColorer();
@@ -95,6 +94,7 @@ public class MainFrame extends JFrame {
             }
 
             app.openProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
+            setFilename(new File(fileDialog.getFile()).getName());
         }
     };
     private Action saveProjectAction = new AbstractAction("Save") {
@@ -120,6 +120,7 @@ public class MainFrame extends JFrame {
             }
 
             app.saveAsProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
+            setFilename(new File(fileDialog.getFile()).getName());
         }
     };
     private Action setOverviewModelAction = new AbstractAction("Overview") {
@@ -134,7 +135,6 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            
             colorer.setEntityAnalysisMode();
             setEntityAnalysisModelSetEntityAction.actionPerformed(null);
             setEntityAnalysisModelSetClassAction.actionPerformed(null);
@@ -144,8 +144,8 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
-                return;
+            //if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
+            //    return;
             
             int index = entityList.getSelectedIndex();
             if(index != -1) {
@@ -159,8 +159,8 @@ public class MainFrame extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
-                return;
+            //if(colorer.getMode() != AnalysisColorer.ENTITY_ANALYSIS)
+            //    return;
             
             int index = classList.getSelectedIndex();
             if(index != -1) {
@@ -184,6 +184,7 @@ public class MainFrame extends JFrame {
             redrawLists();
         }
     };
+    
     private ListSelectionListener regularityAnalysisModelListener = new ListSelectionListener() {
 
         @Override
@@ -263,6 +264,34 @@ public class MainFrame extends JFrame {
                 if(regularityIndex >= 0) { 
                     regularityList.setSelectedIndex(regularityIndex);
                 }
+            }
+        }
+    };
+    
+    private ListSelectionListener classAnalysisModelSetEntityListener = new ListSelectionListener() {
+
+        @Override
+        public void valueChanged(ListSelectionEvent lse) {
+            
+            if(lse.getValueIsAdjusting()) {
+                return;
+            }
+            
+            int index = entityList.getSelectedIndex();
+            if(index == -1) {
+                colorer.setEntity(null);
+                return;
+            }
+            
+            if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS) {
+                // This is a workaround for the selection bug
+                
+                //int regularityIndex = regularityList.getSelectedIndex();
+                //entityList.clearSelection();
+                //regularityList.clearSelection();
+                
+                colorer.setEntity((Entity)entityViewModel.getModelObjectAt(index));
+                redrawLists();
             }
         }
     };
@@ -360,11 +389,6 @@ public class MainFrame extends JFrame {
     private DefaultButtonModel regularitiesButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.REGULARITY_ANALYSIS);
     private DefaultButtonModel classesButtonModel = new AnalysisModeButtonModel(colorer, AnalysisColorer.CLASS_ANALYSIS);
 
-    private Icon getIconFromResource(String iconName) {
-        String iconPath = String.format("images/%s.png", iconName);
-        return new ImageIcon(MainFrame.class.getResource(iconPath));
-    }
-
     private void initFileChoosers() {
         //FileNameExtensionFilter filter = new FileNameExtensionFilter("NatClass 2.0 Project Files (*.ncp)", "ncp");
         FilenameFilter ff = new FilenameFilter() {
@@ -453,19 +477,19 @@ public class MainFrame extends JFrame {
         JButton button;
         button = new JButton();
         button.setAction(newProjectAction);
-        button.setIcon(getIconFromResource("new"));
+        button.setIcon(Utililities.getIconFromResource("new"));
         button.setText(null);
         toolBar.add(button);
 
         button = new JButton();
         button.setAction(openProjectAction);
-        button.setIcon(getIconFromResource("open"));
+        button.setIcon(Utililities.getIconFromResource("open"));
         button.setText(null);
         toolBar.add(button);
 
         button = new JButton();
         button.setAction(saveProjectAction);
-        button.setIcon(getIconFromResource("save"));
+        button.setIcon(Utililities.getIconFromResource("save"));
         button.setText(null);
         toolBar.add(button);
 
@@ -538,6 +562,7 @@ public class MainFrame extends JFrame {
         entityDetailsList.setCellRenderer(cr);
         entityDetailsList.setModel(entityDetailsViewModel);
         entityList.addListSelectionListener(entityDetailsViewModel);
+        entityList.addListSelectionListener(classAnalysisModelSetEntityListener);
         entityList.addMouseListener(new MouseAdapter() {
             
             @Override
@@ -664,8 +689,8 @@ public class MainFrame extends JFrame {
     }
 
     public MainFrame(NatClassApp app) throws HeadlessException {
-        super("NatClass 2.0");
-
+        super();
+        
         setLayout(new BorderLayout());
 
         this.app = app;
@@ -682,5 +707,17 @@ public class MainFrame extends JFrame {
 
         setVisible(true);
         setExtendedState(getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        
+        reset();
+    }
+    
+    public final void reset() {
+        setFilename("Untitled");
+        colorer.reset();
+        redrawLists();
+    }
+    
+    private final void setFilename(String filename) {
+        setTitle(MainFrame.staticTitle + " - " + filename);
     }
 }

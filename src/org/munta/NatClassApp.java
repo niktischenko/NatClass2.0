@@ -48,6 +48,7 @@ public final class NatClassApp {
 
     public void newProject() {
         stopAlgoritms();
+        frame.reset();
         ProjectManager.getInstance().newProject();
     }
 

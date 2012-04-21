@@ -107,4 +107,11 @@ public final class AnalysisColorer {
     public AnalysisColorer() {
         setOverviewMode();
     }
+    
+    public void reset() {
+        setOverviewMode();
+        setEntity(null);
+        setRegularity(null);
+        setIdealClass(null);
+    }
 }

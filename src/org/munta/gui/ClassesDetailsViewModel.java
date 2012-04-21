@@ -45,7 +45,14 @@ public class ClassesDetailsViewModel
                 }
             }
         } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
-            return new ListItem(colorer.getPositiveColor(), attr.toString());
+            
+            if(colorer.isEntityAnalysisReady()) {
+                Entity e = colorer.getEntity();
+                
+                if(e.checkAttribute(attr)) {
+                    return new ListItem(colorer.getPositiveColor(), attr.toString());
+                }
+            }
         }
         
         return new ListItem(attr.toString());
