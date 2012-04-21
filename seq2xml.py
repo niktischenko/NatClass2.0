@@ -9,7 +9,7 @@ def dispatchLine(line, i) :
 	print '        <Attributes>'
 
 	for c in range(len(column[1])) :
-		ind = c
+		ind = chr(ord('A') + c)
 		print '            <Attribute name="' + str(ind) + '" value="' + column[1][c] + '"/>'
 	
 	print '        </Attributes>'

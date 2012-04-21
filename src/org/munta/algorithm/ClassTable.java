@@ -52,7 +52,7 @@ public class ClassTable {
         for (String name : table.keySet()) {
             for (String value : table.get(name).keySet()) {
                 ClassTableItem item = table.get(name).get(value);
-                if (on == item.isOn() && item.getGamma() >= gamma) {
+                if (!item.isOn() && item.getGamma() >= gamma) {
                     gamma = item.getGamma();
                     attributeForMaxGamma.setName(name);
                     attributeForMaxGamma.setValue(value);
@@ -87,23 +87,19 @@ public class ClassTable {
         return e;
     }
 
-    public double calcGamma(RegularityCollection regularities, Attribute attr, boolean useK) {
+    public double calcGamma(RegularityCollection regularities) {
         double gamma = 0;
         for (Regularity r : regularities.values()) {
-            if (!r.isTerminated()) {
-                continue;
-            }
-            int k = r.getTarget().equals(attr) ? 2 : 1;
             if (checkAttributesCollection(r.getConditions())) {
                 if (checkAttribute(r.getTarget())) {
-                    gamma -= (useK ? k : 1) * Math.log(1 - r.getProbability());
+                    gamma += Math.log(1 - r.getProbability());
                 }
                 if (checkAttributeNegative(r.getTarget()))  {
-                    gamma += (useK ? k : 1) * Math.log(1 - r.getProbability());
+                    gamma -= Math.log(1 - r.getProbability());
                 }
             }
         }
-//        System.err.println("Calculated gamma " + gamma);
+        System.err.println("Calculated gamma " + gamma);
         return gamma;
     }
 
