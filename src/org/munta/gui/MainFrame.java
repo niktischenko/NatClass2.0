@@ -32,9 +32,13 @@ import javax.swing.JToolBar;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.munta.NatClassApp;
+import org.munta.importexport.Exporter;
+import org.munta.importexport.Importer;
 import org.munta.model.Entity;
+import org.munta.model.EntityCollection;
 import org.munta.model.GlobalProperties;
 import org.munta.model.Regularity;
+import org.munta.model.RegularityCollection;
 import org.munta.projectengine.ProjectManager;
 
 public class MainFrame extends JFrame {
@@ -60,9 +64,121 @@ public class MainFrame extends JFrame {
     private JList classDetailsList;
     // FileDialog
     private FileDialog fileDialog;
+    private FileDialog importFileDialog;
     // Other stuff
     private JStatusBar statusBar;
     // Actions
+    private Action importAction = new AbstractAction("Import...") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            importFileDialog.setMode(FileDialog.LOAD);
+            importFileDialog.setVisible(true);
+
+            if (importFileDialog.getFile() == null || importFileDialog.getFile().isEmpty()) {
+                return;
+            }
+
+            String filePath = new File(importFileDialog.getDirectory(), importFileDialog.getFile()).getAbsolutePath();
+            try {
+                Object newData = Importer.importFromFile(filePath);
+                if (newData instanceof EntityCollection) {
+
+                    Object[] options = {"As Objects", "As Ideal Classes", "Cancel"};
+                    int n = JOptionPane.showOptionDialog(MainFrame.this,
+                            "Would you like to import new data as Objects or Ideal Classes?",
+                            "Import Entities or Classes?",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null, //do not use a custom Icon
+                            options, //the titles of buttons
+                            options[2]);
+                    if (n == 0) {
+                        ProjectManager.getInstance().getCollectionOfEntities().clear();
+                        ProjectManager.getInstance().getCollectionOfEntities().addAll((EntityCollection) newData);
+                    } else if (n == 1) {
+                        ProjectManager.getInstance().getCollectionOfIdealClasses().clear();
+                        ProjectManager.getInstance().getCollectionOfIdealClasses().addAll((EntityCollection) newData);
+                    } else {
+                        return;
+                    }
+                }
+                if (newData instanceof RegularityCollection) {
+                    int n = JOptionPane.showConfirmDialog(MainFrame.this,
+                            "Would you like import Regularities?",
+                            "Import Regularities?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (n == JOptionPane.NO_OPTION) {
+                        return;
+                    }
+
+                    ProjectManager.getInstance().getCollectionOfRegularities().clear();
+                    ProjectManager.getInstance().getCollectionOfRegularities().putAll((RegularityCollection) newData);
+                }
+                if (newData instanceof GlobalProperties) {
+                    int n = JOptionPane.showConfirmDialog(MainFrame.this,
+                            "Would you like import properties?",
+                            "Import properties?",
+                            JOptionPane.YES_NO_OPTION);
+                    if (n == JOptionPane.NO_OPTION) {
+                        return;
+                    }
+
+                    ProjectManager.getInstance().getGlobalProperties().set((GlobalProperties) newData);
+                }
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(MainFrame.this, ex.getMessage());
+            }
+        }
+    };
+    private Action exportAction = new AbstractAction("Export...") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            Object[] possibilities = {"Objects", "Regularities", "Ideal Classes", "Properties"};
+            String s = (String)JOptionPane.showInputDialog(MainFrame.this,
+                    "What do you want to export?", "Export...", JOptionPane.PLAIN_MESSAGE, null,
+                    possibilities, "Objects");
+
+            Object data = null;
+            if(s.equals(possibilities[0])) {
+                data = ProjectManager.getInstance().getCollectionOfEntities();
+            } else if(s.equals(possibilities[1])) {
+                data = ProjectManager.getInstance().getCollectionOfRegularities();
+            } else if(s.equals(possibilities[2])) {
+                data = ProjectManager.getInstance().getCollectionOfIdealClasses();
+            } else if(s.equals(possibilities[3])) {
+                data = ProjectManager.getInstance().getGlobalProperties();
+            } else {
+                return;
+            }
+            
+            importFileDialog.setMode(FileDialog.SAVE);
+            importFileDialog.setVisible(true);
+
+            if (importFileDialog.getFile() == null || importFileDialog.getFile().isEmpty()) {
+                return;
+            }
+
+            String filePath = new File(importFileDialog.getDirectory(), importFileDialog.getFile()).getAbsolutePath();
+            
+            if (new File(filePath).exists()) {
+                int n = JOptionPane.showConfirmDialog(MainFrame.this,
+                        "Target file already exists. Would you like to overwrite it?",
+                        "Overwrite target file?",
+                        JOptionPane.YES_NO_OPTION);
+                if (n == JOptionPane.NO_OPTION) {
+                    return;
+                }
+            }
+            
+            try {
+                Exporter.exportData(data, filePath);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(MainFrame.this, ex.getMessage());
+            }
+        }
+    };
     private Action exitAction = new AbstractAction("Exit") {
 
         @Override
@@ -403,6 +519,10 @@ public class MainFrame extends JFrame {
         fileDialog.setDirectory(new java.io.File(".").getAbsolutePath());
         fileDialog.setFilenameFilter(ff);
         fileDialog.setModal(true);
+        
+        importFileDialog = new FileDialog(this);
+        importFileDialog.setDirectory(new java.io.File(".").getAbsolutePath());
+        importFileDialog.setModal(true);
         //fileChooser = new JFileChooser();
         //fileChooser.setCurrentDirectory(new java.io.File("."));
         //fileChooser.setFileFilter(filter);
@@ -424,9 +544,11 @@ public class MainFrame extends JFrame {
         saveAsProjMenuItem.setAction(saveAsProjectAction);
         fileMenu.add(saveAsProjMenuItem);
         fileMenu.addSeparator();
-        JMenuItem importMenuItem = new JMenuItem("Import...");
+        JMenuItem importMenuItem = new JMenuItem();
+        importMenuItem.setAction(importAction);
         fileMenu.add(importMenuItem);
-        JMenuItem exportMenuItem = new JMenuItem("Export...");
+        JMenuItem exportMenuItem = new JMenuItem();
+        exportMenuItem.setAction(exportAction);
         fileMenu.add(exportMenuItem);
 
         if (!NatClassApp.isMac()) {
@@ -714,10 +836,9 @@ public class MainFrame extends JFrame {
     public final void reset() {
         setFilename("Untitled");
         colorer.reset();
-        redrawLists();
     }
     
-    private final void setFilename(String filename) {
+    private void setFilename(String filename) {
         setTitle(MainFrame.staticTitle + " - " + filename);
     }
 }
