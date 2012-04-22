@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Entities>
+<Entity name="C1">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="K" value="0"/>
+<Attribute name="L" value="0"/>
+<Attribute name="M" value="0"/>
+<Attribute name="N" value="0"/>
+<Attribute name="O" value="0"/>
+<Attribute name="P" value="0"/>
+<Attribute name="Q" value="0"/>
+<Attribute name="R" value="0"/>
+<Attribute name="S" value="0"/>
+<Attribute name="T" value="0"/>
+<Attribute name="U" value="0"/>
+<Attribute name="V" value="0"/>
+<Attribute name="W" value="0"/>
+<Attribute name="X" value="0"/>
+<Attribute name="Y" value="0"/>
+<Attribute name="Z" value="0"/>
+<Attribute name="[" value="0"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+<Entity name="C2">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="J" value="1"/>
+<Attribute name="K" value="1"/>
+<Attribute name="L" value="1"/>
+<Attribute name="M" value="1"/>
+<Attribute name="N" value="1"/>
+<Attribute name="O" value="0"/>
+<Attribute name="P" value="0"/>
+<Attribute name="Q" value="0"/>
+<Attribute name="R" value="0"/>
+<Attribute name="S" value="0"/>
+<Attribute name="T" value="0"/>
+<Attribute name="U" value="0"/>
+<Attribute name="V" value="0"/>
+<Attribute name="W" value="0"/>
+<Attribute name="X" value="0"/>
+<Attribute name="Y" value="0"/>
+<Attribute name="Z" value="0"/>
+<Attribute name="[" value="0"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+<Entity name="C3">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="J" value="1"/>
+<Attribute name="K" value="0"/>
+<Attribute name="K" value="1"/>
+<Attribute name="L" value="1"/>
+<Attribute name="M" value="1"/>
+<Attribute name="N" value="1"/>
+<Attribute name="O" value="0"/>
+<Attribute name="P" value="0"/>
+<Attribute name="Q" value="0"/>
+<Attribute name="R" value="0"/>
+<Attribute name="S" value="0"/>
+<Attribute name="T" value="0"/>
+<Attribute name="U" value="0"/>
+<Attribute name="V" value="0"/>
+<Attribute name="W" value="0"/>
+<Attribute name="X" value="0"/>
+<Attribute name="Y" value="0"/>
+<Attribute name="Z" value="0"/>
+<Attribute name="[" value="0"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+<Entity name="C4">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="K" value="0"/>
+<Attribute name="L" value="0"/>
+<Attribute name="M" value="0"/>
+<Attribute name="N" value="0"/>
+<Attribute name="O" value="1"/>
+<Attribute name="P" value="1"/>
+<Attribute name="Q" value="1"/>
+<Attribute name="R" value="0"/>
+<Attribute name="R" value="1"/>
+<Attribute name="S" value="1"/>
+<Attribute name="T" value="1"/>
+<Attribute name="U" value="0"/>
+<Attribute name="V" value="0"/>
+<Attribute name="W" value="0"/>
+<Attribute name="X" value="0"/>
+<Attribute name="Y" value="0"/>
+<Attribute name="Z" value="0"/>
+<Attribute name="[" value="0"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+<Entity name="C5">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="K" value="0"/>
+<Attribute name="L" value="0"/>
+<Attribute name="M" value="0"/>
+<Attribute name="N" value="0"/>
+<Attribute name="O" value="1"/>
+<Attribute name="P" value="1"/>
+<Attribute name="Q" value="1"/>
+<Attribute name="R" value="0"/>
+<Attribute name="R" value="1"/>
+<Attribute name="S" value="0"/>
+<Attribute name="S" value="1"/>
+<Attribute name="T" value="1"/>
+<Attribute name="U" value="0"/>
+<Attribute name="V" value="0"/>
+<Attribute name="W" value="0"/>
+<Attribute name="X" value="0"/>
+<Attribute name="Y" value="0"/>
+<Attribute name="Z" value="0"/>
+<Attribute name="[" value="0"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+<Entity name="C6">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="K" value="0"/>
+<Attribute name="L" value="0"/>
+<Attribute name="M" value="0"/>
+<Attribute name="N" value="0"/>
+<Attribute name="O" value="1"/>
+<Attribute name="P" value="1"/>
+<Attribute name="Q" value="1"/>
+<Attribute name="R" value="0"/>
+<Attribute name="R" value="1"/>
+<Attribute name="S" value="0"/>
+<Attribute name="S" value="1"/>
+<Attribute name="T" value="0"/>
+<Attribute name="T" value="1"/>
+<Attribute name="U" value="0"/>
+<Attribute name="V" value="0"/>
+<Attribute name="W" value="0"/>
+<Attribute name="X" value="0"/>
+<Attribute name="Y" value="0"/>
+<Attribute name="Z" value="0"/>
+<Attribute name="[" value="0"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+<Entity name="C7">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="K" value="0"/>
+<Attribute name="L" value="1"/>
+<Attribute name="M" value="1"/>
+<Attribute name="N" value="1"/>
+<Attribute name="O" value="1"/>
+<Attribute name="P" value="1"/>
+<Attribute name="Q" value="1"/>
+<Attribute name="R" value="0"/>
+<Attribute name="S" value="0"/>
+<Attribute name="T" value="0"/>
+<Attribute name="U" value="0"/>
+<Attribute name="V" value="0"/>
+<Attribute name="W" value="0"/>
+<Attribute name="X" value="0"/>
+<Attribute name="Y" value="0"/>
+<Attribute name="Z" value="0"/>
+<Attribute name="[" value="0"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+<Entity name="C8">
+<Attributes>
+<Attribute name="A" value="0"/>
+<Attribute name="B" value="0"/>
+<Attribute name="C" value="0"/>
+<Attribute name="D" value="0"/>
+<Attribute name="E" value="0"/>
+<Attribute name="F" value="0"/>
+<Attribute name="G" value="0"/>
+<Attribute name="H" value="0"/>
+<Attribute name="I" value="0"/>
+<Attribute name="J" value="0"/>
+<Attribute name="K" value="0"/>
+<Attribute name="L" value="0"/>
+<Attribute name="M" value="0"/>
+<Attribute name="N" value="0"/>
+<Attribute name="O" value="0"/>
+<Attribute name="P" value="0"/>
+<Attribute name="Q" value="0"/>
+<Attribute name="R" value="0"/>
+<Attribute name="S" value="0"/>
+<Attribute name="T" value="0"/>
+<Attribute name="U" value="1"/>
+<Attribute name="V" value="1"/>
+<Attribute name="W" value="1"/>
+<Attribute name="X" value="1"/>
+<Attribute name="Y" value="1"/>
+<Attribute name="Z" value="1"/>
+<Attribute name="[" value="1"/>
+<Attribute name="\" value="0"/>
+<Attribute name="]" value="0"/>
+<Attribute name="^" value="0"/>
+</Attributes>
+</Entity>
+</Entities>

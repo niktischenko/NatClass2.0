@@ -75,15 +75,6 @@ public class Entity implements Serializable, Comparable<Entity> {
 
     @Override
     public int compareTo(Entity t) {
-        if (!getName().equals(t.getName())) {
-            return getName().compareTo(t.getName());
-        }
-        if (getAttributes().equals(t.getAttributes())) {
-            return 0;
-        }
-        if (getAttributes().containsAll(t.getAttributes())) {
-            return 1;
-        }
-        return -1;
+        return getName().compareTo(t.getName());
     }
 }

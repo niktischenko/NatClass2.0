@@ -10,29 +10,16 @@ import org.munta.model.RegularityCollection;
 public class IdealClassBuilder {
 
     private AttributeCollection allAttributes;
-    private int num = 1;
 
     synchronized void saveClass(Entity idealizedClass, EntityCollection classes) {
-        idealizedClass.setName("C" + num++);
+        int num = classes.size() + 1;
+        idealizedClass.setName("C" + num);
         for (Entity c : classes) {
             if (c.getAttributes().equals(idealizedClass.getAttributes())) {
-                System.err.println("DUBL: "+idealizedClass);
                 return; // dublicate
             }
         }
-        System.err.println("Add: "+idealizedClass);
         classes.add(idealizedClass);
-    }
-    
-    synchronized void minimizeClassesCollection(EntityCollection classes) {
-        EntityCollection clone = new EntityCollection(classes);
-        for (Entity c : clone) {
-            for (Entity t : clone) {
-                if (c.getAttributes().containsAll(t.getAttributes()) && !c.equals(t)) {
-                    classes.remove(t);
-                }
-            }
-        }
     }
 
     public void fillRegularitiesProbabilitiy(EntityCollection entities, RegularityCollection regularities) {
@@ -50,46 +37,40 @@ public class IdealClassBuilder {
 
         ClassTable table = new ClassTable(allAttributes);
         table = table.generateForEntity(startObject);
-        double gamma = table.calcGamma(regularities, new Attribute("", ""), false);
+        table.calcGamma(regularities);
 
+        double gamma = table.getMaxGamma(true);
         System.err.println("Starting gamma: " + gamma);
         Attribute maxAttr = null;
+        Attribute newMaxAttr = null;
         do {
             int ok = 0;
-            System.err.println("Before step: " + table.generateClass());
+            System.err.println("Before step: "+table.generateClass());
             double newGamma = stepAdd(table, regularities);
             if (newGamma > gamma) {
-                System.err.println("ADD OK");
                 ok++;
-                maxAttr = table.getAttributeForMaxGamma();
-                table.get(maxAttr).setOn(true);
+                newMaxAttr = table.getAttributeForMaxGamma();
+                table.get(newMaxAttr).setOn(true);
                 saveClass(table.generateClass(), classes);
-                minimizeClassesCollection(classes);
                 System.err.println("=== NEW: " + newGamma + " OLD: " + gamma + " for attr " + table.getAttributeForMaxGamma() + " ====");
                 System.err.println(table.generateClass());
                 gamma = newGamma;
-            } else {
-                System.err.println("ADD FAIL");
             }
             newGamma = stepDel(table, regularities);
             if (newGamma > gamma) {
-                System.err.println("DEL OK");
                 ok++;
-                maxAttr = table.getAttributeForMaxGamma();
-                table.get(maxAttr).setOn(false);
+                newMaxAttr = table.getAttributeForMaxGamma();
+                table.get(newMaxAttr).setOn(false);
                 saveClass(table.generateClass(), classes);
-                minimizeClassesCollection(classes);
                 System.err.println("=== NEW: " + newGamma + " OLD: " + gamma + " for attr " + table.getAttributeForMaxGamma() + " ====");
                 System.err.println(table.generateClass());
                 gamma = newGamma;
-            } else {
-                System.err.println("DEL FAIL");
             }
             if (ok == 0) {
-                System.err.println("Broken:"+table.generateClass());
                 break;
             }
             ok = 0;
+            maxAttr = newMaxAttr;
         } while (true); // && (!newMaxAttr.equals(maxAttr)));
         saveClass(table.generateClass(), classes);
         System.err.println(table.generateClass());
@@ -100,7 +81,7 @@ public class IdealClassBuilder {
         for (Attribute attr : attributes) {
             if (!table.get(attr).isOn()) {
                 table.get(attr).setOn(true);
-                table.get(attr).setGamma(table.calcGamma(regularities, attr, true));
+                table.get(attr).setGamma(table.calcGamma(regularities));
                 table.get(attr).setOn(false);
             }
         }
@@ -112,7 +93,7 @@ public class IdealClassBuilder {
         for (Attribute attr : attributes) {
             if (table.get(attr).isOn()) {
                 table.get(attr).setOn(false);
-                table.get(attr).setGamma(table.calcGamma(regularities, attr, true));
+                table.get(attr).setGamma(table.calcGamma(regularities));
                 table.get(attr).setOn(true);
             }
         }

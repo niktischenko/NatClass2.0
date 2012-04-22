@@ -14,7 +14,7 @@ public class Regularity implements Serializable {
     @XmlProperty(name = "Target")
     private Attribute target;
     @XmlProperty(name = "Terminated")
-    private Boolean terminated;
+    private boolean terminated;
     private double probability;
 
     public Regularity() {
@@ -22,7 +22,6 @@ public class Regularity implements Serializable {
         context = new AttributeCollection();
         target = new Attribute();
         probability = 0.0D;
-        terminated = false;
     }
 
     public Regularity(Regularity regularity) {
@@ -30,7 +29,6 @@ public class Regularity implements Serializable {
         this.context = new AttributeCollection(regularity.context);
         this.target = new Attribute(target);
         this.probability = regularity.probability;
-        this.terminated = regularity.terminated;
     }
 
     public AttributeCollection getContext() {
@@ -57,11 +55,11 @@ public class Regularity implements Serializable {
         this.target = target;
     }
 
-    public Boolean isTerminated() {
+    public boolean isTerminated() {
         return terminated;
     }
 
-    public void setTerminated(Boolean terminated) {
+    public void setTerminated(boolean terminated) {
         this.terminated = terminated;
     }
 
