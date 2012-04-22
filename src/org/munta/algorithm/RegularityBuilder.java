@@ -179,7 +179,6 @@ public class RegularityBuilder {
             r.getConditions().addAll(set.values());
             r.setTerminated(false);
             addRegularity(regularities, r);
-
         }
     }
 
@@ -231,24 +230,24 @@ public class RegularityBuilder {
         final RegularityCollection localRegularities = regularities;
         taskCount = allAttributes.size();
         taskCountDone = 0;
-        AttributeCollection targets = new AttributeCollection();
-        targets.add(new Attribute("115", "0"));
-        targets.add(new Attribute("115", "1"));
-        targets.add(new Attribute("116", "0"));
-        targets.add(new Attribute("116", "1"));
-        targets.add(new Attribute("117", "0"));
-        targets.add(new Attribute("117", "1"));
-        targets.add(new Attribute("118", "0"));
-        targets.add(new Attribute("118", "1"));
-        targets.add(new Attribute("119", "0"));
-        targets.add(new Attribute("119", "1"));
-        targets.add(new Attribute("120", "0"));
-        targets.add(new Attribute("120", "1"));
-        targets.add(new Attribute("121", "0"));
-        targets.add(new Attribute("121", "1"));
+//        AttributeCollection targets = new AttributeCollection();
+//        targets.add(new Attribute("115", "0"));
+//        targets.add(new Attribute("115", "1"));
+//        targets.add(new Attribute("116", "0"));
+//        targets.add(new Attribute("116", "1"));
+//        targets.add(new Attribute("117", "0"));
+//        targets.add(new Attribute("117", "1"));
+//        targets.add(new Attribute("118", "0"));
+//        targets.add(new Attribute("118", "1"));
+//        targets.add(new Attribute("119", "0"));
+//        targets.add(new Attribute("119", "1"));
+//        targets.add(new Attribute("120", "0"));
+//        targets.add(new Attribute("120", "1"));
+//        targets.add(new Attribute("121", "0"));
+//        targets.add(new Attribute("121", "1"));
         
-        //for (Attribute attr : allAttributes) {
-        for (Attribute attr : targets) {
+        for (Attribute attr : allAttributes) {
+//        for (Attribute attr : targets) {
             final Attribute localAttr = attr;
             taskList.add(new Callable<Object>() {
 
