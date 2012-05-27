@@ -39,6 +39,9 @@ public class ClassTable {
     }
 
     public ClassTableItem get(Attribute attr) {
+        if (attr == null) {throw new RuntimeException("Attribute is null");}
+        if (table == null) {throw new RuntimeException("Table is null");}
+        if (table.get(attr.getName()) == null) {throw new RuntimeException("Content is null. Attr: "+attr);}
         return table.get(attr.getName()).get(attr.getValue());
     }
 
@@ -47,12 +50,22 @@ public class ClassTable {
     }
 
     public double getMaxGamma(boolean on) {
-        double gamma = ((table.values().iterator().next()).values().iterator().next()).getGamma();
+        // find first value of gamma
+        double gamma = 0;
+        OUTER: for (String name : table.keySet()) {
+            for (String value : table.get(name).keySet()) {
+                if (on == table.get(name).get(value).isOn()) {
+                    gamma = table.get(name).get(value).getGamma();
+                    break OUTER;
+                }                
+            }
+        }
+        System.err.println("start gamma for getMaxGamma: "+gamma);
         attributeForMaxGamma = new Attribute();
         for (String name : table.keySet()) {
             for (String value : table.get(name).keySet()) {
                 ClassTableItem item = table.get(name).get(value);
-                if (!item.isOn() && item.getGamma() >= gamma) {
+                if (on == item.isOn() && item.getGamma() >= gamma) {
                     gamma = item.getGamma();
                     attributeForMaxGamma.setName(name);
                     attributeForMaxGamma.setValue(value);
@@ -73,6 +86,18 @@ public class ClassTable {
             t.get(attr).setOn(true);
         }
         return t;
+    }
+    
+    public void initializeTableGamma(RegularityCollection regularities) {
+        double gamma = calcGamma(regularities);
+        for (String name : table.keySet()) {
+            for (String value : table.get(name).keySet()) {
+                ClassTableItem item = table.get(name).get(value);
+                if (item.isOn()) {
+                    item.setGamma(gamma);
+                }
+            }
+        }
     }
 
     public Entity generateClass() {
@@ -99,8 +124,8 @@ public class ClassTable {
                 }
             }
         }
-        System.err.println("Calculated gamma " + gamma);
-        return gamma;
+//        System.err.println("Calculated gamma " + (-gamma));
+        return -gamma;
     }
 
     public AttributeCollection getAllAttributes() {

@@ -3,6 +3,8 @@ package org.munta.projectengine.serializer.xml;
 import java.lang.reflect.Field;
 import java.util.AbstractMap;
 import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +47,7 @@ class XmlObjectSerializerInternal {
 
         XmlObject objectAnnotation = (XmlObject) clazz.getAnnotation(XmlObject.class);
         Element element = document.createElement(objectAnnotation.name());
-        Field[] fields = clazz.getDeclaredFields();
+        List<Field> fields = getAllFields(clazz);
         if (objectAnnotation.collection()) {
             Collection<Object> collection = (Collection<Object>) o;
             for (Object object : collection) {
@@ -143,7 +145,7 @@ class XmlObjectSerializerInternal {
                 String attributeName = objectAnnotation.mapKeyAttribute();
                 deserializeToMap((Map<Object, Object>) object, children, attributeName);
             }
-            Field[] fields = clazz.getDeclaredFields();
+            List<Field> fields = getAllFields(clazz);
             for (Field field : fields) {
                 field.setAccessible(true);
                 XmlProperty propertyAnnotation = (XmlProperty) field.getAnnotation(XmlProperty.class);
@@ -222,5 +224,17 @@ class XmlObjectSerializerInternal {
         } catch (NumberFormatException e) {
             return text;
         }
+    }
+
+    private List<Field> getAllFields(Class clazz) {
+        List<Field> allFields = new LinkedList<Field>();
+        if (clazz.getSuperclass() != null) {
+            allFields.addAll(getAllFields(clazz.getSuperclass()));
+        }
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            allFields.add(field);
+        }
+        return allFields;
     }
 }

@@ -6,19 +6,22 @@ import org.munta.model.Entity;
 import org.munta.model.EntityCollection;
 import org.munta.model.Regularity;
 import org.munta.model.RegularityCollection;
+import org.munta.model.SerializableString;
 
 public class IdealClassBuilder {
 
     private AttributeCollection allAttributes;
 
-    synchronized void saveClass(Entity idealizedClass, EntityCollection classes) {
+    synchronized void saveClass(Entity idealizedClass, EntityCollection classes, Entity entity) {
         int num = classes.size() + 1;
         idealizedClass.setName("C" + num);
         for (Entity c : classes) {
             if (c.getAttributes().equals(idealizedClass.getAttributes())) {
+                c.getChildEntities().add(new SerializableString(entity.getName()));
                 return; // dublicate
             }
         }
+        idealizedClass.getChildEntities().add(new SerializableString(entity.getName()));
         classes.add(idealizedClass);
     }
 
@@ -34,45 +37,38 @@ public class IdealClassBuilder {
         for (Entity e : entities) {
             allAttributes.addAll(e.getAttributes());
         }
-
+        System.err.println(allAttributes);
         ClassTable table = new ClassTable(allAttributes);
         table = table.generateForEntity(startObject);
+        table.initializeTableGamma(regularities);
         table.calcGamma(regularities);
-
         double gamma = table.getMaxGamma(true);
-        System.err.println("Starting gamma: " + gamma);
+        
+        System.err.println("Starting gamma: "+gamma);
         Attribute maxAttr = null;
-        Attribute newMaxAttr = null;
         do {
-            int ok = 0;
-            System.err.println("Before step: "+table.generateClass());
+            int goodChecks = 0;
             double newGamma = stepAdd(table, regularities);
             if (newGamma > gamma) {
-                ok++;
-                newMaxAttr = table.getAttributeForMaxGamma();
-                table.get(newMaxAttr).setOn(true);
-                saveClass(table.generateClass(), classes);
-                System.err.println("=== NEW: " + newGamma + " OLD: " + gamma + " for attr " + table.getAttributeForMaxGamma() + " ====");
-                System.err.println(table.generateClass());
+                goodChecks++;
+                maxAttr = table.getAttributeForMaxGamma();
+                table.get(maxAttr).setOn(true);
                 gamma = newGamma;
+                System.err.println("STEPADD OK");
             }
             newGamma = stepDel(table, regularities);
             if (newGamma > gamma) {
-                ok++;
-                newMaxAttr = table.getAttributeForMaxGamma();
-                table.get(newMaxAttr).setOn(false);
-                saveClass(table.generateClass(), classes);
-                System.err.println("=== NEW: " + newGamma + " OLD: " + gamma + " for attr " + table.getAttributeForMaxGamma() + " ====");
-                System.err.println(table.generateClass());
+                goodChecks++;
+                maxAttr = table.getAttributeForMaxGamma();
+                table.get(maxAttr).setOn(false);
                 gamma = newGamma;
+                System.err.println("STEPDEL OK");
             }
-            if (ok == 0) {
+            if (goodChecks == 0) {
                 break;
             }
-            ok = 0;
-            maxAttr = newMaxAttr;
-        } while (true); // && (!newMaxAttr.equals(maxAttr)));
-        saveClass(table.generateClass(), classes);
+        } while (true);
+        saveClass(table.generateClass(), classes, startObject);
         System.err.println(table.generateClass());
     }
 

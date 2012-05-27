@@ -7,10 +7,12 @@ import org.munta.projectengine.serializer.xml.XmlProperty;
 @XmlObject(name = "Entity")
 public class Entity implements Serializable, Comparable<Entity> {
 
-    @XmlProperty(name = "name", attribute = true)
+    @XmlProperty(name = "name", attribute = true) 
     private String name;
     @XmlProperty(name = "Attributes", collection = true, propertyClass = AttributeCollection.class)
     private AttributeCollection attributes;
+    @XmlProperty(name = "ChildEntities", collection = true, propertyClass = SerializableStringCollection.class)
+    private SerializableStringCollection childEntities;
 
     public Entity() {
         this("");
@@ -19,11 +21,13 @@ public class Entity implements Serializable, Comparable<Entity> {
     public Entity(Entity entity) {
         this.name = entity.name;
         this.attributes = new AttributeCollection(entity.attributes);
+        this.childEntities = new SerializableStringCollection(entity.childEntities);
     }
 
     public Entity(String name) {
         this.name = name;
         attributes = new AttributeCollection();
+        this.childEntities = new SerializableStringCollection();
     }
 
     @Override
@@ -76,5 +80,13 @@ public class Entity implements Serializable, Comparable<Entity> {
     @Override
     public int compareTo(Entity t) {
         return getName().compareTo(t.getName());
+    }
+
+    public SerializableStringCollection getChildEntities() {
+        return childEntities;
+    }
+
+    public void setChildEntities(SerializableStringCollection entities) {
+        this.childEntities = new SerializableStringCollection(entities);
     }
 }

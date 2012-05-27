@@ -90,6 +90,7 @@ final class XmlDynMapperImpl implements IMapper {
 
     @Override
     public void registerClass(Class clazz) {
+        System.err.println("Registering class: "+clazz);
         if (clazz == null) {
             return;
         }
