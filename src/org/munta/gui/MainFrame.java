@@ -502,7 +502,7 @@ public class MainFrame extends JFrame {
         }
     };
     
-    private Action showStatisticsAction = new AbstractAction("Statistics") {
+    private Action showStatisticsAction = new AbstractAction("Statistics...") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
@@ -564,12 +564,18 @@ public class MainFrame extends JFrame {
         exportMenuItem.setAction(exportAction);
         fileMenu.add(exportMenuItem);
 
+        fileMenu.addSeparator();
+        JMenuItem statisticsMenuItem = new JMenuItem();
+        statisticsMenuItem.setAction(showStatisticsAction);
+        fileMenu.add(showStatisticsAction);
+        
         if (!NatClassApp.isMac()) {
             fileMenu.addSeparator();
             JMenuItem exitMenuItem = new JMenuItem();
             exitMenuItem.setAction(exitAction);
             fileMenu.add(exitMenuItem);
         }
+        
         menuBar.add(fileMenu);
 
         ButtonGroup modeGroup = new ButtonGroup();

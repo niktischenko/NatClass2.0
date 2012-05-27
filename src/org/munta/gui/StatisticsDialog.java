@@ -29,44 +29,48 @@ public class StatisticsDialog extends JDialog {
     
     private JLabel classesCount = new JLabel();
     
-    public void setObjectCount(int count) {
-        objectsCount.setText("Objects: " + count);
+    private String htmlize(String parameter, String value) {
+        return "<html>" + parameter + ": <B>" + value + "</B></html>";
     }
     
-    public void setAttributesCount(int count) {
-        attributesCount.setText("Attributes: " + count);
+    public void setObjectCount(Integer count) {
+        objectsCount.setText(htmlize("Objects", count.toString()));
     }
     
-    public void setMaxAttributesInObjectCount(int count) {
-        maxAttributesInObjectCount.setText("Max attributes: " + count);
+    public void setAttributesCount(Integer count) {
+        attributesCount.setText(htmlize("Attributes", count.toString()));
     }
     
-    public void setProbabilityThreshold(double threshold) {
-        probabilityThreshold.setText("Probability: " + threshold);
+    public void setMaxAttributesInObjectCount(Integer count) {
+        maxAttributesInObjectCount.setText(htmlize("Max attributes", count.toString()));
     }
     
-    public void setFisherThreshold(double threshold) {
-        fisherThreshold.setText("Fisher: " + threshold);
+    public void setProbabilityThreshold(Double threshold) {
+        probabilityThreshold.setText(htmlize("Probability", threshold.toString()));
     }
     
-    public void setYuleThreshold(double threshold) {
-        yuleThreshold.setText("Yule: " + threshold);
+    public void setFisherThreshold(Double threshold) {
+        fisherThreshold.setText(htmlize("Fisher", threshold.toString()));
+    }
+    
+    public void setYuleThreshold(Double threshold) {
+        yuleThreshold.setText(htmlize("Yule", threshold.toString()));
     }
     
     public void setUseIntermediateResults(Boolean use) {
-        useIntermediateResults.setText("Use intermediate results: " + use);
+        useIntermediateResults.setText(htmlize("Use intermediate results", use.toString()));
     }
     
-    public void setRecursionDeep(int deep) {
-        recursionDeep.setText("Recursion deepness: " + deep);
+    public void setRecursionDeep(Integer deep) {
+        recursionDeep.setText(htmlize("Recursion deepness", deep.toString()));
     }
     
-    public void setRegularitiesCount(int count) {
-        regularitiesCount.setText("Regularities: " + count);
+    public void setRegularitiesCount(Integer count) {
+        regularitiesCount.setText(htmlize("Regularities", count.toString()));
     }
     
-    public void setClassesCount(int count) {
-        classesCount.setText("Classes: " + count);
+    public void setClassesCount(Integer count) {
+        classesCount.setText(htmlize("Classes", count.toString()));
     }
     
     public StatisticsDialog(JFrame parent) {
@@ -76,7 +80,7 @@ public class StatisticsDialog extends JDialog {
         
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        panel.setBorder(new EmptyBorder(20, 20, 20, 20));
         addControls(panel);
         
         setContentPane(panel);
@@ -119,23 +123,20 @@ public class StatisticsDialog extends JDialog {
     
     private void addControls(Container pane) {
         pane.add(objectsCount);
+        pane.add(regularitiesCount);
+        pane.add(classesCount);
+        
+        pane.add(new JLabel(" "));
+        
         pane.add(attributesCount);
         pane.add(maxAttributesInObjectCount);
     
-        pane.add(new JSeparator());
+        pane.add(new JLabel(" "));
         
         pane.add(probabilityThreshold);
         pane.add(fisherThreshold);
         pane.add(yuleThreshold);
         pane.add(useIntermediateResults);
         pane.add(recursionDeep);
-        
-        pane.add(new JSeparator());
-        
-        pane.add(regularitiesCount);
-   
-        pane.add(new JSeparator());
-        
-        pane.add(classesCount);
     }
 }
