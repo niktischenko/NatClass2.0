@@ -157,7 +157,11 @@ class XmlObjectSerializerInternal {
                     continue;
                 }
 
-                NodeList children = element.getElementsByTagName(propertyAnnotation.name()).item(0).getChildNodes(); // get enclosed children
+                NodeList nodeList = element.getElementsByTagName(propertyAnnotation.name());
+                if(nodeList == null || nodeList.getLength() == 0)
+                    continue;
+                
+                NodeList children = nodeList.item(0).getChildNodes(); // get enclosed children
 
                 Object property = null;
                 if (propertyAnnotation.collection()) {

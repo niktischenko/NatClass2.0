@@ -5,6 +5,7 @@ import org.munta.model.Attribute;
 import org.munta.model.Entity;
 import org.munta.model.EntityCollection;
 import org.munta.model.Regularity;
+import org.munta.model.SerializableString;
 
 public class EntityViewModel
     extends AbstractCollectionViewModel<Entity> {
@@ -28,12 +29,12 @@ public class EntityViewModel
         } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
             Entity ideal = colorer.getIdealClass();
             
-            for(Attribute attr : obj.getAttributes()) {
-                if(!ideal.checkAttribute(attr)) {
-                    return false;
+            for(SerializableString ss : ideal.getChildEntities()) {
+                if(ss.getName().equals(obj.getName())) {
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
         
         return true;
@@ -66,15 +67,7 @@ public class EntityViewModel
                 }
             }
         } else if(colorer.getMode() == AnalysisColorer.CLASS_ANALYSIS && colorer.isClassAnalysisReady()) {
-            Boolean useColor = true; 
-            for(Attribute attr : e.getAttributes()) {
-                if(!e.checkAttribute(attr)) {
-                    useColor = false;
-                }
-            }
-            if(useColor) {
-                return new ListItem(colorer.getPositiveColor(), e.getName(), true);
-            }
+            return new ListItem(colorer.getPositiveColor(), e.getName(), true);
         }
         
         return new ListItem(e.getName());
