@@ -412,6 +412,7 @@ public class MainFrame extends JFrame {
         }
     };
     
+    /*
     private Action startStopAction = new AbstractAction("StartStop") {
 
         @Override
@@ -419,6 +420,7 @@ public class MainFrame extends JFrame {
             app.startStop();
         }
     };
+     * */
     
     private Action buildReguilaritiesAction = new AbstractAction("Build Regularities") {
 
@@ -497,6 +499,17 @@ public class MainFrame extends JFrame {
             if(m == JOptionPane.YES_OPTION) {
                 app.stopAlgoritms();
             }
+        }
+    };
+    
+    private Action showStatisticsAction = new AbstractAction("Statistics") {
+
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            final ActionEvent fae = ae;
+            
+            StatisticsDialog dialog = new StatisticsDialog(MainFrame.this);
+            dialog.setVisible(true);
         }
     };
     
@@ -657,6 +670,11 @@ public class MainFrame extends JFrame {
         //button = new JButton();
         //button.setAction(startStopAction);
         //toolBar.add(button);
+        
+        toolBar.addSeparator();
+        button = new JButton();
+        button.setAction(showStatisticsAction);
+        toolBar.add(button);
         
         add(toolBar, BorderLayout.PAGE_START);
     }
