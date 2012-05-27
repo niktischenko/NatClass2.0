@@ -1,5 +1,8 @@
 package org.munta;
 
+import java.awt.FileDialog;
+import java.io.File;
+import java.io.FilenameFilter;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +25,14 @@ public final class NatClassApp {
     private Thread t;
     private Boolean tb = false;
     private static Boolean isMac = null;
+    
+    private FileDialog fileDialog;
+    FilenameFilter ff = new FilenameFilter() {
+        @Override
+        public boolean accept(File file, String string) {
+            return string.toLowerCase().endsWith(".ncp");
+        }
+    };
 
     public static Boolean isMac() {
         if (isMac == null) {
@@ -43,6 +54,11 @@ public final class NatClassApp {
         }
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
+        fileDialog = new FileDialog(frame);
+        fileDialog.setDirectory(new java.io.File(".").getAbsolutePath());
+        fileDialog.setFilenameFilter(ff);
+        fileDialog.setModal(true);
+        
         frame = new MainFrame(this);
     }
 
@@ -52,17 +68,48 @@ public final class NatClassApp {
         ProjectManager.getInstance().newProject();
     }
 
-    public Boolean openProject(String filePath) {
+    public String openProject() {
+        
+        fileDialog.setMode(FileDialog.LOAD);
+        fileDialog.setVisible(true);
+
+        if (fileDialog.getFile() == null || fileDialog.getFile().isEmpty()) {
+            return null;
+        }
+        
+        String filePath = new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath();
+            
         newProject();
-        return ProjectManager.getInstance().loadProject(filePath);
+        if(ProjectManager.getInstance().loadProject(filePath)) {
+            return new File(filePath).getName();
+        }
+        
+        return null;
     }
 
-    public Boolean saveAsProject(String filePath) {
-        return ProjectManager.getInstance().saveAsProject(filePath);
+    public String saveAsProject() {
+        fileDialog.setMode(FileDialog.SAVE);
+        fileDialog.setVisible(true);
+
+        if (fileDialog.getFile() == null || fileDialog.getFile().isEmpty()) {
+            return null;
+        }
+        
+        String filePath = new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath();
+        if(ProjectManager.getInstance().saveAsProject(filePath)) {
+            return new File(filePath).getName();
+        }
+        
+        return null;
     }
 
-    public Boolean saveProject() {
-        return ProjectManager.getInstance().saveProject();
+    public String saveProject() {
+        if(!ProjectManager.getInstance().isOnFileSystem()) {
+            return saveAsProject();
+        } else {
+            ProjectManager.getInstance().saveProject();
+            return null;
+        }
     }
 
     public void exitApplication() {

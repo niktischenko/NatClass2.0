@@ -75,6 +75,10 @@ public final class ProjectManager {
         globalProperties.clear();
         isDirty = false;
     }
+    
+    public Boolean isOnFileSystem() {
+        return projectFile.isOnFileSystem();
+    }
 
     public Boolean saveProject() {
         if (!projectFile.isOnFileSystem()) {

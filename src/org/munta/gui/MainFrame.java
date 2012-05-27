@@ -63,7 +63,6 @@ public class MainFrame extends JFrame {
     private JList classList;
     private JList classDetailsList;
     // FileDialog
-    private FileDialog fileDialog;
     private FileDialog importFileDialog;
     // Other stuff
     private JStatusBar statusBar;
@@ -202,22 +201,20 @@ public class MainFrame extends JFrame {
             //    app.openProject(fileChooser.getSelectedFile().getAbsolutePath());
             //}
 
-            fileDialog.setMode(FileDialog.LOAD);
-            fileDialog.setVisible(true);
-
-            if (fileDialog.getFile() == null || fileDialog.getFile().isEmpty()) {
-                return;
+            String fileName = app.openProject();
+            if(fileName != null) {
+                setFilename(fileName);
             }
-
-            app.openProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
-            setFilename(new File(fileDialog.getFile()).getName());
         }
     };
     private Action saveProjectAction = new AbstractAction("Save") {
 
         @Override
         public void actionPerformed(ActionEvent ae) {
-            app.saveProject();
+            String fileName = app.saveProject();
+            if(fileName != null) {
+                setFilename(fileName);
+            }
         }
     };
     private Action saveAsProjectAction = new AbstractAction("Save As...") {
@@ -228,15 +225,8 @@ public class MainFrame extends JFrame {
             //if (rVal == JFileChooser.APPROVE_OPTION) {
             //    app.saveAsProject(fileChooser.getSelectedFile().getAbsolutePath());
             //}
-            fileDialog.setMode(FileDialog.SAVE);
-            fileDialog.setVisible(true);
-
-            if (fileDialog.getFile() == null || fileDialog.getFile().isEmpty()) {
-                return;
-            }
-
-            app.saveAsProject(new File(fileDialog.getDirectory(), fileDialog.getFile()).getAbsolutePath());
-            setFilename(new File(fileDialog.getFile()).getName());
+            
+            setFilename(app.saveAsProject());
         }
     };
     private Action setOverviewModelAction = new AbstractAction("Overview") {
@@ -520,18 +510,6 @@ public class MainFrame extends JFrame {
 
     private void initFileChoosers() {
         //FileNameExtensionFilter filter = new FileNameExtensionFilter("NatClass 2.0 Project Files (*.ncp)", "ncp");
-        FilenameFilter ff = new FilenameFilter() {
-
-            @Override
-            public boolean accept(File file, String string) {
-                return string.toLowerCase().endsWith(".ncp");
-            }
-        };
-
-        fileDialog = new FileDialog(this);
-        fileDialog.setDirectory(new java.io.File(".").getAbsolutePath());
-        fileDialog.setFilenameFilter(ff);
-        fileDialog.setModal(true);
         
         importFileDialog = new FileDialog(this);
         importFileDialog.setDirectory(new java.io.File(".").getAbsolutePath());
