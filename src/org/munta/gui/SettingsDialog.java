@@ -181,9 +181,6 @@ public class SettingsDialog extends JDialog {
                                         1 + count, 2,   //rows, cols
                                         6, 6,   //initX, initY
                                         6, 2);  //xPad, yPad
-        
-        setResizable(false);
-        pack();
     }
     
     public SettingsDialog(Window parent, Object properiesObject) {
@@ -192,6 +189,9 @@ public class SettingsDialog extends JDialog {
         this.properiesObject = properiesObject;
         
         init();
+        
+        setResizable(false);
+        pack();
         setLocationRelativeTo(parent);
     }
 }

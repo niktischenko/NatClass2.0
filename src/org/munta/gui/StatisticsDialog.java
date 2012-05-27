@@ -7,7 +7,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.border.EmptyBorder;
 import org.munta.model.Attribute;
 import org.munta.model.Entity;
@@ -85,9 +84,9 @@ public class StatisticsDialog extends JDialog {
         
         setContentPane(panel);
         
-        setLocationRelativeTo(parent);
-        setResizable(false);
         pack();
+        setResizable(false);
+        setLocationRelativeTo(parent);
     }
     
     private void initValues() {
